@@ -9,6 +9,6 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
-        <exec.mainClass>com.unitec.mini.windows.MiniWindows</exec.mainClass>
+        <exec.mainClass>com.unitec.mini.windows.Dashboard</exec.mainClass>
     </properties>
 </project>
