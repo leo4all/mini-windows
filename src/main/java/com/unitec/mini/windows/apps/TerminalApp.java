@@ -4,17 +4,28 @@
  */
 package com.unitec.mini.windows.apps;
 
+import java.awt.Color;
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author leonel
  */
-public class TerminalApp extends javax.swing.JInternalFrame {
+public class TerminalApp extends javax.swing.JInternalFrame  implements AppInterface{
 
     /**
      * Creates new form Terminal
      */
     public TerminalApp() {
         initComponents();
+        textCommandArea.setBackground(new Color(0, 0, 0, 60));
+        setComponents();
+    }
+
+    public void setComponents(){
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_terminal_20.png"));
+        this.setFrameIcon(appIcon);
+        textCommandArea.setEditable(false);
     }
 
     /**
@@ -26,27 +37,65 @@ public class TerminalApp extends javax.swing.JInternalFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel_Main = new javax.swing.JPanel();
+        jScrollPane_TextArea = new javax.swing.JScrollPane();
+        textCommandArea = new javax.swing.JTextArea();
+        textInputArea = new javax.swing.JTextField();
+
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Terminal");
+        setOpaque(false);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+        jPanel_Main.setBackground(new Color(0, 0, 0, 60));
+
+        textCommandArea.setBackground(new Color(0, 0, 0, 60)
         );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+        textCommandArea.setColumns(50);
+        textCommandArea.setRows(20);
+        textCommandArea.setOpaque(false);
+        jScrollPane_TextArea.setViewportView(textCommandArea);
+
+        textInputArea.setBackground(new Color(0, 0, 0, 60)
         );
+        textInputArea.setOpaque(false);
+
+        javax.swing.GroupLayout jPanel_MainLayout = new javax.swing.GroupLayout(jPanel_Main);
+        jPanel_Main.setLayout(jPanel_MainLayout);
+        jPanel_MainLayout.setHorizontalGroup(
+            jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jScrollPane_TextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
+            .addComponent(textInputArea)
+        );
+        jPanel_MainLayout.setVerticalGroup(
+            jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_MainLayout.createSequentialGroup()
+                .addComponent(jScrollPane_TextArea, javax.swing.GroupLayout.DEFAULT_SIZE, 418, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(textInputArea, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE))
+        );
+
+        getContentPane().add(jPanel_Main, java.awt.BorderLayout.CENTER);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    @Override
+    public void closeFrame() {
+        try {
+            this.setClosed(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel_Main;
+    private javax.swing.JScrollPane jScrollPane_TextArea;
+    private javax.swing.JTextArea textCommandArea;
+    private javax.swing.JTextField textInputArea;
     // End of variables declaration//GEN-END:variables
 }

@@ -7,10 +7,10 @@ package com.unitec.mini.windows.apps;
 import com.unitec.mini.windows.logic.FolderStructureCreator;
 import com.unitec.mini.windows.logic.UserManager;
 import java.awt.Color;
-import java.io.File;
 import java.util.Enumeration;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
@@ -18,15 +18,27 @@ import javax.swing.JPasswordField;
  *
  * @author leonel
  */
-public class SettingsApp extends javax.swing.JInternalFrame {
+public class SettingsApp extends javax.swing.JInternalFrame  implements AppInterface{
 
     /**
      * Creates new form Users
      */
     public SettingsApp() {
         initComponents();
+        setComponents();
+    }
+
+    public void setComponents(){
+        try {
+            ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-settings-white.png"));
+            this.setFrameIcon(appIcon);
+        } catch (Exception e) {
+            
+        }
+
         jPanel_Top_Panel.add(jPanel_Unlock_Top);
     }
+    
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -309,6 +321,15 @@ public class SettingsApp extends javax.swing.JInternalFrame {
             }
         }
         return null;
+    }
+    
+    @Override
+    public void closeFrame() {
+        try {
+            this.setClosed(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

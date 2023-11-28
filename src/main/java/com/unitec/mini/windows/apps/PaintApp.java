@@ -4,17 +4,25 @@
  */
 package com.unitec.mini.windows.apps;
 
+import javax.swing.ImageIcon;
+
 /**
  *
  * @author leonel
  */
-public class PaintApp extends javax.swing.JInternalFrame {
+public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface{
 
     /**
      * Creates new form Paint
      */
     public PaintApp() {
         initComponents();
+        setComponents();
+    }
+
+    public void setComponents(){
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_paint_20.png"));
+        this.setFrameIcon(appIcon);
     }
 
     /**
@@ -45,6 +53,15 @@ public class PaintApp extends javax.swing.JInternalFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    @Override
+    public void closeFrame() {
+        try {
+            this.setClosed(true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

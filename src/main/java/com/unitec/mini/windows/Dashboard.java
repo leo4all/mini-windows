@@ -8,6 +8,7 @@ import com.unitec.mini.windows.ui.FolderButton;
 import com.unitec.mini.windows.logic.Folder;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
+import com.unitec.mini.windows.apps.AppInterface;
 import com.unitec.mini.windows.apps.EditorApp;
 import com.unitec.mini.windows.apps.FinderApp;
 import com.unitec.mini.windows.apps.PaintApp;
@@ -36,6 +37,7 @@ import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -400,7 +402,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jPanel_TopLayout.setHorizontalGroup(
             jPanel_TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_TopLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(712, Short.MAX_VALUE)
                 .addComponent(jLabel_Timer_Top, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(534, 534, 534)
                 .addComponent(jButton_Shutdown)
@@ -719,6 +721,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
         if (option == JOptionPane.YES_OPTION) {
             showGlassPaneSpinner(this);
+            closeInternalFrames();
             triggerDisappearingEffect(this);
         }
     }//GEN-LAST:event_jMenuItem_Power_OffActionPerformed
@@ -731,16 +734,15 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
             public void actionPerformed(ActionEvent e) {
                 alpha -= OPACITY_CHANGE;
                 if (alpha <= 0) {
-                    ((Timer) e.getSource()).stop(); // Stop the timer
-                    frame.dispose(); // Dispose of the frame when fully transparent
-                    System.exit(0); // Exit the application
+                    ((Timer) e.getSource()).stop();
+                    frame.dispose(); 
+                    System.exit(0);
                 } else {
                     setWindowOpacity(frame, alpha);
                 }
             }
         });
 
-        // Add a MouseListener to the frame to start the timer when clicked
         frame.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -771,6 +773,17 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         
         frame.setGlassPane(glassPane);
         frame.getGlassPane().setVisible(true);
+    }
+    
+    private void closeInternalFrames() {
+        JInternalFrame[] frames = jDesktopPane_Window.getAllFrames();
+
+        for (JInternalFrame frame : frames) {
+            if (frame instanceof AppInterface) {
+                AppInterface appInterface = (AppInterface) frame;
+                appInterface.closeFrame();
+            }
+        }
     }
     
     private static void setWindowOpacity(Window window, float alpha) {
@@ -824,9 +837,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     public void stateChanged(ChangeEvent e) {
        
     }
-    
-    
-    
+
     private void createFolder(String folderName, int posX, int posY, String belongsTo) {
         Path folderPath = defaultFolderPath.resolve(folderName);
         
