@@ -69,15 +69,21 @@ public class ShellCommandExecutor {
             if (command.startsWith("cd ")) {
                 String directoryName = command.substring(3).trim();
                 File newDirectory;
-                
-                newDirectory = new File(currentDirectory, directoryName);
+
                 if (directoryName.equals("..")) {
                     newDirectory = currentDirectory.getParentFile();
+                } else if (directoryName.equals("~")) {
+                    newDirectory = rootDirectory;
+                } else {
+                    newDirectory = new File(currentDirectory, directoryName);
                 }
 
-                if (isWithinRoot(newDirectory)) {
+                if (isValidDirectory(newDirectory)) {
                     currentDirectory = newDirectory;
+                } else {
+                    outputArea.append("Error: Invalid directory or directory does not exist.\n");
                 }
+
                 return;
             }
 
@@ -87,6 +93,10 @@ public class ShellCommandExecutor {
         }
 
         outputArea.append("\n");
+    }
+
+    private boolean isValidDirectory(File directory) {
+       return directory.exists() && directory.isDirectory();
     }
 
     private boolean isWithinRoot(File directory) {

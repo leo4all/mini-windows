@@ -32,8 +32,7 @@ public class LoginForm extends javax.swing.JFrame {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
         Image appImage = appIcon.getImage();
         setIconImage(appImage);
-        
-        //Set the dock icon for macOS
+
         try {
             if(Taskbar.isTaskbarSupported()){
                 final Taskbar taskbar = Taskbar.getTaskbar();
@@ -43,7 +42,6 @@ public class LoginForm extends javax.swing.JFrame {
         }
         
         this.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
-        
         initComponents();
         setComponents();
         createUsersFolderStructure();
@@ -239,15 +237,15 @@ public class LoginForm extends javax.swing.JFrame {
         
         UserManager.initialize();
         if (UserManager.authenticateUser(username, password)) {
-           openAuthenticatedFrame(UserManager.getUserByUsername(username));
-           return;
-        }
-
-        JOptionPane.showMessageDialog(null, 
+            openAuthenticatedFrame(UserManager.getUserByUsername(username));
+            this.dispose();
+        }else{
+            JOptionPane.showMessageDialog(null, 
                 "Please check your credentials", 
                 "Error", 
                 JOptionPane.WARNING_MESSAGE
-        );        
+            );        
+        }
     }//GEN-LAST:event_jButton_LoginActionPerformed
 
     private void openAuthenticatedFrame(User authenticatedUser) {
