@@ -8,6 +8,7 @@ import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceani
 import com.formdev.flatlaf.util.SystemInfo;
 import com.unitec.mini.windows.logic.FolderStructureCreator;
 import com.unitec.mini.windows.logic.UserManager;
+import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Taskbar;
@@ -19,6 +20,7 @@ import java.util.Date;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
@@ -236,20 +238,26 @@ public class LoginForm extends javax.swing.JFrame {
         String password = String.valueOf(jPasswordField.getPassword());
         
         UserManager.initialize();
-
-        boolean isAuthenticated = UserManager.authenticateUser(username, password);
-        if (isAuthenticated) {
-            new Dashboard().setVisible(true);
-            this.dispose();
-        }else{
-            JOptionPane.showMessageDialog(null, 
-                    "Please check your credentials", 
-                    "Error", 
-                    JOptionPane.WARNING_MESSAGE
-            );
+        if (UserManager.authenticateUser(username, password)) {
+           openAuthenticatedFrame(UserManager.getUserByUsername(username));
+           return;
         }
-        
+
+        JOptionPane.showMessageDialog(null, 
+                "Please check your credentials", 
+                "Error", 
+                JOptionPane.WARNING_MESSAGE
+        );        
     }//GEN-LAST:event_jButton_LoginActionPerformed
+
+    private void openAuthenticatedFrame(User authenticatedUser) {
+        // Open the AuthenticatedFrame with the authenticated user
+        SwingUtilities.invokeLater(() -> {
+            Dashboard dashboard = new Dashboard();
+            dashboard.setAuthenticatedUser(authenticatedUser);
+            dashboard.setVisible(true);
+        });
+    }
 
     private void jButton_ShutdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ShutdownActionPerformed
         System.exit(0);

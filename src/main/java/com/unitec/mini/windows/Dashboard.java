@@ -17,6 +17,7 @@ import com.unitec.mini.windows.apps.SettingsApp;
 import com.unitec.mini.windows.apps.TerminalApp;
 import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
+import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
@@ -59,10 +60,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private ComponentMover cm;
     private static final int TIMER_DELAY = 250;
     private static final float OPACITY_CHANGE = 0.049f;
+    User userAuthen;
     
-    /**
-     * Creates new form Dashboard
-     */
     public Dashboard() {
         cm = new ComponentMover();
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
@@ -99,6 +98,10 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         new ComponentMover(this, this.getRootPane());
     }
     
+    public void setAuthenticatedUser(User loggedUser){
+        userAuthen = loggedUser;
+    }
+
     public void updateTime(JLabel label){
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d   h:mm a");
         String currentTime = dateFormat.format(new Date());

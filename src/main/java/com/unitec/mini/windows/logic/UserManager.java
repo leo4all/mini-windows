@@ -13,9 +13,18 @@ import java.util.Map;
 public class UserManager {
     private static final String DEFAUL_USER = "admin";
     private static final String DEFAUL_PASSWORD = "admin";
+
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
     private static final String USERS_FILE_PATH = "admin" + File.separator + "users.twc";
     private static final Map<String, User> users = new HashMap<>();
+    private static UserManager instance = null;
+    
+    public static UserManager getInstance() {
+        if (instance == null) {
+            instance = new UserManager();
+        }
+        return instance;
+    }
 
     public static void initialize() {
         loadUserOffsets();
@@ -30,15 +39,14 @@ public class UserManager {
     }
     
     public static boolean registerUser(User user) {
-        if (!users.containsKey(user.getUsername())) {
-            users.put(user.getUsername(), user);
-            saveUser(user);
-            return true;
-        } else {
-            // User already exists
+        if (users.containsKey(user.getUsername())) {
             System.out.println("User '" + user.getUsername() + "' already exists.");
-            return false;
-        }
+            return false;            
+        } 
+
+        users.put(user.getUsername(), user);
+        saveUser(user);
+        return true;
     }
     
     public static boolean authenticateUser(String username, String password) {
@@ -81,6 +89,9 @@ public class UserManager {
         }
     }
     
+    public static User getUserByUsername(String username) {
+        return users.get(username);
+    }
     
     
     public static class User {
@@ -95,7 +106,7 @@ public class UserManager {
             this.password = password;
             this.accountType = accountType;
         }
-
+                
         public String getName() {
             return name;
         }
