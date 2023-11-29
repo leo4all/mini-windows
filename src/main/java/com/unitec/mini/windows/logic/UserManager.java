@@ -7,7 +7,9 @@ package com.unitec.mini.windows.logic;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class UserManager {
@@ -93,6 +95,9 @@ public class UserManager {
         return users.get(username);
     }
     
+    public static List<User> getAllUsers() {
+        return new ArrayList<>(users.values());
+    }
     
     public static class User {
         private final String name;

@@ -8,21 +8,21 @@ import com.unitec.mini.windows.logic.FolderStructureCreator;
 import com.unitec.mini.windows.logic.UserManager;
 import java.awt.Color;
 import java.util.Enumeration;
+import java.util.Vector;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author leonel
  */
 public class SettingsApp extends javax.swing.JInternalFrame  implements AppInterface{
+    DefaultTableModel userTableModel;
 
-    /**
-     * Creates new form Users
-     */
     public SettingsApp() {
         initComponents();
         setComponents();
@@ -37,6 +37,16 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         }
 
         jPanel_Top_Panel.add(jPanel_Unlock_Top);
+        
+        userTableModel = new DefaultTableModel();
+        userTableModel.addColumn("Name");
+        userTableModel.addColumn("Username");
+        userTableModel.addColumn("Account Type");
+        userTableModel.addColumn("Actions");
+       
+        jTable_User_list.setModel(userTableModel);
+        populateUserTable();
+        
     }
     
 
@@ -55,7 +65,8 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         jLabel3 = new javax.swing.JLabel();
         jButton_Unlock = new javax.swing.JButton();
         jPanel_Unlocked_Top = new javax.swing.JPanel();
-        jButton_Show_Add_User_Panel = new javax.swing.JButton();
+        jButton_Add_User = new javax.swing.JButton();
+        jButton2 = new javax.swing.JButton();
         jPanel_Add_User = new javax.swing.JPanel();
         jPanel_Main_Add = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -70,7 +81,7 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         jPanel_Top_Panel = new javax.swing.JPanel();
         jPanel_Main = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jTable_User_list = new javax.swing.JTable();
 
         jPanel_Unlock_Top.setBackground(new java.awt.Color(65, 25, 52));
         jPanel_Unlock_Top.setPreferredSize(new java.awt.Dimension(655, 50));
@@ -96,20 +107,27 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         jPanel_Unlock_Top.add(jButton_Unlock, new org.netbeans.lib.awtextra.AbsoluteConstraints(540, 10, -1, -1));
 
         jPanel_Unlocked_Top.setBackground(new java.awt.Color(65, 25, 52));
+        jPanel_Unlocked_Top.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jPanel_Unlocked_Top.setPreferredSize(new java.awt.Dimension(655, 50));
         jPanel_Unlocked_Top.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton_Show_Add_User_Panel.setBackground(new java.awt.Color(0, 153, 0));
-        jButton_Show_Add_User_Panel.setForeground(new java.awt.Color(255, 255, 255));
-        jButton_Show_Add_User_Panel.setText("Add User..");
-        jButton_Show_Add_User_Panel.setToolTipText("Create new user");
-        jButton_Show_Add_User_Panel.setPreferredSize(new java.awt.Dimension(95, 25));
-        jButton_Show_Add_User_Panel.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Add_User.setBackground(new Color(0, 0, 0, 0)
+        );
+        jButton_Add_User.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-add-user.png"))); // NOI18N
+        jButton_Add_User.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton_Add_User.setBorderPainted(false);
+        jButton_Add_User.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_Show_Add_User_PanelActionPerformed(evt);
+                jButton_Add_UserActionPerformed(evt);
             }
         });
-        jPanel_Unlocked_Top.add(jButton_Show_Add_User_Panel, new org.netbeans.lib.awtextra.AbsoluteConstraints(550, 10, -1, 30));
+        jPanel_Unlocked_Top.add(jButton_Add_User, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 10, -1, 30));
+
+        jButton2.setBackground(new Color(0, 0, 0, 0));
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-remove-user.png"))); // NOI18N
+        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        jButton2.setBorderPainted(false);
+        jPanel_Unlocked_Top.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 10, -1, 30));
 
         jPanel_Main_Add.setBorder(javax.swing.BorderFactory.createTitledBorder("User Details"));
 
@@ -203,18 +221,7 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
 
         jPanel_Main.setBackground(new Color(0,0,0,0));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
-            new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
-            },
-            new String [] {
-                "Name", "User", "Account Type", "Actions"
-            }
-        ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(jTable_User_list);
 
         javax.swing.GroupLayout jPanel_MainLayout = new javax.swing.GroupLayout(jPanel_Main);
         jPanel_Main.setLayout(jPanel_MainLayout);
@@ -266,20 +273,20 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
 
         if (option == JOptionPane.OK_OPTION) {
             String password = new String(pf.getPassword());
-            if (password.equals(UserManager.getDefaultPassword())) {
-                jPanel_Top_Panel.removeAll();
-                jPanel_Top_Panel.add(jPanel_Unlocked_Top);
-                jPanel_Top_Panel.repaint();
-                jPanel_Top_Panel.revalidate();
-            }else {
+            if (!password.equals(UserManager.getDefaultPassword())) {
                 JOptionPane.showMessageDialog(null, "Invalid Password");
+                return;
             }
+
+            jPanel_Top_Panel.removeAll();
+            jPanel_Top_Panel.add(jPanel_Unlocked_Top);
+            jPanel_Top_Panel.repaint();
+            jPanel_Top_Panel.revalidate();
         }
 
     }//GEN-LAST:event_jButton_UnlockActionPerformed
 
-    private void jButton_Show_Add_User_PanelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Show_Add_User_PanelActionPerformed
-        
+    private void jButton_Add_UserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Add_UserActionPerformed
         int option = JOptionPane.showConfirmDialog(
                 null, 
                 jPanel_Add_User, 
@@ -302,16 +309,21 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
             UserManager.User newUser = new UserManager.User(name, username, password, accountType);
             boolean registrationSuccess = UserManager.registerUser(newUser);
             
-            if (registrationSuccess) {
-                FolderStructureCreator.createFolderFor(username);
-                JOptionPane.showMessageDialog(null, "User registered successfully!");
-
-                
-            } else {
-               JOptionPane.showMessageDialog(null, "User registration failed. Username may already exist.");
+            if (!registrationSuccess) {
+                JOptionPane.showMessageDialog(null, "User registration failed. Username may already exist.");
+                return;
             }
+            
+            Vector<Object> rowData = new Vector<>();
+            rowData.add(newUser.getName());
+            rowData.add(newUser.getUsername());
+            rowData.add(newUser.getAccountType());
+            userTableModel.addRow(rowData);
+            
+            FolderStructureCreator.createFolderFor(username);
+            JOptionPane.showMessageDialog(null, "User registered successfully!");  
         }
-    }//GEN-LAST:event_jButton_Show_Add_User_PanelActionPerformed
+    }//GEN-LAST:event_jButton_Add_UserActionPerformed
 
     private static AbstractButton getSelectedButton(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements(); ) {
@@ -321,6 +333,19 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
             }
         }
         return null;
+    }
+    
+    private void populateUserTable(){
+        UserManager.initialize();
+        for (UserManager.User user : UserManager.getAllUsers()) {
+            System.out.println(user);
+            Vector<Object> rowData = new Vector<>();
+            rowData.add(user.getName());
+            rowData.add(user.getUsername());
+            rowData.add(user.getAccountType());
+            rowData.add("");
+            userTableModel.addRow(rowData);
+        }
     }
     
     @Override
@@ -334,7 +359,8 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.ButtonGroup buttonGroup_User_Type;
-    private javax.swing.JButton jButton_Show_Add_User_Panel;
+    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jButton_Add_User;
     private javax.swing.JButton jButton_Unlock;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -350,7 +376,7 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
     private javax.swing.JPanel jPanel_Unlocked_Top;
     private javax.swing.JPasswordField jPasswordField_Pass;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable jTable_User_list;
     private javax.swing.JTextField jTextField_Username;
     private javax.swing.JTextField jTextField_name;
     private javax.swing.JToggleButton jToggleButton_Administrator_UserType;
