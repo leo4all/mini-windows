@@ -19,6 +19,7 @@ import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
 import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
@@ -96,6 +97,9 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         timer.start();
         
         new ComponentMover(this, this.getRootPane());
+        TwitterApp fd = new TwitterApp();
+        fd.setVisible(false);
+        jDesktopPane_Window.add(fd).setVisible(false);
     }
     
     public void setAuthenticatedUser(User loggedUser){
@@ -683,6 +687,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jButton_FinderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_FinderActionPerformed
         FinderApp fd = new FinderApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_FinderActionPerformed
 
@@ -694,6 +699,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jButton_Text_EditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Text_EditorActionPerformed
         EditorApp fd = new EditorApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_Text_EditorActionPerformed
 
@@ -807,22 +813,25 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     
     private void jButton_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaintActionPerformed
         PaintApp fd = new PaintApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_PaintActionPerformed
 
     private void jButton_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlayerActionPerformed
         PlayerApp fd = new PlayerApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_PlayerActionPerformed
 
     private void jButton_TerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TerminalActionPerformed
         TerminalApp fd = new TerminalApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_TerminalActionPerformed
 
     private void jButton_TwitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TwitterActionPerformed
-        TwitterApp fd = new TwitterApp();
-        jDesktopPane_Window.add(fd).setVisible(true);
+        LoginTwitter loginForm = new LoginTwitter(this);
+        loginForm.setVisible(true);
     }//GEN-LAST:event_jButton_TwitterActionPerformed
 
     private void jMenuItem_LockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_LockActionPerformed
@@ -833,6 +842,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jMenuItem_SettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SettingsActionPerformed
         SettingsApp fd = new SettingsApp();
+        setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jMenuItem_SettingsActionPerformed
 
@@ -841,6 +851,17 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
        
     }
 
+    public void showTwitterApp(){
+        TwitterApp fd = new TwitterApp();
+        setInternalFrameCenterLocation(fd);
+        jDesktopPane_Window.add(fd).setVisible(true);
+    }
+
+    private void setInternalFrameCenterLocation(JInternalFrame frame){
+        Dimension desktopSize = jDesktopPane_Window.getSize();
+        Dimension jISize = frame.getSize();
+        frame.setLocation((desktopSize.width - jISize.width)/2,(desktopSize.height- jISize.height)/2);
+    }
     private void createFolder(String folderName, int posX, int posY, String belongsTo) {
         Path folderPath = defaultFolderPath.resolve(folderName);
         

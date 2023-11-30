@@ -18,6 +18,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
     public TwitterApp() {
         initComponents();
         setComponents();
+        setVisible(true);
     }
 
     public void setComponents(){
