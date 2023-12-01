@@ -812,7 +812,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }
     
     private void jButton_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaintActionPerformed
-        PaintApp fd = new PaintApp();
+        //Enviar la dirrecion que se envie la carpeta de imagenes del usurio login
+        PaintApp fd = new PaintApp(null,false,null);
         setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_PaintActionPerformed

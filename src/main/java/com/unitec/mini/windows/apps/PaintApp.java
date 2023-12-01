@@ -8,6 +8,7 @@ package com.unitec.mini.windows.apps;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -17,26 +18,37 @@ import javax.swing.JLabel;
  */
 public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface {
     int cont= 1; 
-    ImageIcon Imagen[]= new ImageIcon[6];
+    private ImageIcon[] Imagen;
+
     /**
-     * Creates new form Player
+     * Creates new form PaintApp
      */
-    public PaintApp() {
+    public PaintApp(String pathUserLoging,boolean Tipodevista,Image ImageSpecific) {
         initComponents();
+        ControladorBotones.setVisible(true);
+        this.setTitle("Visor de imágenes");
+        // Count images in the folder
+        if(Tipodevista){ 
+        int imageCount = countImagesInFolder(pathUserLoging);
+        Imagen = new ImageIcon[imageCount];
+        
         //setComponents();
         this.setTitle("Visor de imagenes");
-        for (int i = 1; i < 6; i++) {
-            //debemos de modificar el link dependiendo el archivo del usuario loggin
-            Imagen[i]= new ImageIcon (getClass().getResource("/visorimagenes/Imagenes/fot"+i+".jpg"));
+        
+        // Load images into the array
+        for (int i = 0; i < imageCount; i++) {
+            Imagen[i] = new ImageIcon(getClass().getResource(pathUserLoging + "/visorimagenes/Imagenes/fot" + (i + 1) + ".jpg"));
         }
-       actualizarImagen(jLabel1,1,390,610);
-       actualizarImagen(Imagen3,cont+1,150,124);
-       actualizarImagen(Imagen4,cont+2,150,124);
-    }
 
+        actualizarImagen(jLabel1, 0, 390, 610);
+        actualizarImagen(Imagen3, cont + 1, 150, 124);
+        actualizarImagen(Imagen4, cont + 2, 150, 124);
+        }else{
+        ControladorBotones.setVisible(false);
+        jLabel1.setIcon(new ImageIcon(ImageSpecific));
+        }
+    }
     public void setComponents(){
-        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_music_20.png"));
-        this.setFrameIcon(appIcon);
     }
 
     /**
@@ -48,9 +60,10 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jLabel1 = new javax.swing.JLabel();
+        ControladorBotones = new javax.swing.JPanel();
         Imagen3 = new javax.swing.JLabel();
         Siguiente = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
         Atras = new javax.swing.JButton();
         Imagen1 = new javax.swing.JLabel();
         Imagen4 = new javax.swing.JLabel();
@@ -62,19 +75,19 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         setResizable(true);
         setTitle("Media Player");
 
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
+
         Imagen3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        Siguiente.setText(">>");
+        Siguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Imagen_Siguiente_Imagen32x32.png"))); // NOI18N
         Siguiente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 SiguienteActionPerformed(evt);
             }
         });
 
-        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
-
-        Atras.setText("<<");
+        Atras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Imagen_Anterior_Imagen_32x32.png"))); // NOI18N
         Atras.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 AtrasMouseClicked(evt);
@@ -92,11 +105,12 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
 
         Imagen2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+        javax.swing.GroupLayout ControladorBotonesLayout = new javax.swing.GroupLayout(ControladorBotones);
+        ControladorBotones.setLayout(ControladorBotonesLayout);
+        ControladorBotonesLayout.setHorizontalGroup(
+            ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(ControladorBotonesLayout.createSequentialGroup()
+                .addGap(37, 37, 37)
                 .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(59, 59, 59)
                 .addComponent(Imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -104,36 +118,50 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
                 .addComponent(Imagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(31, 31, 31)
                 .addComponent(Imagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(Imagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(55, 55, 55)
+                .addGap(18, 18, 18)
                 .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addGap(131, 131, 131)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        ControladorBotonesLayout.setVerticalGroup(
+            ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createSequentialGroup()
+                .addGap(0, 14, Short.MAX_VALUE)
+                .addGroup(ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(Imagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Imagen3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(Imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(Imagen2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createSequentialGroup()
+                        .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(61, 61, 61))
+                    .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        );
+
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(114, 114, 114)
+                        .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(ControladorBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(22, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addGap(58, 58, 58)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(Imagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Imagen3, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
-                            .addComponent(Imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Imagen2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(75, 75, 75))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(67, 67, 67))))
+                .addGap(18, 18, 18)
+                .addComponent(ControladorBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
@@ -141,7 +169,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
 
     private void SiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SiguienteActionPerformed
         // TODO add your handling code here:
-        if (cont == 6) {
+        if (cont == Imagen.length) {
             cont = 0;  // Reinicia el contador al llegar a 5
         }
         cont++;
@@ -219,6 +247,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         int indiceImagen4 = (cont +2) % Imagen.length;
         actualizarImagen(Imagen4, indiceImagen4, 90, 90);
     }//GEN-LAST:event_AtrasActionPerformed
+    
     private void actualizarImagen(JLabel label, int indice, int ancho, int alto) {
     if (indice >= 0 && indice < Imagen.length && Imagen[indice] != null) {
         Image imagenOriginal = Imagen[indice].getImage();
@@ -227,16 +256,45 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
     } else {
         label.setIcon(null);
     }
-}
+    }
 
 // Función para redimensionar una imagen
-private Image redimensionarImagen(Image img, int ancho, int alto) {
-    BufferedImage nuevaImagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-    Graphics2D g = nuevaImagen.createGraphics();
-    g.drawImage(img, 0, 0, ancho, alto, null);
-    g.dispose();
-    return nuevaImagen;
-}
+    private Image redimensionarImagen(Image img, int ancho, int alto) {
+        BufferedImage nuevaImagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g = nuevaImagen.createGraphics();
+        g.drawImage(img, 0, 0, ancho, alto, null);
+        g.dispose();
+        return nuevaImagen;
+    }
+
+//funcion para encontrar size de la funcion 
+        public static int countImagesInFolder(String folderPath) {
+            File folder = new File(folderPath);
+
+            if (!folder.isDirectory()) {
+                System.out.println("La ruta no es un directorio.");
+                return 0;
+            }
+
+            int imageCount = 0;
+
+            File[] files = folder.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isFile() && isImageFile(file.getName())) {
+                        imageCount++;
+                    }
+                }
+            }
+
+            return imageCount;
+        }
+
+        private static boolean isImageFile(String fileName) {
+            // Puedes ajustar esta condición según los tipos de archivos de imágenes que estás buscando
+            return fileName.toLowerCase().endsWith(".jpg");
+        }
+        
     @Override
     public void closeFrame() {
         try {
@@ -249,6 +307,7 @@ private Image redimensionarImagen(Image img, int ancho, int alto) {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton Atras;
+    private javax.swing.JPanel ControladorBotones;
     private javax.swing.JLabel Imagen1;
     private javax.swing.JLabel Imagen2;
     private javax.swing.JLabel Imagen3;
