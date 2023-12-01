@@ -1,27 +1,41 @@
+package com.unitec.mini.windows.apps;
+
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
-package com.unitec.mini.windows.apps;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
 
 /**
  *
  * @author leonel
  */
-public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface{
-
+public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface {
+    int cont= 1; 
+    ImageIcon Imagen[]= new ImageIcon[6];
     /**
-     * Creates new form Paint
+     * Creates new form Player
      */
     public PaintApp() {
         initComponents();
-        setComponents();
+        //setComponents();
+        this.setTitle("Visor de imagenes");
+        for (int i = 1; i < 6; i++) {
+            //debemos de modificar el link dependiendo el archivo del usuario loggin
+            Imagen[i]= new ImageIcon (getClass().getResource("/visorimagenes/Imagenes/fot"+i+".jpg"));
+        }
+       actualizarImagen(jLabel1,1,390,610);
+       actualizarImagen(Imagen3,cont+1,150,124);
+       actualizarImagen(Imagen4,cont+2,150,124);
     }
 
     public void setComponents(){
-        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_paint_20.png"));
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_music_20.png"));
         this.setFrameIcon(appIcon);
     }
 
@@ -34,26 +48,195 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        Imagen3 = new javax.swing.JLabel();
+        Siguiente = new javax.swing.JButton();
+        jLabel1 = new javax.swing.JLabel();
+        Atras = new javax.swing.JButton();
+        Imagen1 = new javax.swing.JLabel();
+        Imagen4 = new javax.swing.JLabel();
+        Imagen2 = new javax.swing.JLabel();
+
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
-        setTitle("Paint");
+        setTitle("Media Player");
+
+        Imagen3.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        Siguiente.setText(">>");
+        Siguiente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                SiguienteActionPerformed(evt);
+            }
+        });
+
+        jLabel1.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
+
+        Atras.setText("<<");
+        Atras.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                AtrasMouseClicked(evt);
+            }
+        });
+        Atras.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                AtrasActionPerformed(evt);
+            }
+        });
+
+        Imagen1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        Imagen4.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+
+        Imagen2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(59, 59, 59)
+                .addComponent(Imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(Imagen2, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(31, 31, 31)
+                .addComponent(Imagen3, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 113, Short.MAX_VALUE)
+                .addComponent(Imagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(55, 55, 55)
+                .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(layout.createSequentialGroup()
+                .addGap(131, 131, 131)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(58, 58, 58)
+                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(Imagen4, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Imagen3, javax.swing.GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE)
+                            .addComponent(Imagen1, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(Imagen2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(75, 75, 75))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(67, 67, 67))))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void SiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SiguienteActionPerformed
+        // TODO add your handling code here:
+        if (cont == 6) {
+            cont = 0;  // Reinicia el contador al llegar a 5
+        }
+        cont++;
+
+        actualizarImagen(jLabel1,cont,390,610);
+
+        int indiceImagen1 = (cont - 2 + Imagen.length) % Imagen.length;
+        if (indiceImagen1 >= 0 && indiceImagen1 < Imagen.length && Imagen[indiceImagen1] != null) {
+            Image imagenRedimensionada1 = redimensionarImagen(Imagen[indiceImagen1].getImage(), 90, 90);
+            Imagen1.setIcon(new ImageIcon(imagenRedimensionada1));
+        } else {
+            // Manejar el caso de índice fuera de límites o imagen nula
+            Imagen1.setIcon(null);
+        }
+
+        // Redimensiona la imagen antes de establecerla como icono para Imagen2
+        int indiceImagen2 = (cont - 1 + Imagen.length) % Imagen.length; // Manejar el límite inferior
+        if (indiceImagen2 >= 0 && indiceImagen2 < Imagen.length && Imagen[indiceImagen2] != null) {
+            Image imagenRedimensionada2 = redimensionarImagen(Imagen[indiceImagen2].getImage(), 150, 124);
+            Imagen2.setIcon(new ImageIcon(imagenRedimensionada2));
+        } else {
+            // Manejar el caso de índice fuera de límites o imagen nula
+            Imagen2.setIcon(null);
+        }
+
+        //imagen central
+        // Redimensiona la imagen antes de establecerla como icono para Imagen3
+        int indiceImagen3 = (cont + 1) % Imagen.length; // Manejar el límite superior
+        if (indiceImagen3 >= 0 && indiceImagen3 < Imagen.length && Imagen[indiceImagen3] != null) {
+            Image imagenRedimensionada3 = redimensionarImagen(Imagen[indiceImagen3].getImage(), 150, 124);
+            Imagen3.setIcon(new ImageIcon(imagenRedimensionada3));
+        } else {
+            // Manejar el caso de índice fuera de límites o imagen nula
+            Imagen3.setIcon(null);
+        }
+
+        // Redimensiona la imagen antes de establecerla como icono para Imagen4
+        int indiceImagen4 = (cont + 2) % Imagen.length; // Manejar el límite superior
+        if (indiceImagen4 >= 0 && indiceImagen4 < Imagen.length && Imagen[indiceImagen4] != null) {
+            Image imagenRedimensionada4 = redimensionarImagen(Imagen[indiceImagen4].getImage(), 90, 90);
+            Imagen4.setIcon(new ImageIcon(imagenRedimensionada4));
+        } else {
+            // Manejar el caso de índice fuera de límites o imagen nula
+            Imagen4.setIcon(null);
+        }
+    }//GEN-LAST:event_SiguienteActionPerformed
+
+    private void AtrasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AtrasMouseClicked
+
+    }//GEN-LAST:event_AtrasMouseClicked
+
+    private void AtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtrasActionPerformed
+        // TODO add your handling code here:
+        cont--;
+
+        if (cont < 0) {
+            cont = Imagen.length - 1;  // Reinicia el contador al llegar a -1
+        }
+
+        actualizarImagen(jLabel1,cont,390,610);
+
+        // Actualizar Imagen1
+        int indiceImagen1 = (cont - 2 + Imagen.length) % Imagen.length;
+        actualizarImagen(Imagen1, indiceImagen1, 90, 90);
+
+        // Actualizar Imagen2 con dimensiones específicas (largo: 124, ancho: 150)
+        int indiceImagen2 = (cont - 1 + Imagen.length) % Imagen.length;
+        actualizarImagen(Imagen2, indiceImagen2, 150, 124);
+
+        // Actualizar Imagen3 con dimensiones específicas (largo: 124, ancho: 150)
+        int indiceImagen3 = cont+1 % Imagen.length;
+        actualizarImagen(Imagen3, indiceImagen3, 150, 124);
+
+        // Actualizar Imagen4
+        int indiceImagen4 = (cont +2) % Imagen.length;
+        actualizarImagen(Imagen4, indiceImagen4, 90, 90);
+    }//GEN-LAST:event_AtrasActionPerformed
+    private void actualizarImagen(JLabel label, int indice, int ancho, int alto) {
+    if (indice >= 0 && indice < Imagen.length && Imagen[indice] != null) {
+        Image imagenOriginal = Imagen[indice].getImage();
+        Image imagenRedimensionada = redimensionarImagen(imagenOriginal, ancho, alto);
+        label.setIcon(new ImageIcon(imagenRedimensionada));
+    } else {
+        label.setIcon(null);
+    }
+}
+
+// Función para redimensionar una imagen
+private Image redimensionarImagen(Image img, int ancho, int alto) {
+    BufferedImage nuevaImagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
+    Graphics2D g = nuevaImagen.createGraphics();
+    g.drawImage(img, 0, 0, ancho, alto, null);
+    g.dispose();
+    return nuevaImagen;
+}
     @Override
     public void closeFrame() {
         try {
@@ -65,5 +248,12 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Atras;
+    private javax.swing.JLabel Imagen1;
+    private javax.swing.JLabel Imagen2;
+    private javax.swing.JLabel Imagen3;
+    private javax.swing.JLabel Imagen4;
+    private javax.swing.JButton Siguiente;
+    private javax.swing.JLabel jLabel1;
     // End of variables declaration//GEN-END:variables
 }
