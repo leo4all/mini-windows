@@ -21,6 +21,7 @@ import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
+import java.awt.GraphicsEnvironment;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -82,6 +83,10 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         }
         
         //this.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
+        
+        GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        setMaximizedBounds(env.getMaximumWindowBounds());
+        setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
         initComponents();
         setLocationRelativeTo(null);
         
@@ -386,47 +391,27 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         setTitle("Mini Windows");
         setUndecorated(true);
         setResizable(false);
-        getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jPanel_Top.setBackground(new java.awt.Color(65, 25, 52));
+        jPanel_Top.setLayout(new java.awt.BorderLayout());
 
         jLabel_Timer_Top.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
         jLabel_Timer_Top.setForeground(new java.awt.Color(255, 255, 255));
         jLabel_Timer_Top.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_Timer_Top.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         jLabel_Timer_Top.setPreferredSize(new java.awt.Dimension(50, 15));
+        jPanel_Top.add(jLabel_Timer_Top, java.awt.BorderLayout.CENTER);
 
         jButton_Shutdown.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-power-off-button.png"))); // NOI18N
         jButton_Shutdown.setBorderPainted(false);
         jButton_Shutdown.setContentAreaFilled(false);
+        jButton_Shutdown.setHorizontalAlignment(javax.swing.SwingConstants.RIGHT);
         jButton_Shutdown.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_ShutdownActionPerformed(evt);
             }
         });
-
-        javax.swing.GroupLayout jPanel_TopLayout = new javax.swing.GroupLayout(jPanel_Top);
-        jPanel_Top.setLayout(jPanel_TopLayout);
-        jPanel_TopLayout.setHorizontalGroup(
-            jPanel_TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_TopLayout.createSequentialGroup()
-                .addContainerGap(712, Short.MAX_VALUE)
-                .addComponent(jLabel_Timer_Top, javax.swing.GroupLayout.PREFERRED_SIZE, 132, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(534, 534, 534)
-                .addComponent(jButton_Shutdown)
-                .addContainerGap())
-        );
-        jPanel_TopLayout.setVerticalGroup(
-            jPanel_TopLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_TopLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jLabel_Timer_Top, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(8, Short.MAX_VALUE))
-            .addGroup(jPanel_TopLayout.createSequentialGroup()
-                .addComponent(jButton_Shutdown)
-                .addGap(0, 0, Short.MAX_VALUE))
-        );
-
-        getContentPane().add(jPanel_Top, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1420, 40));
+        jPanel_Top.add(jButton_Shutdown, java.awt.BorderLayout.LINE_END);
 
         jPanel_SideBar.setBackground(new java.awt.Color(66, 62, 62));
 
@@ -549,16 +534,16 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jPanel_SideBar.setLayout(jPanel_SideBarLayout);
         jPanel_SideBarLayout.setHorizontalGroup(
             jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_SideBarLayout.createSequentialGroup()
+            .addGroup(jPanel_SideBarLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jButton_Twitter, javax.swing.GroupLayout.DEFAULT_SIZE, 78, Short.MAX_VALUE)
-                    .addComponent(jButton_Text_Editor, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Finder, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addComponent(jButton_Finder, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(jButton_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(jButton_Text_Editor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton_Player, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Terminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                .addContainerGap())
+                    .addComponent(jButton_Terminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_Twitter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel_SideBarLayout.setVerticalGroup(
             jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -575,10 +560,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
                 .addComponent(jButton_Terminal, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton_Twitter, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(395, Short.MAX_VALUE))
+                .addContainerGap(396, Short.MAX_VALUE))
         );
-
-        getContentPane().add(jPanel_SideBar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 40, 90, 820));
 
         jPanel_MainWindow.setBackground(new java.awt.Color(102, 255, 153));
 
@@ -586,11 +569,11 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jDesktopPane_Window.setLayout(jDesktopPane_WindowLayout);
         jDesktopPane_WindowLayout.setHorizontalGroup(
             jDesktopPane_WindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 1330, Short.MAX_VALUE)
+            .addGap(0, 848, Short.MAX_VALUE)
         );
         jDesktopPane_WindowLayout.setVerticalGroup(
             jDesktopPane_WindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 820, Short.MAX_VALUE)
+            .addGap(0, 638, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel_MainWindowLayout = new javax.swing.GroupLayout(jPanel_MainWindow);
@@ -604,7 +587,26 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
             .addComponent(jDesktopPane_Window)
         );
 
-        getContentPane().add(jPanel_MainWindow, new org.netbeans.lib.awtextra.AbsoluteConstraints(90, 41, 1330, 820));
+        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
+        getContentPane().setLayout(layout);
+        layout.setHorizontalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel_Top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel_SideBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel_MainWindow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        layout.setVerticalGroup(
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel_Top, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_SideBar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(1, 1, 1)
+                        .addComponent(jPanel_MainWindow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+        );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents

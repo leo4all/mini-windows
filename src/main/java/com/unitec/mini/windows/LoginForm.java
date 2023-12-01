@@ -18,6 +18,7 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -253,6 +254,7 @@ public class LoginForm extends javax.swing.JFrame {
         SwingUtilities.invokeLater(() -> {
             Dashboard dashboard = new Dashboard();
             dashboard.setAuthenticatedUser(authenticatedUser);
+            dashboard.setExtendedState(JFrame.MAXIMIZED_BOTH);
             dashboard.setVisible(true);
         });
     }
