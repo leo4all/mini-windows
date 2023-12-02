@@ -28,6 +28,7 @@ import javax.swing.UnsupportedLookAndFeelException;
 
 public class LoginForm extends javax.swing.JFrame {
     String projectDir;
+    public static String UserLoging;
     
     public LoginForm() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
@@ -239,6 +240,7 @@ public class LoginForm extends javax.swing.JFrame {
         UserManager.initialize();
         if (UserManager.authenticateUser(username, password)) {
             openAuthenticatedFrame(UserManager.getUserByUsername(username));
+            UserLoging=username;
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(null, 
@@ -314,13 +316,17 @@ public class LoginForm extends javax.swing.JFrame {
         } catch (UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(Dashboard.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-
+        
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
                 new LoginForm().setVisible(true);
             }
         });
+    }
+
+    public static String getUserLoging() {
+        return UserLoging;
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

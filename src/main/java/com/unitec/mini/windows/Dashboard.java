@@ -31,6 +31,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
@@ -63,7 +64,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private static final int TIMER_DELAY = 250;
     private static final float OPACITY_CHANGE = 0.049f;
     User userAuthen;
-    
+    LoginForm login;
     public Dashboard() {
         cm = new ComponentMover();
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
@@ -815,7 +816,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     
     private void jButton_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaintActionPerformed
         //Enviar la dirrecion que se envie la carpeta de imagenes del usurio login
-        PaintApp fd = new PaintApp(null,false,null);
+        PaintApp fd = new PaintApp(userloging(),true,null);
         setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_PaintActionPerformed
@@ -917,6 +918,15 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         }
     }
     
+    
+    public String userloging(){
+       String User=login.getUserLoging();                                //si creo las carpeta de imagenes le cabio el files
+    String dir="src/main/users"+"/"+User+"/Files";
+        System.out.println("UserLoging: "+User+"\nUrl: "+dir);
+//    File Imagenes= new File(dir);
+//    return Imagenes;
+     return dir;
+    }
     /**
      * @param args the command line arguments
      */
