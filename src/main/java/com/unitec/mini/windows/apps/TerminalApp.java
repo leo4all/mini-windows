@@ -44,7 +44,7 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
             String projectDir = System.getProperty("user.dir") + userPath;
             File userRootdir = new File(projectDir);
 
-            commandExecutor = new ShellCommandExecutor(textCommandArea, userRootdir);
+            commandExecutor = new ShellCommandExecutor(this, textCommandArea, userRootdir);
         } catch (Exception e) {
             System.out.println("folder not found. close app?");
         }

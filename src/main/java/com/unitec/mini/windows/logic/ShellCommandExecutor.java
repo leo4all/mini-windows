@@ -5,15 +5,13 @@
 package com.unitec.mini.windows.logic;
 
 import java.awt.Color;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.swing.JInternalFrame;
 import javax.swing.JTextArea;
-import javax.swing.Timer;
 import javax.swing.text.DefaultCaret;
 
 
@@ -22,12 +20,14 @@ public class ShellCommandExecutor {
     private File currentDirectory;
     private File rootDirectory;
     private static int caretBlinkRate = 500;
+    private JInternalFrame internalFrame;
 
-
-    public ShellCommandExecutor(JTextArea outputArea, File directory) {
+    public ShellCommandExecutor(JInternalFrame jFrame, JTextArea outputArea, File directory) {
         this.outputArea = outputArea;
         this.rootDirectory = directory;
         this.currentDirectory = directory;
+        this.internalFrame = jFrame;
+
         outputArea.append(this.getCurrentPath() + " >");
         outputArea.setCaretPosition(outputArea.getDocument().getLength());
         outputArea.getCaret().setVisible(true);
@@ -38,6 +38,13 @@ public class ShellCommandExecutor {
     
     public void executeCommand(String command) {
         outputArea.append("\n");
+        
+        if ("exit".equalsIgnoreCase(command.trim())) {
+            if (internalFrame != null && internalFrame.isVisible()) {
+                internalFrame.doDefaultCloseAction();
+            }
+        }
+        
         if ("clear".equalsIgnoreCase(command.trim())) {
             outputArea.setText("");
             outputArea.append(this.getCurrentPath() + " >");
