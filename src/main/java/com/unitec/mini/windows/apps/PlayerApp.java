@@ -4,6 +4,7 @@
  */
 package com.unitec.mini.windows.apps;
 
+import java.awt.CardLayout;
 import javax.swing.ImageIcon;
 
 /**
@@ -34,25 +35,250 @@ public class PlayerApp extends javax.swing.JInternalFrame  implements AppInterfa
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel_TopPanel = new javax.swing.JPanel();
+        jPanel5 = new javax.swing.JPanel();
+        jButton3 = new javax.swing.JButton();
+        jButton4 = new javax.swing.JButton();
+        jButton5 = new javax.swing.JButton();
+        jButton6 = new javax.swing.JButton();
+        jButton7 = new javax.swing.JButton();
+        jLabel2 = new javax.swing.JLabel();
+        jProgressBar1 = new javax.swing.JProgressBar();
+        jLabel3 = new javax.swing.JLabel();
+        jLabel4 = new javax.swing.JLabel();
+        jPanel_SidebarPanel = new javax.swing.JPanel();
+        jButton_ShowRadio = new javax.swing.JButton();
+        jButton_ShowLibrary = new javax.swing.JButton();
+        jPanel_Cards = new javax.swing.JPanel();
+        jPanel_Welcome = new javax.swing.JPanel();
+        jLabel1 = new javax.swing.JLabel();
+        jSeparator1 = new javax.swing.JSeparator();
+        jPanel_Radio = new javax.swing.JPanel();
+        jButton1 = new javax.swing.JButton();
+        jPanelLibrary = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jListPlaylist = new javax.swing.JList<>();
+        jButton_AddToLibrary = new javax.swing.JButton();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setResizable(true);
         setTitle("Media Player");
 
+        jPanel_TopPanel.setBackground(new java.awt.Color(204, 255, 204));
+
+        jPanel5.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton3.setText("S");
+        jPanel5.add(jButton3, new org.netbeans.lib.awtextra.AbsoluteConstraints(14, 14, -1, -1));
+
+        jButton4.setText("F");
+        jPanel5.add(jButton4, new org.netbeans.lib.awtextra.AbsoluteConstraints(43, 14, -1, -1));
+
+        jButton5.setText("P");
+        jPanel5.add(jButton5, new org.netbeans.lib.awtextra.AbsoluteConstraints(72, 14, -1, -1));
+
+        jButton6.setText("N");
+        jPanel5.add(jButton6, new org.netbeans.lib.awtextra.AbsoluteConstraints(101, 14, -1, -1));
+
+        jButton7.setText("R");
+        jPanel5.add(jButton7, new org.netbeans.lib.awtextra.AbsoluteConstraints(130, 14, -1, -1));
+
+        jLabel2.setText("ART");
+        jPanel5.add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(196, -2, 60, 60));
+        jPanel5.add(jProgressBar1, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 50, 214, 8));
+
+        jLabel3.setText("usher");
+        jLabel3.setPreferredSize(new java.awt.Dimension(32, 12));
+        jPanel5.add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(351, 6, -1, -1));
+
+        jLabel4.setText("usher dj got us fallin' in love");
+        jPanel5.add(jLabel4, new org.netbeans.lib.awtextra.AbsoluteConstraints(288, 27, -1, -1));
+
+        javax.swing.GroupLayout jPanel_TopPanelLayout = new javax.swing.GroupLayout(jPanel_TopPanel);
+        jPanel_TopPanel.setLayout(jPanel_TopPanelLayout);
+        jPanel_TopPanelLayout.setHorizontalGroup(
+            jPanel_TopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_TopPanelLayout.createSequentialGroup()
+                .addGap(298, 298, 298)
+                .addComponent(jPanel5, javax.swing.GroupLayout.PREFERRED_SIZE, 523, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel_TopPanelLayout.setVerticalGroup(
+            jPanel_TopPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 67, Short.MAX_VALUE)
+        );
+
+        jPanel_SidebarPanel.setBackground(new java.awt.Color(255, 255, 255));
+
+        jButton_ShowRadio.setText("Radio");
+        jButton_ShowRadio.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ShowRadioActionPerformed(evt);
+            }
+        });
+
+        jButton_ShowLibrary.setText("Library");
+        jButton_ShowLibrary.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_ShowLibraryActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel_SidebarPanelLayout = new javax.swing.GroupLayout(jPanel_SidebarPanel);
+        jPanel_SidebarPanel.setLayout(jPanel_SidebarPanelLayout);
+        jPanel_SidebarPanelLayout.setHorizontalGroup(
+            jPanel_SidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_SidebarPanelLayout.createSequentialGroup()
+                .addContainerGap(19, Short.MAX_VALUE)
+                .addGroup(jPanel_SidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton_ShowLibrary)
+                    .addComponent(jButton_ShowRadio))
+                .addGap(11, 11, 11))
+        );
+        jPanel_SidebarPanelLayout.setVerticalGroup(
+            jPanel_SidebarPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_SidebarPanelLayout.createSequentialGroup()
+                .addGap(56, 56, 56)
+                .addComponent(jButton_ShowRadio)
+                .addGap(18, 18, 18)
+                .addComponent(jButton_ShowLibrary)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel_Cards.setBackground(new java.awt.Color(255, 255, 204));
+        jPanel_Cards.setLayout(new java.awt.CardLayout());
+
+        jPanel_Welcome.setBackground(new java.awt.Color(0, 51, 51));
+
+        jLabel1.setFont(new java.awt.Font("Helvetica Neue", 1, 36)); // NOI18N
+        jLabel1.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel1.setText("Listen Now");
+
+        javax.swing.GroupLayout jPanel_WelcomeLayout = new javax.swing.GroupLayout(jPanel_Welcome);
+        jPanel_Welcome.setLayout(jPanel_WelcomeLayout);
+        jPanel_WelcomeLayout.setHorizontalGroup(
+            jPanel_WelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_WelcomeLayout.createSequentialGroup()
+                .addGap(50, 50, 50)
+                .addGroup(jPanel_WelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 757, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel1))
+                .addContainerGap(90, Short.MAX_VALUE))
+        );
+        jPanel_WelcomeLayout.setVerticalGroup(
+            jPanel_WelcomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_WelcomeLayout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(jLabel1)
+                .addGap(18, 18, 18)
+                .addComponent(jSeparator1, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(522, Short.MAX_VALUE))
+        );
+
+        jPanel_Cards.add(jPanel_Welcome, "CardWelcome");
+
+        jButton1.setText("Connect & Listen");
+
+        javax.swing.GroupLayout jPanel_RadioLayout = new javax.swing.GroupLayout(jPanel_Radio);
+        jPanel_Radio.setLayout(jPanel_RadioLayout);
+        jPanel_RadioLayout.setHorizontalGroup(
+            jPanel_RadioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_RadioLayout.createSequentialGroup()
+                .addGap(346, 346, 346)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 228, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(323, Short.MAX_VALUE))
+        );
+        jPanel_RadioLayout.setVerticalGroup(
+            jPanel_RadioLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_RadioLayout.createSequentialGroup()
+                .addGap(256, 256, 256)
+                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(279, Short.MAX_VALUE))
+        );
+
+        jPanel_Cards.add(jPanel_Radio, "CardRadio");
+
+        jListPlaylist.setModel(new javax.swing.AbstractListModel<String>() {
+            String[] strings = { "Item 1", "Item 2", "Item 3", "Item 4", "Item 5" };
+            public int getSize() { return strings.length; }
+            public String getElementAt(int i) { return strings[i]; }
+        });
+        jScrollPane1.setViewportView(jListPlaylist);
+
+        jButton_AddToLibrary.setText("Add");
+
+        javax.swing.GroupLayout jPanelLibraryLayout = new javax.swing.GroupLayout(jPanelLibrary);
+        jPanelLibrary.setLayout(jPanelLibraryLayout);
+        jPanelLibraryLayout.setHorizontalGroup(
+            jPanelLibraryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanelLibraryLayout.createSequentialGroup()
+                .addContainerGap(185, Short.MAX_VALUE)
+                .addGroup(jPanelLibraryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_AddToLibrary)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 604, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(108, 108, 108))
+        );
+        jPanelLibraryLayout.setVerticalGroup(
+            jPanelLibraryLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanelLibraryLayout.createSequentialGroup()
+                .addGap(74, 74, 74)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 214, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jButton_AddToLibrary)
+                .addContainerGap(324, Short.MAX_VALUE))
+        );
+
+        jPanel_Cards.add(jPanelLibrary, "CardLibrary");
+
+        jMenu1.setText("File");
+
+        jMenuItem1.setText("OPen");
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu1);
+
+        setJMenuBar(jMenuBar1);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 394, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel_SidebarPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel_Cards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel_TopPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 274, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel_TopPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_SidebarPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel_Cards, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void jButton_ShowRadioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ShowRadioActionPerformed
+        CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
+        cl.show(jPanel_Cards, "CardRadio");
+    }//GEN-LAST:event_jButton_ShowRadioActionPerformed
+
+    private void jButton_ShowLibraryActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ShowLibraryActionPerformed
+        CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
+        cl.show(jPanel_Cards, "CardLibrary");
+    }//GEN-LAST:event_jButton_ShowLibraryActionPerformed
 
     @Override
     public void closeFrame() {
@@ -65,5 +291,32 @@ public class PlayerApp extends javax.swing.JInternalFrame  implements AppInterfa
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
+    private javax.swing.JButton jButton3;
+    private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jButton6;
+    private javax.swing.JButton jButton7;
+    private javax.swing.JButton jButton_AddToLibrary;
+    private javax.swing.JButton jButton_ShowLibrary;
+    private javax.swing.JButton jButton_ShowRadio;
+    private javax.swing.JLabel jLabel1;
+    private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JList<String> jListPlaylist;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JPanel jPanelLibrary;
+    private javax.swing.JPanel jPanel_Cards;
+    private javax.swing.JPanel jPanel_Radio;
+    private javax.swing.JPanel jPanel_SidebarPanel;
+    private javax.swing.JPanel jPanel_TopPanel;
+    private javax.swing.JPanel jPanel_Welcome;
+    private javax.swing.JProgressBar jProgressBar1;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JSeparator jSeparator1;
     // End of variables declaration//GEN-END:variables
 }

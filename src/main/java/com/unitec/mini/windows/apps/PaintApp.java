@@ -32,7 +32,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         initComponents();
         setComponents();
         imageList = new ArrayList<>();
-        currentIndex = 0;
+        currentIndex = 0;  
     }
 
     public void setComponents(){
@@ -42,7 +42,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
             String userPath = "/src/main/users" + File.separator + "admin";
             String projectDir = System.getProperty("user.dir") + userPath;
             File userRootdir = new File(projectDir);
-
+            loadImages(userRootdir);
         } catch (Exception e) {
             
         }
@@ -65,7 +65,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         jButton_Next = new javax.swing.JButton();
         jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem_OpenFolder = new javax.swing.JMenuItem();
 
         setBackground(new java.awt.Color(140, 136, 136));
         setClosable(true);
@@ -133,13 +133,13 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
 
         jMenu1.setText("File");
 
-        jMenuItem1.setText("Open");
-        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+        jMenuItem_OpenFolder.setText("Open");
+        jMenuItem_OpenFolder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem1ActionPerformed(evt);
+                jMenuItem_OpenFolderActionPerformed(evt);
             }
         });
-        jMenu1.add(jMenuItem1);
+        jMenu1.add(jMenuItem_OpenFolder);
 
         jMenuBar.add(jMenu1);
 
@@ -159,7 +159,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+    private void jMenuItem_OpenFolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_OpenFolderActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 
@@ -169,7 +169,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
             File selectedFolder = fileChooser.getSelectedFile();
             loadImages(selectedFolder);
         }
-    }//GEN-LAST:event_jMenuItem1ActionPerformed
+    }//GEN-LAST:event_jMenuItem_OpenFolderActionPerformed
 
     private void jButton_PreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PreviousActionPerformed
         showImage(--currentIndex);
@@ -185,7 +185,6 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         imageList.clear();
         currentIndex = 0;
 
-        // Load images in a background thread
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(new Runnable() {
             @Override
@@ -203,7 +202,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
                     // Show the first image
                     if (!imageList.isEmpty()) {
                         showImage(currentIndex);
-                         populateThumbnailCarousel();
+                        populateThumbnailCarousel();
                     }
                 }
             }
@@ -303,7 +302,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
     private javax.swing.JLabel jLabel_MainImage;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar;
-    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem_OpenFolder;
     private javax.swing.JPanel jPanelSlider;
     private javax.swing.JPanel jPanel_Bottton;
     private javax.swing.JPanel jPanel_MainPanel;

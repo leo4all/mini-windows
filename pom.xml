@@ -42,11 +42,6 @@
             <version>1.0-201002281504</version>
         </dependency>
         <dependency>
-            <groupId>com.kenai.nbpwr</groupId>
-            <artifactId>org-jdesktop-animation-timing</artifactId>
-            <version>1.0-201002281504</version>
-        </dependency>
-        <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-extras</artifactId>
             <version>3.0</version>
