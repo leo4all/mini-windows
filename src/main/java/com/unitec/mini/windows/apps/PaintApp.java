@@ -5,53 +5,49 @@ package com.unitec.mini.windows.apps;
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 
-import java.awt.Graphics2D;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.GridLayout;
 import java.awt.Image;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
-
+import javax.swing.border.Border;
 /**
  *
  * @author leonel
  */
 public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface {
-    int cont= 1; 
-    private ImageIcon[] Imagen;
-    private ArrayList<String> ImageName= new ArrayList() ;
-    /**
-     * Creates new form PaintApp
-     */
-    public PaintApp(String pathUserLoging,boolean Tipodevista,Image ImageSpecific) {
+    private List<ImageIcon> imageList;
+    private int currentIndex;
+    
+    public PaintApp(String pathUserLoging, boolean Tipodevista, Image ImageSpecific) {
         initComponents();
-        ControladorBotones.setVisible(true);
-        this.setTitle("Visor de imágenes");
-        // Count images in the folder
-        if(Tipodevista){ 
-        int imageCount = countImagesInFolder(pathUserLoging);
-        Imagen = new ImageIcon[imageCount];
-        
-        //setComponents();
-        this.setTitle("Visor de imagenes");
-        
-        // Load images into the array
-        for (int i = 0; i < imageCount; i++) {
-            Imagen[i] = new ImageIcon(pathUserLoging +"/"+ImageName.get(i));
-        }
-        PhotoName_Jlabel.setText(ImageName.get(cont));
-        actualizarImagen(Imagen_Principal, 0, 390, 610);
-        actualizarImagen(Imagen_Siguiente, cont + 1, 150, 124);
-        actualizarImagen(Imagen_Siguiente_siguiente, cont + 2, 150, 124);
-        }else{
-        ControladorBotones.setVisible(false);
-        Imagen_Principal.setIcon(new ImageIcon(ImageSpecific));
-        }
-    }
-    public void setComponents(){
+        setComponents();
+        imageList = new ArrayList<>();
+        currentIndex = 0;
     }
 
+    public void setComponents(){
+        this.setTitle("Visor de imágenes");
+        try {
+            
+            String userPath = "/src/main/users" + File.separator + "admin";
+            String projectDir = System.getProperty("user.dir") + userPath;
+            File userRootdir = new File(projectDir);
+
+        } catch (Exception e) {
+            
+        }
+    }
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -61,15 +57,15 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        Imagen_Principal = new javax.swing.JLabel();
-        ControladorBotones = new javax.swing.JPanel();
-        Imagen_Siguiente = new javax.swing.JLabel();
-        Siguiente = new javax.swing.JButton();
-        Atras = new javax.swing.JButton();
-        Imagen_Anterio_anterior = new javax.swing.JLabel();
-        Imagen_Siguiente_siguiente = new javax.swing.JLabel();
-        Imagen_Anterior = new javax.swing.JLabel();
-        PhotoName_Jlabel = new javax.swing.JLabel();
+        jPanel_MainPanel = new javax.swing.JPanel();
+        jLabel_MainImage = new javax.swing.JLabel();
+        jPanel_Bottton = new javax.swing.JPanel();
+        jButton_Previous = new javax.swing.JButton();
+        jPanelSlider = new javax.swing.JPanel();
+        jButton_Next = new javax.swing.JButton();
+        jMenuBar = new javax.swing.JMenuBar();
+        jMenu1 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
 
         setBackground(new java.awt.Color(140, 136, 136));
         setClosable(true);
@@ -78,232 +74,219 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         setResizable(true);
         setTitle("Media Player");
 
-        Imagen_Principal.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        Imagen_Principal.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0), 5));
+        jPanel_MainPanel.setLayout(new java.awt.BorderLayout());
 
-        Imagen_Siguiente.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jLabel_MainImage.setPreferredSize(new Dimension(400, 300));
+        jPanel_MainPanel.add(jLabel_MainImage, java.awt.BorderLayout.CENTER);
 
-        Siguiente.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Imagen_Siguiente_Imagen32x32.png"))); // NOI18N
-        Siguiente.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Previous.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Paint/icons-previous.png"))); // NOI18N
+        jButton_Previous.setToolTipText("Previous Image");
+        jButton_Previous.setFocusable(false);
+        jButton_Previous.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                SiguienteActionPerformed(evt);
+                jButton_PreviousActionPerformed(evt);
             }
         });
 
-        Atras.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Imagen_Anterior_Imagen_32x32.png"))); // NOI18N
-        Atras.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                AtrasMouseClicked(evt);
-            }
-        });
-        Atras.addActionListener(new java.awt.event.ActionListener() {
+        jPanelSlider.setBackground(new Color(0,0,0));
+        jPanelSlider.setOpaque(false);
+        jPanelSlider.setPreferredSize(new java.awt.Dimension(600, 80));
+        jPanelSlider.setSize(new java.awt.Dimension(600, 70));
+        jPanelSlider.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        jButton_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Paint/icons-last-.png"))); // NOI18N
+        jButton_Next.setToolTipText("Next Image");
+        jButton_Next.setFocusable(false);
+        jButton_Next.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                AtrasActionPerformed(evt);
+                jButton_NextActionPerformed(evt);
             }
         });
 
-        Imagen_Anterio_anterior.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        Imagen_Siguiente_siguiente.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        Imagen_Anterior.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
-
-        javax.swing.GroupLayout ControladorBotonesLayout = new javax.swing.GroupLayout(ControladorBotones);
-        ControladorBotones.setLayout(ControladorBotonesLayout);
-        ControladorBotonesLayout.setHorizontalGroup(
-            ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(ControladorBotonesLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 87, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(59, 59, 59)
-                .addComponent(Imagen_Anterio_anterior, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Imagen_Anterior, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(31, 31, 31)
-                .addComponent(Imagen_Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Imagen_Siguiente_siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 80, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        javax.swing.GroupLayout jPanel_BotttonLayout = new javax.swing.GroupLayout(jPanel_Bottton);
+        jPanel_Bottton.setLayout(jPanel_BotttonLayout);
+        jPanel_BotttonLayout.setHorizontalGroup(
+            jPanel_BotttonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_BotttonLayout.createSequentialGroup()
+                .addGap(28, 28, 28)
+                .addComponent(jButton_Previous)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addComponent(jPanelSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 746, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(79, 79, 79)
+                .addComponent(jButton_Next)
+                .addGap(33, 33, 33))
         );
-        ControladorBotonesLayout.setVerticalGroup(
-            ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createSequentialGroup()
-                .addGap(0, 14, Short.MAX_VALUE)
-                .addGroup(ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                        .addComponent(Imagen_Siguiente_siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Imagen_Siguiente, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(Imagen_Anterio_anterior, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(Imagen_Anterior, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 124, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, ControladorBotonesLayout.createSequentialGroup()
-                        .addComponent(Atras, javax.swing.GroupLayout.PREFERRED_SIZE, 41, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(61, 61, 61))
-                    .addComponent(Siguiente, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)))
+        jPanel_BotttonLayout.setVerticalGroup(
+            jPanel_BotttonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_BotttonLayout.createSequentialGroup()
+                .addGap(12, 12, 12)
+                .addGroup(jPanel_BotttonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jPanelSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Previous)
+                    .addGroup(jPanel_BotttonLayout.createSequentialGroup()
+                        .addComponent(jButton_Next)
+                        .addGap(8, 8, 8)))
+                .addContainerGap(24, Short.MAX_VALUE))
         );
+
+        jPanel_MainPanel.add(jPanel_Bottton, java.awt.BorderLayout.PAGE_END);
+
+        jMenu1.setText("File");
+
+        jMenuItem1.setText("Open");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem1);
+
+        jMenuBar.add(jMenu1);
+
+        setJMenuBar(jMenuBar);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(114, 114, 114)
-                        .addComponent(Imagen_Principal, javax.swing.GroupLayout.PREFERRED_SIZE, 610, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(ControladorBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(305, 305, 305)
-                        .addComponent(PhotoName_Jlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(22, Short.MAX_VALUE))
+            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(28, 28, 28)
-                .addComponent(PhotoName_Jlabel, javax.swing.GroupLayout.PREFERRED_SIZE, 24, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Imagen_Principal, javax.swing.GroupLayout.PREFERRED_SIZE, 390, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(ControladorBotones, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void SiguienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_SiguienteActionPerformed
-        // TODO add your handling code here:
-        if (cont == Imagen.length-1) {
-            cont = 0;  // Reinicia el contador al llegar a 5
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+
+        int result = fileChooser.showOpenDialog(this);
+
+        if (result == JFileChooser.APPROVE_OPTION) {
+            File selectedFolder = fileChooser.getSelectedFile();
+            loadImages(selectedFolder);
         }
-        cont++;
-        PhotoName_Jlabel.setText(ImageName.get(cont));
-        actualizarImagen(Imagen_Principal,cont,390,610);
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-        int indiceImagen1 = (cont - 2 + Imagen.length) % Imagen.length;
-        if (indiceImagen1 >= 0 && indiceImagen1 < Imagen.length && Imagen[indiceImagen1] != null) {
-            Image imagenRedimensionada1 = redimensionarImagen(Imagen[indiceImagen1].getImage(), 90, 90);
-            Imagen_Anterio_anterior.setIcon(new ImageIcon(imagenRedimensionada1));
-        } else {
-            // Manejar el caso de índice fuera de límites o imagen nula
-            Imagen_Anterio_anterior.setIcon(null);
-        }
+    private void jButton_PreviousActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PreviousActionPerformed
+        showImage(--currentIndex);
+        highlightSelectedThumbnail(currentIndex);
+    }//GEN-LAST:event_jButton_PreviousActionPerformed
 
-        // Redimensiona la imagen antes de establecerla como icono para Imagen2
-        int indiceImagen2 = (cont - 1 + Imagen.length) % Imagen.length; // Manejar el límite inferior
-        if (indiceImagen2 >= 0 && indiceImagen2 < Imagen.length && Imagen[indiceImagen2] != null) {
-            Image imagenRedimensionada2 = redimensionarImagen(Imagen[indiceImagen2].getImage(), 150, 124);
-            Imagen_Anterior.setIcon(new ImageIcon(imagenRedimensionada2));
-        } else {
-            // Manejar el caso de índice fuera de límites o imagen nula
-            Imagen_Anterior.setIcon(null);
-        }
+    private void jButton_NextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_NextActionPerformed
+        showImage(++currentIndex);
+        highlightSelectedThumbnail(currentIndex);
+    }//GEN-LAST:event_jButton_NextActionPerformed
 
-        //imagen central
-        // Redimensiona la imagen antes de establecerla como icono para Imagen3
-        int indiceImagen3 = (cont + 1) % Imagen.length; // Manejar el límite superior
-        if (indiceImagen3 >= 0 && indiceImagen3 < Imagen.length && Imagen[indiceImagen3] != null) {
-            Image imagenRedimensionada3 = redimensionarImagen(Imagen[indiceImagen3].getImage(), 150, 124);
-            Imagen_Siguiente.setIcon(new ImageIcon(imagenRedimensionada3));
-        } else {
-            // Manejar el caso de índice fuera de límites o imagen nula
-            Imagen_Siguiente.setIcon(null);
-        }
+    private void loadImages(File folder) {
+        imageList.clear();
+        currentIndex = 0;
 
-        // Redimensiona la imagen antes de establecerla como icono para Imagen4
-        int indiceImagen4 = (cont + 2) % Imagen.length; // Manejar el límite superior
-        if (indiceImagen4 >= 0 && indiceImagen4 < Imagen.length && Imagen[indiceImagen4] != null) {
-            Image imagenRedimensionada4 = redimensionarImagen(Imagen[indiceImagen4].getImage(), 90, 90);
-            Imagen_Siguiente_siguiente.setIcon(new ImageIcon(imagenRedimensionada4));
-        } else {
-            // Manejar el caso de índice fuera de límites o imagen nula
-            Imagen_Siguiente_siguiente.setIcon(null);
-        }
-    }//GEN-LAST:event_SiguienteActionPerformed
+        // Load images in a background thread
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                File[] files = folder.listFiles();
 
-    private void AtrasMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_AtrasMouseClicked
+                if (files != null) {
+                    for (File file : files) {
+                        if (file.isFile() && isImageFile(file)) {
+                            ImageIcon imageIcon = new ImageIcon(file.getAbsolutePath());
+                            imageList.add(imageIcon);
+                        }
+                    }
 
-    }//GEN-LAST:event_AtrasMouseClicked
-
-    private void AtrasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_AtrasActionPerformed
-        // TODO add your handling code here:
-        cont--;
-
-        if (cont < 0) {
-            cont = Imagen.length - 1;  // Reinicia el contador al llegar a -1
-        }
-        PhotoName_Jlabel.setText(ImageName.get(cont));
-        actualizarImagen(Imagen_Principal,cont,390,610);
-
-        // Actualizar Imagen1
-        int indiceImagen1 = (cont - 2 + Imagen.length) % Imagen.length;
-        actualizarImagen(Imagen_Anterio_anterior, indiceImagen1, 90, 90);
-
-        // Actualizar Imagen2 con dimensiones específicas (largo: 124, ancho: 150)
-        int indiceImagen2 = (cont - 1 + Imagen.length) % Imagen.length;
-        actualizarImagen(Imagen_Anterior, indiceImagen2, 150, 124);
-
-        // Actualizar Imagen3 con dimensiones específicas (largo: 124, ancho: 150)
-        int indiceImagen3 = cont+1 % Imagen.length;
-        actualizarImagen(Imagen_Siguiente, indiceImagen3, 150, 124);
-
-        // Actualizar Imagen4
-        int indiceImagen4 = (cont +2) % Imagen.length;
-        actualizarImagen(Imagen_Siguiente_siguiente, indiceImagen4, 90, 90);
-    }//GEN-LAST:event_AtrasActionPerformed
-    
-    private void actualizarImagen(JLabel label, int indice, int ancho, int alto) {
-    if (indice >= 0 && indice < Imagen.length && Imagen[indice] != null) {
-        Image imagenOriginal = Imagen[indice].getImage();
-        Image imagenRedimensionada = redimensionarImagen(imagenOriginal, ancho, alto);
-        label.setIcon(new ImageIcon(imagenRedimensionada));
-    } else {
-        label.setIcon(null);
-    }
-    }
-
-// Función para redimensionar una imagen
-    private Image redimensionarImagen(Image img, int ancho, int alto) {
-        BufferedImage nuevaImagen = new BufferedImage(ancho, alto, BufferedImage.TYPE_INT_ARGB);
-        Graphics2D g = nuevaImagen.createGraphics();
-        g.drawImage(img, 0, 0, ancho, alto, null);
-        g.dispose();
-        return nuevaImagen;
-    }
-
-//funcion para encontrar size de la funcion 
-        public  int countImagesInFolder(String folderPath) {
-            File folder = new File(folderPath);
-
-            if (!folder.isDirectory()) {
-                System.out.println("La ruta no es un directorio.");
-                return 0;
-            }
-
-            int imageCount = 0;
-
-            File[] files = folder.listFiles();
-            System.out.println("Files size: "+files.length);
-            if (files != null) {
-                for (File file : files) {
-                    if (file.isFile() && isImageFile(file.getName())) {
-                        ImageName.add(file.getName());
-                        imageCount++;
+                    // Show the first image
+                    if (!imageList.isEmpty()) {
+                        showImage(currentIndex);
+                         populateThumbnailCarousel();
                     }
                 }
             }
-            return imageCount;
+        });
+
+        executorService.shutdown();
+    }
+    
+    private boolean isImageFile(File file) {
+        String name = file.getName().toLowerCase();
+        return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif");
+    }
+
+    private void showImage(int index) {
+        if (index < 0) {
+            index = imageList.size() - 1;
+        } else if (index >= imageList.size()) {
+            index = 0;
         }
 
-        private static boolean isImageFile(String fileName) {
-            // Puedes ajustar esta condición según los tipos de archivos de imágenes que estás buscando
-            return fileName.toLowerCase().endsWith(".png");
-        }
+        if (!imageList.isEmpty()) {
+           ImageIcon originalIcon = imageList.get(index);
+           Image originalImage = originalIcon.getImage();
         
+            int targetWidth = jLabel_MainImage.getWidth();
+            int targetHeight = jLabel_MainImage.getHeight();
+
+            Image scaledImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+            jLabel_MainImage.setIcon(scaledIcon);
+
+            currentIndex = index;
+            highlightSelectedThumbnail(currentIndex);
+        }
+    }
+    
+    private void populateThumbnailCarousel() {
+        jPanelSlider.removeAll();
+       
+        int rows = 1; 
+        int cols = imageList.size();
+        jPanelSlider.setLayout(new GridLayout(rows, cols, 5, 5));
+
+    
+        for (ImageIcon imageIcon : imageList) {
+            Image originalImage = imageIcon.getImage();
+            Image scaledImage = originalImage.getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+            JLabel thumbnailLabel = new JLabel(scaledIcon);
+            
+    
+            thumbnailLabel.addMouseListener(new java.awt.event.MouseAdapter() {
+                public void mouseClicked(java.awt.event.MouseEvent evt) {
+                    int thumbnailIndex = jPanelSlider.getComponentZOrder(thumbnailLabel);
+                    showImage(thumbnailIndex);
+                    highlightSelectedThumbnail(thumbnailIndex);
+                }
+            });
+
+             jPanelSlider.add(thumbnailLabel);
+        }
+
+        jPanelSlider.revalidate();
+        jPanelSlider.repaint();
+    }
+    
+    private void highlightSelectedThumbnail(int selectedIndex) {
+        Component[] components = jPanelSlider.getComponents();
+
+        for (int i = 0; i < components.length; i++) {
+            if (components[i] instanceof JLabel) {
+                JLabel thumbnailLabel = (JLabel) components[i];
+                thumbnailLabel.setBorder(null);
+                if (i == selectedIndex) {
+                    Border lineBorder = BorderFactory.createLineBorder(Color.RED, 2);
+                    Border emptyBorder = BorderFactory.createEmptyBorder(2, 2, 2, 2);
+                    thumbnailLabel.setBorder(BorderFactory.createCompoundBorder(lineBorder, emptyBorder));
+                }
+            }
+        }
+    }
+
     @Override
     public void closeFrame() {
         try {
@@ -315,14 +298,14 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton Atras;
-    private javax.swing.JPanel ControladorBotones;
-    private javax.swing.JLabel Imagen_Anterio_anterior;
-    private javax.swing.JLabel Imagen_Anterior;
-    private javax.swing.JLabel Imagen_Principal;
-    private javax.swing.JLabel Imagen_Siguiente;
-    private javax.swing.JLabel Imagen_Siguiente_siguiente;
-    private javax.swing.JLabel PhotoName_Jlabel;
-    private javax.swing.JButton Siguiente;
+    private javax.swing.JButton jButton_Next;
+    private javax.swing.JButton jButton_Previous;
+    private javax.swing.JLabel jLabel_MainImage;
+    private javax.swing.JMenu jMenu1;
+    private javax.swing.JMenuBar jMenuBar;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JPanel jPanelSlider;
+    private javax.swing.JPanel jPanel_Bottton;
+    private javax.swing.JPanel jPanel_MainPanel;
     // End of variables declaration//GEN-END:variables
 }

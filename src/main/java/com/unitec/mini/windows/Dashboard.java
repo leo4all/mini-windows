@@ -854,7 +854,6 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
      @Override
     public void stateChanged(ChangeEvent e) {
-       
     }
 
     public void showTwitterApp(){
@@ -868,6 +867,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         Dimension jISize = frame.getSize();
         frame.setLocation((desktopSize.width - jISize.width)/2,(desktopSize.height- jISize.height)/2);
     }
+
     private void createFolder(String folderName, int posX, int posY, String belongsTo) {
         Path folderPath = defaultFolderPath.resolve(folderName);
         
