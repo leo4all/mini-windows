@@ -25,6 +25,9 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import raven.alerts.MessageAlerts;
+import raven.popup.component.PopupCallbackAction;
+import raven.popup.component.PopupController;
 
 public class LoginForm extends javax.swing.JFrame {
     String projectDir;
@@ -243,11 +246,14 @@ public class LoginForm extends javax.swing.JFrame {
             UserLoging=username;
             this.dispose();
         }else{
+            //System.out.println(MessageAlerts.getInstance());
+            //showMessage("Please check your credentials", "Error", MessageAlerts.MessageType.ERROR);
+             
             JOptionPane.showMessageDialog(null, 
                 "Please check your credentials", 
                 "Error", 
                 JOptionPane.WARNING_MESSAGE
-            );        
+            );
         }
     }//GEN-LAST:event_jButton_LoginActionPerformed
 

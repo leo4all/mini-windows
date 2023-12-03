@@ -16,7 +16,7 @@
             <artifactId>flatlaf</artifactId>
             <version>3.0</version>
         </dependency>
-        <dependency>
+       <dependency>
             <groupId>com.formdev</groupId>
             <artifactId>flatlaf-intellij-themes</artifactId>
             <version>3.0</version>
@@ -45,7 +45,17 @@
             <groupId>com.kenai.nbpwr</groupId>
             <artifactId>org-jdesktop-animation-timing</artifactId>
             <version>1.0-201002281504</version>
-    </dependency>
+        </dependency>
+        <dependency>
+            <groupId>com.formdev</groupId>
+            <artifactId>flatlaf-extras</artifactId>
+            <version>3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>raven.popup</groupId>
+            <artifactId>swing-glasspane-popup</artifactId>
+            <version>1.2.0</version>
+        </dependency>
     </dependencies>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

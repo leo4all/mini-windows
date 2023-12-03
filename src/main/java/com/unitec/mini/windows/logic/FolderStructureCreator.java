@@ -17,12 +17,14 @@ public class FolderStructureCreator {
         String folderPath = username;
         String documentsFolderPath = folderPath + File.separator + "Documents";
         String musicFolderPath = folderPath + File.separator + "Music";
-        String filesFolderPath = folderPath + File.separator + "Files";
+        String imagesFolderPath = folderPath + File.separator + "Images";
+        String desktopFolderPath = folderPath + File.separator + "Desktop";
         
         createFolder(projectDir, folderPath);
         createFolder(projectDir, documentsFolderPath);
         createFolder(projectDir, musicFolderPath);
-        createFolder(projectDir, filesFolderPath);
+        createFolder(projectDir, imagesFolderPath);
+        createFolder(projectDir, desktopFolderPath);
     }
 
     public static void createFolder(String parentDir, String folderPath) {

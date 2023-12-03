@@ -4,6 +4,7 @@
  */
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.logic.KeyConstantsNowAllowed;
 import com.unitec.mini.windows.logic.ShellCommandExecutor;
 import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
@@ -11,10 +12,12 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.text.DefaultCaret;
 
 public class TerminalApp extends javax.swing.JInternalFrame  implements AppInterface{
     private User authUser;
     String username = "admin";
+    private static int caretBlinkRate = 500;
 
     private ShellCommandExecutor commandExecutor;
     
@@ -45,6 +48,9 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
         } catch (Exception e) {
             System.out.println("folder not found. close app?");
         }
+        
+        DefaultCaret caret = (DefaultCaret) textCommandArea.getCaret();
+        caret.setBlinkRate(caretBlinkRate);
     }
     
     public void setAuthenticatedUser(User loggedUser){
@@ -62,7 +68,6 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
         jPanel_Main = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         textCommandArea = new javax.swing.JTextArea();
-        textInputArea = new javax.swing.JTextField();
 
         setClosable(true);
         setIconifiable(true);
@@ -73,34 +78,32 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
 
         jPanel_Main.setBackground(new Color(0, 0, 0, 60));
 
+        textCommandArea.setEditable(false);
+        textCommandArea.setBackground(new java.awt.Color(0, 0, 0));
         textCommandArea.setColumns(20);
+        textCommandArea.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
+        textCommandArea.setForeground(new java.awt.Color(255, 255, 255));
+        textCommandArea.setLineWrap(true);
         textCommandArea.setRows(5);
-        jScrollPane1.setViewportView(textCommandArea);
-
-        textInputArea.addKeyListener(new java.awt.event.KeyAdapter() {
+        textCommandArea.setCaretColor(new java.awt.Color(255, 255, 255));
+        textCommandArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
-                textInputAreaKeyPressed(evt);
+                textCommandAreaKeyPressed(evt);
             }
         });
+        jScrollPane1.setViewportView(textCommandArea);
 
         javax.swing.GroupLayout jPanel_MainLayout = new javax.swing.GroupLayout(jPanel_Main);
         jPanel_Main.setLayout(jPanel_MainLayout);
         jPanel_MainLayout.setHorizontalGroup(
             jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 700, Short.MAX_VALUE)
-            .addGroup(jPanel_MainLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(textInputArea)
-                .addContainerGap())
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 801, Short.MAX_VALUE)
         );
         jPanel_MainLayout.setVerticalGroup(
             jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_MainLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 409, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(textInputArea, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 578, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel_Main, java.awt.BorderLayout.CENTER);
@@ -108,13 +111,38 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void textInputAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textInputAreaKeyPressed
-        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
-            String command = textInputArea.getText().trim();
-            commandExecutor.executeCommand(command);
-            textInputArea.setText("");
+    private void textCommandAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textCommandAreaKeyPressed
+
+        if(KeyConstantsNowAllowed.exists(evt.getKeyCode())){
+            return;
         }
-    }//GEN-LAST:event_textInputAreaKeyPressed
+        
+        if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
+            String text = textCommandArea.getText();
+            if (text.charAt(text.length() - 1) == '>') {
+                return;
+            }
+
+            textCommandArea.setText(text.substring(0, text.length() - 1));
+            return;
+        }
+        
+        if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
+            // Get all text from JTextarea
+            // Get the last line staring after caret 
+            String text = textCommandArea.getText();
+            int lastIndex = text.lastIndexOf('>');
+            if (lastIndex != -1 && lastIndex < text.length() - 1) {
+                commandExecutor.executeCommand(text.substring(lastIndex + 1).trim());
+            }
+            return;
+        }
+
+        String newText = textCommandArea.getText();
+        newText += evt.getKeyChar();
+
+        textCommandArea.setText(newText);
+    }//GEN-LAST:event_textCommandAreaKeyPressed
     
     @Override
     public void closeFrame() {
@@ -130,6 +158,5 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
     private javax.swing.JPanel jPanel_Main;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea textCommandArea;
-    private javax.swing.JTextField textInputArea;
     // End of variables declaration//GEN-END:variables
 }

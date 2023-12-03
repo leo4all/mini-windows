@@ -4,9 +4,9 @@
  */
 package com.unitec.mini.windows;
 
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
 import com.unitec.mini.windows.ui.FolderButton;
 import com.unitec.mini.windows.logic.Folder;
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.unitec.mini.windows.apps.AppInterface;
 import com.unitec.mini.windows.apps.EditorApp;
@@ -89,6 +89,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         setMaximizedBounds(env.getMaximumWindowBounds());
         setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
         initComponents();
+        
         setLocationRelativeTo(null);
         
         folderList = new ArrayList<>();
@@ -106,6 +107,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         TwitterApp fd = new TwitterApp();
         fd.setVisible(false);
         jDesktopPane_Window.add(fd).setVisible(false);
+        this.getRootPane().setDoubleBuffered(true);
     }
     
     public void setAuthenticatedUser(User loggedUser){
@@ -574,7 +576,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         );
         jDesktopPane_WindowLayout.setVerticalGroup(
             jDesktopPane_WindowLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 638, Short.MAX_VALUE)
+            .addGap(0, 820, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel_MainWindowLayout = new javax.swing.GroupLayout(jPanel_MainWindow);
@@ -595,7 +597,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
             .addComponent(jPanel_Top, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(layout.createSequentialGroup()
                 .addComponent(jPanel_SideBar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGap(0, 0, 0)
                 .addComponent(jPanel_MainWindow, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
