@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.swing.JOptionPane;
 
 public class UserManager {
     private static final String DEFAUL_USER = "admin";
@@ -51,7 +52,7 @@ public class UserManager {
         return true;
     }
     
-    public static boolean authenticateUser(String username, String password) {
+    public static boolean authenticateUser(String username, String password){
         User user = users.get(username);
         return user != null && user.getPassword().equals(password);
     }
@@ -64,7 +65,7 @@ public class UserManager {
         return DEFAUL_USER;
     }
     
-    private static void loadUserOffsets() {
+    private static void loadUserOffsets(){
         try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "r")) {
             while (file.getFilePointer() < file.length()) {
                 String username = file.readUTF();
@@ -79,7 +80,7 @@ public class UserManager {
         }
     }
 
-    private static void saveUser(User user) {
+    private static void saveUser(User user){
         try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
             file.seek(file.length());
             file.writeUTF(user.getUsername());
@@ -90,6 +91,76 @@ public class UserManager {
             e.printStackTrace();
         }
     }
+    //Hecho por Kenny Menjivar
+    //funciones de editar user y eliminar user
+    
+    //editar
+    public static boolean editUser(String username, User newUser){
+    if (!users.containsKey(username)){
+        System.out.println("User '" + username + "' does not exist.");
+        return false;
+    }
+
+    users.put(username, newUser);
+    saveUsersToFile();
+    return true;
+    }
+    
+    //eliminar 
+    public static boolean deleteUser(String username){
+    users.remove(username);
+    saveUsersToFile();
+    //eliminar la carpeta del user 
+    String Url="src/main/users"+"/"+username;
+    if(!deleteFolderByUrl(Url)){
+    return false;
+    }
+    
+    return true;
+    }
+    
+     public static boolean deleteFolderByUrl(String folderPath) {
+        File folderToDelete = new File(folderPath);
+        return deleteFolder(folderToDelete);
+    }
+     
+     public static boolean deleteFolder(File folder){
+        if (folder.exists()){
+            File[] files = folder.listFiles();
+            if (files != null){
+                for (File file : files){
+                    if (file.isDirectory()){
+                        deleteFolder(file);
+                    } else {
+                        file.delete();
+                    }
+                }
+            }
+            return folder.delete();
+        }
+        return false;
+    }
+    //fin 
+    private static void saveUsersToFile(){
+    try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
+        file.setLength(0); // Clear the file before writing updated user data
+
+        for (User user : users.values()){
+            file.writeUTF(user.getUsername());
+            file.writeUTF(user.getPassword());
+            file.writeUTF(user.getName());
+            file.writeUTF(user.getAccountType());
+        }
+    } catch (IOException e){
+        e.printStackTrace();
+    }
+}
+
+    
+    
+
+    
+    
     
     public static User getUserByUsername(String username) {
         return users.get(username);

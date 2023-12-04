@@ -66,7 +66,8 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         jButton_Unlock = new javax.swing.JButton();
         jPanel_Unlocked_Top = new javax.swing.JPanel();
         jButton_Add_User = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        BtnDeleteUser = new javax.swing.JButton();
+        BtnEditUser = new javax.swing.JButton();
         jPanel_Add_User = new javax.swing.JPanel();
         jPanel_Main_Add = new javax.swing.JPanel();
         jLabel5 = new javax.swing.JLabel();
@@ -123,11 +124,20 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         });
         jPanel_Unlocked_Top.add(jButton_Add_User, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 10, -1, 30));
 
-        jButton2.setBackground(new Color(0, 0, 0, 0));
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-remove-user.png"))); // NOI18N
-        jButton2.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
-        jButton2.setBorderPainted(false);
-        jPanel_Unlocked_Top.add(jButton2, new org.netbeans.lib.awtextra.AbsoluteConstraints(580, 10, -1, 30));
+        BtnDeleteUser.setBackground(new Color(0, 0, 0, 0));
+        BtnDeleteUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-remove-user.png"))); // NOI18N
+        BtnDeleteUser.setBorder(javax.swing.BorderFactory.createEmptyBorder(1, 1, 1, 1));
+        BtnDeleteUser.setBorderPainted(false);
+        BtnDeleteUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnDeleteUserActionPerformed(evt);
+            }
+        });
+        jPanel_Unlocked_Top.add(BtnDeleteUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, -1, 30));
+
+        BtnEditUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ImageUserEditIcon.png"))); // NOI18N
+        BtnEditUser.setBorder(null);
+        jPanel_Unlocked_Top.add(BtnEditUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 30, 30));
 
         jPanel_Main_Add.setBorder(javax.swing.BorderFactory.createTitledBorder("User Details"));
 
@@ -325,6 +335,67 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         }
     }//GEN-LAST:event_jButton_Add_UserActionPerformed
 
+    private void BtnDeleteUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnDeleteUserActionPerformed
+        // TODO add your handling code here:
+         int option = JOptionPane.showConfirmDialog(
+        null,
+        "Are you sure you want to delete the user?",
+        "Confirmation",
+        JOptionPane.YES_NO_OPTION,
+        JOptionPane.WARNING_MESSAGE
+    );
+
+    if (option == JOptionPane.YES_OPTION) {
+        // If the user confirms deletion
+        String usernameToDelete = JOptionPane.showInputDialog(
+            null,
+            "Enter the username of the user to delete:",
+            "Enter Username",
+            JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (usernameToDelete != null && !usernameToDelete.isEmpty()) {
+            // Attempt to delete the user
+            boolean deletionSuccess = UserManager.deleteUser(usernameToDelete);
+
+            if (deletionSuccess) {
+                // If deletion is successful
+                // Remove the user from the table model
+
+                // Delete the user's folder
+                UserManager.deleteUser(usernameToDelete);
+
+                JOptionPane.showMessageDialog(
+                    null,
+                    "User deleted successfully!",
+                    "Success",
+                    JOptionPane.INFORMATION_MESSAGE
+                );
+            } else {
+                // If deletion fails (user not found)
+                JOptionPane.showMessageDialog(
+                    null,
+                    "User deletion failed. User not found.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            // If the user cancels or enters an empty username
+            JOptionPane.showMessageDialog(
+                null,
+                "User deletion cancelled or invalid username.",
+                "Cancelled",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+        
+        
+        
+        
+    }//GEN-LAST:event_BtnDeleteUserActionPerformed
+
     private static AbstractButton getSelectedButton(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements(); ) {
             AbstractButton button = buttons.nextElement();
@@ -358,8 +429,9 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton BtnDeleteUser;
+    private javax.swing.JButton BtnEditUser;
     private javax.swing.ButtonGroup buttonGroup_User_Type;
-    private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton_Add_User;
     private javax.swing.JButton jButton_Unlock;
     private javax.swing.JLabel jLabel1;
