@@ -1,0 +1,57 @@
+14
+H
+#B0BEC5
+Stencil
+20
+a
+#00FFCC
+Stencil
+20
+l
+#00FFCC
+Stencil
+20
+o
+#B0BEC5
+Stencil
+20
+ 
+#B0BEC5
+Arial
+20
+s
+#B0BEC5
+Arial
+20
+o
+#B0BEC5
+Arial
+20
+y
+#B0BEC5
+Arial
+20
+ 
+#B0BEC5
+Arial
+20
+K
+#B0BEC5
+Bodoni MT
+20
+e
+#B0BEC5
+Bodoni MT
+20
+n
+#FF0066
+Bodoni MT
+20
+n
+#FF0066
+Bodoni MT
+20
+y
+#FF0066
+Bodoni MT
+20

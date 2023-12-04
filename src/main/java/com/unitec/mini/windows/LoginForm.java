@@ -25,9 +25,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import raven.alerts.MessageAlerts;
-import raven.popup.component.PopupCallbackAction;
-import raven.popup.component.PopupController;
 
 public class LoginForm extends javax.swing.JFrame {
     String projectDir;

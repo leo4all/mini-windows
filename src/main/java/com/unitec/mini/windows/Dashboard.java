@@ -922,12 +922,13 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     
     
     public String userloging(){
-       String User=login.getUserLoging();                                //si creo las carpeta de imagenes le cabio el files
-    String dir="src/main/users"+"/"+User+"/Files";
-        System.out.println("UserLoging: "+User+"\nUrl: "+dir);
-//    File Imagenes= new File(dir);
-//    return Imagenes;
-     return dir;
+//       String User=login.getUserLoging();                                //si creo las carpeta de imagenes le cabio el files
+//    String dir="src/main/users"+"/"+User+"/Files";
+//        System.out.println("UserLoging: "+User+"\nUrl: "+dir);
+////    File Imagenes= new File(dir);
+////    return Imagenes;
+//     return dir;
+return null;
     }
     /**
      * @param args the command line arguments
