@@ -4,22 +4,31 @@
  */
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.logic.TweetManager;
+import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
 import java.io.File;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JList;
+import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
-
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 /**
  *
  * @author leonel
  */
 public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterface{
-     
+    private String currentUser = "admin";
+    TweetManager tweetManager;
+
     /**
      * Creates new form Twitter
      */
@@ -34,6 +43,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         this.setFrameIcon(appIcon);
         textPane.setContentType("text/html");
         timeLinePane.setContentType("text/html");
+
         timeLinePane.setEditorKit(new TimeLineEditorKit());
         timeLinePane.addHyperlinkListener(new HyperlinkListener() {
             @Override
@@ -43,6 +53,25 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
                 }
             }
         });
+
+        timeLinePane.setText("");
+        
+         
+        String[] emojis = {"😊", "❤️", "🎉", "🌟", "👍"};
+
+        // Create a JList with emoji data
+        JList<String> emojiList = new JList<>(emojis);
+
+        // Add a selection listener
+        emojiList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selectedEmoji = emojiList.getSelectedValue();
+                System.out.println("Selected Emoji: " + selectedEmoji);
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(emojiList);
+        tweetManager = new TweetManager(currentUser);
     }
 
     /**
@@ -68,6 +97,8 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         setMaximizable(true);
         setResizable(true);
         setTitle("Twitter");
+
+        jScrollPane_timeLine.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
         timeLinePane.setEditable(false);
         timeLinePane.setBackground(new java.awt.Color(255, 255, 255));
@@ -166,31 +197,40 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
     }//GEN-LAST:event_jButton_AddImageActionPerformed
 
     private void jButton_PostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PostActionPerformed
-        String currentContent = String.format("<section class='twitter-widget'>%s</section>", 
-                extractBodyContent(timeLinePane.getText())
-        );
-        String textPaneContent = String.format("<section class='twitter-widget'>%s</section>", 
-                extractBodyContent(textPane.getText())
-        );
-        
-        timeLinePane.setContentType("text/html");
-        timeLinePane.setText(textPaneContent + currentContent);
-        
-        System.out.println(textPaneContent);
-        System.out.println(currentContent);
 
-        textPane.setText("");
-    }//GEN-LAST:event_jButton_PostActionPerformed
-    
-    private String extractBodyContent(String html) {
-        int startBody = html.indexOf("<body>");
-        int endBody = html.lastIndexOf("</body>");
+        String content = processTextPaneContent(parseContent(textPane.getText()));
+        TweetPost post = new TweetPost(currentUser, content);
+        String textStringFormatted =  post.toString();
 
-        if (startBody != -1 && endBody != -1) {
-            return  (html.substring(startBody + "<body>".length(), endBody));
-        } else {
-            return html;
+        String timeStringProcessed = processTextPaneContent(parseContent(timeLinePane.getText()));
+        if(!timeStringProcessed.isEmpty()){
+            textStringFormatted += timeStringProcessed;
         }
+
+        timeLinePane.setContentType("text/html");
+        timeLinePane.setText(textStringFormatted);
+        textPane.setText("");
+        
+        jScrollPane_timeLine.getVerticalScrollBar().setValue(0);
+        timeLinePane.revalidate();
+        timeLinePane.repaint();
+        tweetManager.addTweetPost(post);
+    }//GEN-LAST:event_jButton_PostActionPerformed
+
+    public static String processTextPaneContent(String html) {
+        Document doc = Jsoup.parse(html);
+        Element body = doc.body();
+        Elements emptyPTags = body.select("p:empty");
+        emptyPTags.remove();
+
+        String processedContent = "";
+        for (Element child : body.children()) {
+            if (!child.tagName().equalsIgnoreCase("p") || !child.text().trim().isEmpty()) {
+                processedContent += child.outerHtml();
+            }
+        }
+
+        return processedContent;
     }
     
     private String parseContent(String content){
@@ -251,6 +291,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
     @Override
     public void closeFrame() {
         try {
+            tweetManager.saveTweetPostsToFile();
             this.setClosed(true);
         } catch (Exception e) {
             e.printStackTrace();
