@@ -198,6 +198,9 @@
                   <Image iconType="3" name="/images/icons-locked-user.png"/>
                 </Property>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jTextFieldUsernameActionPerformed"/>
+              </Events>
             </Component>
             <Component class="com.unitec.mini.windows.ui.JPasswordFieldPass" name="jPasswordField">
               <Properties>

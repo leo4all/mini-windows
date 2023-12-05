@@ -11,9 +11,14 @@ import java.util.Enumeration;
 import java.util.Vector;
 import javax.swing.AbstractButton;
 import javax.swing.ButtonGroup;
+import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -135,8 +140,14 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         });
         jPanel_Unlocked_Top.add(BtnDeleteUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(570, 10, -1, 30));
 
-        BtnEditUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ImageUserEditIcon.png"))); // NOI18N
+        BtnEditUser.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/IconEditUser.png"))); // NOI18N
         BtnEditUser.setBorder(null);
+        BtnEditUser.setContentAreaFilled(false);
+        BtnEditUser.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                BtnEditUserActionPerformed(evt);
+            }
+        });
         jPanel_Unlocked_Top.add(BtnEditUser, new org.netbeans.lib.awtextra.AbsoluteConstraints(610, 10, 30, 30));
 
         jPanel_Main_Add.setBorder(javax.swing.BorderFactory.createTitledBorder("User Details"));
@@ -390,11 +401,150 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
             );
         }
     }
-        
-        
-        
-        
     }//GEN-LAST:event_BtnDeleteUserActionPerformed
+
+    private void BtnEditUserActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnEditUserActionPerformed
+
+    JPanel editUserPanel = new JPanel();
+    GroupLayout layout = new GroupLayout(editUserPanel);
+    editUserPanel.setLayout(layout);
+    int option = JOptionPane.showConfirmDialog(
+        null,
+        "Are you sure you want to edit the user?",
+        "Edit the user",
+        JOptionPane.OK_CANCEL_OPTION,
+        JOptionPane.WARNING_MESSAGE
+    );
+
+    if (option == JOptionPane.OK_OPTION){
+        String usernameToEdit = getUsernameToEdit(); // Método para obtener el nombre de usuario a editar
+
+        if (usernameToEdit != null && !usernameToEdit.isEmpty()){
+            UserManager.User existingUser = UserManager.getUserByUsername(usernameToEdit);
+
+            if (existingUser != null) {
+                String[] newData = promptForNewUserData(existingUser);
+
+                UserManager.User newUser = new UserManager.User(
+                    (newData[0] != null) ? newData[0] : existingUser.getName(),
+                    (newData[1] != null) ? newData[1] : existingUser.getUsername(),
+                    (newData[2] != null) ? newData[2] : existingUser.getPassword(),
+                    (newData[3] != null) ? newData[3] : existingUser.getAccountType()
+                );
+
+                boolean editSuccess = UserManager.editUser(existingUser, newUser);
+
+                if (editSuccess){
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "User edited successfully!",
+                        "Success",
+                        JOptionPane.INFORMATION_MESSAGE
+                    );
+                } else {
+                    JOptionPane.showMessageDialog(
+                        null,
+                        "User editing failed.",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                }
+            } else {
+                JOptionPane.showMessageDialog(
+                    null,
+                    "User does not exist.",
+                    "Error",
+                    JOptionPane.ERROR_MESSAGE
+                );
+            }
+        } else {
+            JOptionPane.showMessageDialog(
+                null,
+                "User editing cancelled or invalid username.",
+                "Cancelled",
+                JOptionPane.INFORMATION_MESSAGE
+            );
+        }
+    }
+    }//GEN-LAST:event_BtnEditUserActionPerformed
+private String getUsernameToEdit(){
+    return JOptionPane.showInputDialog(
+        null,
+        "Enter the username of the user to edit:",
+        "Enter Username",
+        JOptionPane.QUESTION_MESSAGE
+    );
+}
+private String[] promptForNewUserData(UserManager.User existingUser){
+    JPanel userDataPanel = new JPanel();
+    GroupLayout layout = new GroupLayout(userDataPanel);
+    userDataPanel.setLayout(layout);
+
+    JLabel nameLabel = new JLabel("Enter the new name:");
+    JLabel usernameLabel = new JLabel("Enter the new username:");
+    JLabel passwordLabel = new JLabel("Enter the new password:");
+    JLabel accountTypeLabel = new JLabel("Select the new account type:");
+
+    JTextField nameField = new JTextField(existingUser.getName());
+    JTextField usernameField = new JTextField(existingUser.getUsername());
+    JPasswordField passwordField = new JPasswordField();
+    String[] accountTypes = {"administrator", "standard"};
+    JComboBox<String> accountTypeComboBox = new JComboBox<>(accountTypes);
+    accountTypeComboBox.setSelectedItem(existingUser.getAccountType());
+
+    layout.setAutoCreateGaps(true);
+    layout.setAutoCreateContainerGaps(true);
+
+    GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+    hGroup.addGroup(layout.createParallelGroup()
+            .addComponent(nameLabel)
+            .addComponent(usernameLabel)
+            .addComponent(passwordLabel)
+            .addComponent(accountTypeLabel));
+    hGroup.addGroup(layout.createParallelGroup()
+            .addComponent(nameField)
+            .addComponent(usernameField)
+            .addComponent(passwordField)
+            .addComponent(accountTypeComboBox));
+    layout.setHorizontalGroup(hGroup);
+
+    GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            .addComponent(nameLabel)
+            .addComponent(nameField));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            .addComponent(usernameLabel)
+            .addComponent(usernameField));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            .addComponent(passwordLabel)
+            .addComponent(passwordField));
+    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+            .addComponent(accountTypeLabel)
+            .addComponent(accountTypeComboBox));
+    layout.setVerticalGroup(vGroup);
+
+    int option = JOptionPane.showConfirmDialog(
+            null,
+            userDataPanel,
+            "Enter New User Data",
+            JOptionPane.OK_CANCEL_OPTION,
+            JOptionPane.QUESTION_MESSAGE
+    );
+
+    if (option == JOptionPane.OK_OPTION) {
+        String newName = nameField.getText();
+        String newUsername = usernameField.getText();
+        char[] newPasswordChars = passwordField.getPassword();
+        String newPassword = new String(newPasswordChars);  
+        String newAccountType = (String) accountTypeComboBox.getSelectedItem();
+
+        return new String[]{newName, newUsername, newPassword, newAccountType};
+    } else {
+        // Usuario canceló, devuelve null o maneja según sea necesario
+        return null;
+    }
+}
+
 
     private static AbstractButton getSelectedButton(ButtonGroup buttonGroup) {
         for (Enumeration<AbstractButton> buttons = buttonGroup.getElements(); buttons.hasMoreElements(); ) {

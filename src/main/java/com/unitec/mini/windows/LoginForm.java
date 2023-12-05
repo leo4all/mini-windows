@@ -160,6 +160,11 @@ public class LoginForm extends javax.swing.JFrame {
         jSeparator1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
 
         jTextFieldUsername.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-locked-user.png"))); // NOI18N
+        jTextFieldUsername.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jTextFieldUsernameActionPerformed(evt);
+            }
+        });
 
         jPasswordField.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-lock.png"))); // NOI18N
 
@@ -267,6 +272,10 @@ public class LoginForm extends javax.swing.JFrame {
     private void jButton_ShutdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ShutdownActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jButton_ShutdownActionPerformed
+
+    private void jTextFieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUsernameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTextFieldUsernameActionPerformed
 
     /**
      * @param args the command line arguments

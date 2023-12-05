@@ -4,6 +4,7 @@
  */
 package com.unitec.mini.windows.logic;
 
+import com.unitec.mini.windows.LoginForm;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -93,18 +94,35 @@ public class UserManager {
     }
     //Hecho por Kenny Menjivar
     //funciones de editar user y eliminar user
-    
     //editar
-    public static boolean editUser(String username, User newUser){
-    if (!users.containsKey(username)){
-        System.out.println("User '" + username + "' does not exist.");
-        return false;
+    public static boolean editUser(User userToEdit, User newUser) {
+        // Verificar si el usuario a editar existe
+        if (!users.containsKey(userToEdit.getUsername())) {
+            System.out.println("User '" + userToEdit.getUsername() + "' does not exist.");
+          return false;
     }
 
-    users.put(username, newUser);
+    users.remove(userToEdit.getUsername());
+    users.put(newUser.getUsername(), newUser);
     saveUsersToFile();
+        String oldFolderPath = "src/main/users"+"/"+userToEdit.getUsername();
+        String newFolderName =newUser.getUsername();
+        File oldFolder = new File(oldFolderPath);
+        String parentPath = oldFolder.getParent();
+        String newFolderPath = parentPath + File.separator + newFolderName;
+        File oldFolderFile = new File(oldFolderPath);
+        File newFolderFile = new File(newFolderPath);
+        boolean success = oldFolderFile.renameTo(newFolderFile);
+
+        if (success) {
+            System.out.println("Carpeta renombrada exitosamente.");
+        } else {
+            System.out.println("No se pudo cambiar el nombre de la carpeta.");
+            return false;
+        }
     return true;
     }
+
     
     //eliminar 
     public static boolean deleteUser(String username){
@@ -141,6 +159,7 @@ public class UserManager {
         return false;
     }
     //fin 
+     
     private static void saveUsersToFile(){
     try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
         file.setLength(0); // Clear the file before writing updated user data

@@ -34,6 +34,7 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.ImageIcon;
+import javax.swing.WindowConstants;
 
 public class EditorApp extends javax.swing.JInternalFrame implements AppInterface,ActionListener{
     
@@ -62,6 +63,7 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
         this.setFrameIcon(appIcon);
         
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         this.setTitle("Editor de Texto");
         this.setSize(500,500);
         this.setLayout(new FlowLayout());
@@ -143,9 +145,9 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
     private void initComponents() {
 
         setClosable(true);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
         setIconifiable(true);
         setMaximizable(true);
-        setResizable(true);
         setTitle("Editor");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
