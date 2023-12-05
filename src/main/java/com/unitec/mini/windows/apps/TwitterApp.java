@@ -174,7 +174,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         );
         
         timeLinePane.setContentType("text/html");
-        timeLinePane.setText(currentContent + textPaneContent);
+        timeLinePane.setText(textPaneContent + currentContent);
         
         System.out.println(textPaneContent);
         System.out.println(currentContent);
