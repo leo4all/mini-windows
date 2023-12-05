@@ -836,8 +836,11 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }//GEN-LAST:event_jButton_TerminalActionPerformed
 
     private void jButton_TwitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TwitterActionPerformed
-        LoginTwitter loginForm = new LoginTwitter(this);
-        loginForm.setVisible(true);
+        //LoginTwitter loginForm = new LoginTwitter(this);
+        //loginForm.setVisible(true);
+        TwitterApp fd = new TwitterApp();
+        setInternalFrameCenterLocation(fd);
+        jDesktopPane_Window.add(fd).setVisible(true);
     }//GEN-LAST:event_jButton_TwitterActionPerformed
 
     private void jMenuItem_LockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_LockActionPerformed

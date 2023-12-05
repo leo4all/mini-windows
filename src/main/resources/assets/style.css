@@ -1,0 +1,15 @@
+
+.twitter-widget {
+  width : 400px;
+  height : 200px; 
+  min-height: 150px;
+  min-width: 300px;
+  border-radius: 10px;
+  box-shadow: 2px 2px 3px rgba(0, 0, 0, .2); 
+  border: 1px solid #e1e8ed; 
+  padding: 4px;
+  margin-bottom: 4px;
+  display:flex;
+  align-items:stretch; 
+  flex-direction:column;
+}
