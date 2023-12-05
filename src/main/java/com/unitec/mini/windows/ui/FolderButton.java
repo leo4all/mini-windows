@@ -5,7 +5,6 @@
 package com.unitec.mini.windows.ui;
 
 import java.awt.BorderLayout;
-import javax.swing.BorderFactory;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,6 +17,7 @@ import javax.swing.border.EmptyBorder;
  * @author leonel
  */
 public class FolderButton extends JButton {
+    static String projectDir = System.getProperty("user.dir") + "/src/main/users";
     private String labelText;
 
     public FolderButton(String labelText) {
@@ -25,15 +25,12 @@ public class FolderButton extends JButton {
         this.labelText = labelText;
 
         setLayout(new BorderLayout());
-
-        // Create a JLabel for the icon
-        Icon icon = new ImageIcon("/Users/leo/dev/unitec/proyecto-2/mini-windows/src/main/java/Images/icon_default_folder.png");
-        JLabel iconLabel = new JLabel(icon);
+        ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_default_folder.png"));
+        JLabel iconLabel = new JLabel(appIcon);
         iconLabel.setBorder(new EmptyBorder(0, 0, 100, 0));
         iconLabel.setHorizontalAlignment(SwingConstants.CENTER);
         add(iconLabel, BorderLayout.CENTER);
 
-        // Create a JLabel for the text
         JLabel textLabel = new JLabel(labelText);
         textLabel.setHorizontalAlignment(SwingConstants.CENTER);
         textLabel.setBorder(new EmptyBorder(125, 0, 0, 0)); 

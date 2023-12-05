@@ -6,7 +6,6 @@ package com.unitec.mini.windows.logic;
 
 import java.io.File;
 import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -29,13 +28,20 @@ public class TweetManager {
     }
      
     public void saveTweetPostsToFile() {
-        String fileName = projectDir + File.separator + currentUser + "_tweetPosts.txt";
-        try (FileWriter writer = new FileWriter(fileName)) {
-            for (TweetPost tweetPost : tweetPosts) {
-                 writer.write(tweetPost.toString()+ "\n");
+        String fileName = projectDir + File.separator + currentUser + File.separator + "_tweetPosts.txt";
+        try {
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.createNewFile();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+
+            try (FileWriter writer = new FileWriter(fileName)) {
+                for (TweetPost tweetPost : tweetPosts) {
+                     writer.write(tweetPost.toString()+ "\n");
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
         }
     }
     
@@ -48,6 +54,7 @@ public class TweetManager {
                 filteredPosts.add(tweetPost);
             }
         }
+
         return filteredPosts;
     }
 }

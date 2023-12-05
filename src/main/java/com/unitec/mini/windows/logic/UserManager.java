@@ -4,7 +4,6 @@
  */
 package com.unitec.mini.windows.logic;
 
-import com.unitec.mini.windows.LoginForm;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
@@ -12,9 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import javax.swing.JOptionPane;
 
 public class UserManager {
+
     private static final String DEFAUL_USER = "admin";
     private static final String DEFAUL_PASSWORD = "admin";
 
@@ -22,7 +21,7 @@ public class UserManager {
     private static final String USERS_FILE_PATH = "admin" + File.separator + "users.twc";
     private static final Map<String, User> users = new HashMap<>();
     private static UserManager instance = null;
-    
+
     public static UserManager getInstance() {
         if (instance == null) {
             instance = new UserManager();
@@ -41,32 +40,32 @@ public class UserManager {
             saveUser(adminUser);
         }
     }
-    
+
     public static boolean registerUser(User user) {
         if (users.containsKey(user.getUsername())) {
             System.out.println("User '" + user.getUsername() + "' already exists.");
-            return false;            
-        } 
+            return false;
+        }
 
         users.put(user.getUsername(), user);
         saveUser(user);
         return true;
     }
-    
-    public static boolean authenticateUser(String username, String password){
+
+    public static boolean authenticateUser(String username, String password) {
         User user = users.get(username);
         return user != null && user.getPassword().equals(password);
     }
-    
-    public static String getDefaultPassword(){
+
+    public static String getDefaultPassword() {
         return DEFAUL_PASSWORD;
     }
 
-    public static String getDefaultUser(){
+    public static String getDefaultUser() {
         return DEFAUL_USER;
     }
-    
-    private static void loadUserOffsets(){
+
+    private static void loadUserOffsets() {
         try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "r")) {
             while (file.getFilePointer() < file.length()) {
                 String username = file.readUTF();
@@ -77,11 +76,11 @@ public class UserManager {
                 users.put(username, user);
             }
         } catch (IOException e) {
-            
+
         }
     }
 
-    private static void saveUser(User user){
+    private static void saveUser(User user) {
         try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
             file.seek(file.length());
             file.writeUTF(user.getUsername());
@@ -92,21 +91,18 @@ public class UserManager {
             e.printStackTrace();
         }
     }
-    //Hecho por Kenny Menjivar
-    //funciones de editar user y eliminar user
-    //editar
+
     public static boolean editUser(User userToEdit, User newUser) {
-        // Verificar si el usuario a editar existe
         if (!users.containsKey(userToEdit.getUsername())) {
             System.out.println("User '" + userToEdit.getUsername() + "' does not exist.");
-          return false;
-    }
+            return false;
+        }
 
-    users.remove(userToEdit.getUsername());
-    users.put(newUser.getUsername(), newUser);
-    saveUsersToFile();
-        String oldFolderPath = "src/main/users"+"/"+userToEdit.getUsername();
-        String newFolderName =newUser.getUsername();
+        users.remove(userToEdit.getUsername());
+        users.put(newUser.getUsername(), newUser);
+        saveUsersToFile();
+        String oldFolderPath = "src/main/users" + "/" + userToEdit.getUsername();
+        String newFolderName = newUser.getUsername();
         File oldFolder = new File(oldFolderPath);
         String parentPath = oldFolder.getParent();
         String newFolderPath = parentPath + File.separator + newFolderName;
@@ -120,34 +116,32 @@ public class UserManager {
             System.out.println("No se pudo cambiar el nombre de la carpeta.");
             return false;
         }
-    return true;
+
+        return true;
     }
 
-    
-    //eliminar 
-    public static boolean deleteUser(String username){
-    users.remove(username);
-    saveUsersToFile();
-    //eliminar la carpeta del user 
-    String Url="src/main/users"+"/"+username;
-    if(!deleteFolderByUrl(Url)){
-    return false;
+    public static boolean deleteUser(String username) {
+        users.remove(username);
+        saveUsersToFile(); 
+        String Url = "src/main/users" + "/" + username;
+        if (!deleteFolderByUrl(Url)) {
+            return false;
+        }
+
+        return true;
     }
-    
-    return true;
-    }
-    
-     public static boolean deleteFolderByUrl(String folderPath) {
+
+    public static boolean deleteFolderByUrl(String folderPath) {
         File folderToDelete = new File(folderPath);
         return deleteFolder(folderToDelete);
     }
-     
-     public static boolean deleteFolder(File folder){
-        if (folder.exists()){
+
+    public static boolean deleteFolder(File folder) {
+        if (folder.exists()) {
             File[] files = folder.listFiles();
-            if (files != null){
-                for (File file : files){
-                    if (file.isDirectory()){
+            if (files != null) {
+                for (File file : files) {
+                    if (file.isDirectory()) {
                         deleteFolder(file);
                     } else {
                         file.delete();
@@ -158,38 +152,32 @@ public class UserManager {
         }
         return false;
     }
-    //fin 
-     
-    private static void saveUsersToFile(){
-    try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
-        file.setLength(0); // Clear the file before writing updated user data
 
-        for (User user : users.values()){
-            file.writeUTF(user.getUsername());
-            file.writeUTF(user.getPassword());
-            file.writeUTF(user.getName());
-            file.writeUTF(user.getAccountType());
+    private static void saveUsersToFile() {
+        try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
+            file.setLength(0);
+
+            for (User user : users.values()) {
+                file.writeUTF(user.getUsername());
+                file.writeUTF(user.getPassword());
+                file.writeUTF(user.getName());
+                file.writeUTF(user.getAccountType());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    } catch (IOException e){
-        e.printStackTrace();
     }
-}
 
-    
-    
-
-    
-    
-    
     public static User getUserByUsername(String username) {
         return users.get(username);
     }
-    
+
     public static List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
-    
+
     public static class User {
+
         private final String name;
         private final String username;
         private final String password;
@@ -201,7 +189,7 @@ public class UserManager {
             this.password = password;
             this.accountType = accountType;
         }
-                
+
         public String getName() {
             return name;
         }

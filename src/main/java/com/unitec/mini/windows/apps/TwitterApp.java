@@ -8,12 +8,16 @@ import com.unitec.mini.windows.logic.TweetManager;
 import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
 import java.io.File;
+import java.util.Date;
+import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import org.jsoup.Jsoup;
@@ -25,7 +29,8 @@ import org.jsoup.select.Elements;
  *
  * @author leonel
  */
-public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterface{
+public class TwitterApp extends javax.swing.JInternalFrame implements AppInterface {
+
     private String currentUser = "admin";
     TweetManager tweetManager;
 
@@ -38,7 +43,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         setVisible(true);
     }
 
-    public void setComponents(){
+    public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png"));
         this.setFrameIcon(appIcon);
         textPane.setContentType("text/html");
@@ -55,14 +60,12 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         });
 
         timeLinePane.setText("");
-        
-         
-        String[] emojis = {"😊", "❤️", "🎉", "🌟", "👍"};
 
-        // Create a JList with emoji data
+        
+        String[] emojis = {"😊", "❤️", "🎉", "🌟", "👍"};
         JList<String> emojiList = new JList<>(emojis);
 
-        // Add a selection listener
+        // Try to implement emoji picker -
         emojiList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedEmoji = emojiList.getSelectedValue();
@@ -72,6 +75,43 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
 
         JScrollPane scrollPane = new JScrollPane(emojiList);
         tweetManager = new TweetManager(currentUser);
+
+        // Add a listener on closing window, save all tweets to file...
+        this.addInternalFrameListener(new InternalFrameAdapter() {
+            public void internalFrameClosing(InternalFrameEvent e) {
+                System.out.println("internalFrameClosing....");
+                try {
+                    tweetManager.saveTweetPostsToFile();
+                } catch (Exception exception) {
+                    System.out.println("Error saving tweet file.");
+                }
+
+                super.internalFrameClosing(e);
+            }
+
+            @Override
+            public void internalFrameClosed(InternalFrameEvent e) {
+                System.out.println("internalFrameClosed....");
+                super.internalFrameClosed(e);
+            }
+        });
+    }
+
+    public void loadTweets() {
+        Date startDate = new Date(122, 0, 1);
+        Date endDate = new Date();
+        List<TweetPost> loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, currentUser);
+        String content = "";
+
+        for (TweetPost loadedPost : loadedPosts) {
+            //System.out.println("Username: " + loadedPost.getUsername());
+            //System.out.println("Content: " + loadedPost.getContent());
+            //System.out.println("Date: " + loadedPost.getPostDate());
+            System.out.println("---");
+            content += loadedPost.toString();
+        }
+
+        timeLinePane.setText(content);
     }
 
     /**
@@ -188,11 +228,11 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
         FileFilter filter = new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif");
         fileChooser.setFileFilter(filter);
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        
+
         int result = fileChooser.showOpenDialog(this);
         if (result == JFileChooser.APPROVE_OPTION) {
             File imageFile = fileChooser.getSelectedFile();
-            displayImage(imageFile);  
+            displayImage(imageFile);
         }
     }//GEN-LAST:event_jButton_AddImageActionPerformed
 
@@ -200,17 +240,17 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
 
         String content = processTextPaneContent(parseContent(textPane.getText()));
         TweetPost post = new TweetPost(currentUser, content);
-        String textStringFormatted =  post.toString();
+        String textStringFormatted = post.toString();
 
         String timeStringProcessed = processTextPaneContent(parseContent(timeLinePane.getText()));
-        if(!timeStringProcessed.isEmpty()){
+        if (!timeStringProcessed.isEmpty()) {
             textStringFormatted += timeStringProcessed;
         }
 
         timeLinePane.setContentType("text/html");
         timeLinePane.setText(textStringFormatted);
         textPane.setText("");
-        
+
         jScrollPane_timeLine.getVerticalScrollBar().setValue(0);
         timeLinePane.revalidate();
         timeLinePane.repaint();
@@ -232,12 +272,12 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
 
         return processedContent;
     }
-    
-    private String parseContent(String content){
+
+    private String parseContent(String content) {
         content = content.replaceAll("#(\\w+)", "<a href=\"hashtag\">$1</a>");
         return content.replaceAll("@(\\w+)", "<a href=\"mention\">$1</a>");
     }
-    
+
     private void handleLinkClick(String link) {
         if ("hashtag".equals(link)) {
             String hashtag = extractHashtag(link);
@@ -249,7 +289,7 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
             System.out.println("Clicked on mention: " + mention);
         }
     }
-    
+
     private String extractHashtag(String link) {
         String regex = "<a\\s+href=\"hashtag\">(.*?)</a>";
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
@@ -273,31 +313,34 @@ public class TwitterApp extends javax.swing.JInternalFrame  implements AppInterf
             return link;
         }
     }
-    
-    private void displayImage(File file){
-       if (file != null) {
+
+    private void displayImage(File file) {
+        if (file != null) {
             String imagePath = file.getAbsolutePath();
             String currentContent = textPane.getText();
             String updatedContent = updateHtmlWithImage(currentContent, imagePath);
             textPane.setText(updatedContent);
         }
     }
-   
+
     private String updateHtmlWithImage(String currentHtml, String imagePath) {
         currentHtml = currentHtml.replaceAll("<img[^>]*>", "");
         return currentHtml.replace("</body>", String.format("<br/><img src='file:%s' width='100' height='100'/></body>", imagePath));
     }
-     
+
     @Override
     public void closeFrame() {
         try {
-            tweetManager.saveTweetPostsToFile();
             this.setClosed(true);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    public void internalFrameClosing(InternalFrameEvent e) {
+        System.out.println("Close Frame");
+        //return;
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_AddEmoji;
