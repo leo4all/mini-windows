@@ -9,12 +9,16 @@ import com.unitec.mini.windows.ui.TwitterPasswordField;
 import com.unitec.mini.windows.ui.TwitterTextField;
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import net.miginfocom.swing.MigLayout;
 
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
@@ -28,8 +32,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         initRegister();
         initLogin();
     }
-
-    private void initRegister() {
+private void initRegister() {
         register.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]20[]15[]push"));
         JLabel label = new JLabel("Create Account");
         label.setFont(new Font("sansserif", 1, 30));
@@ -89,12 +92,43 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                         new File(""),
                         ""
                 );
-                //TwitterUserManager.registerUser(newUser);
 
                 JOptionPane.showMessageDialog(null, "Twitter accoun registered, please login.");
             }
         });
+        //
+        JLabel profileImageLabel = new JLabel("Select Profile Image");
+    register.add(profileImageLabel);
+
+    JButton chooseImageButton = new JButton("Choose Image");
+    register.add(chooseImageButton);
+
+    chooseImageButton.addActionListener(new ActionListener() {
+        @Override
+        public void actionPerformed(ActionEvent ae) {
+            JFileChooser fileChooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter(
+                    "Image files", "jpg", "jpeg", "png", "gif");
+            fileChooser.setFileFilter(filter);
+
+            int result = fileChooser.showOpenDialog(null);
+            if (result == JFileChooser.APPROVE_OPTION) {
+                File selectedFile = fileChooser.getSelectedFile();
+
+                // Redimensionar la imagen antes de mostrarla
+                ImageIcon selectedImageIcon = resizeImage(selectedFile.getAbsolutePath(), 100, 100);
+                profileImageLabel.setIcon(selectedImageIcon);
+            }
+        }
+    });
+
     }
+    private ImageIcon resizeImage(String imagePath, int width, int height) {
+    ImageIcon originalIcon = new ImageIcon(imagePath);
+    Image originalImage = originalIcon.getImage();
+    Image resizedImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+    return new ImageIcon(resizedImage);
+}
 
     private void initLogin() {
         login.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]25[]push"));
