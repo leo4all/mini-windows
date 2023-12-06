@@ -19,6 +19,8 @@ import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
 import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
+import java.awt.Dialog;
+import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
@@ -39,6 +41,7 @@ import java.util.Date;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
@@ -64,6 +67,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private static final float OPACITY_CHANGE = 0.049f;
     User userAuthen;
     LoginForm login;
+    JDialog loginDialog;
+            
     public Dashboard() {
         cm = new ComponentMover();
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
@@ -835,11 +840,17 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }//GEN-LAST:event_jButton_TerminalActionPerformed
 
     private void jButton_TwitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TwitterActionPerformed
-        //LoginTwitter loginForm = new LoginTwitter(this);
-        //loginForm.setVisible(true);
-        TwitterApp fd = new TwitterApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
+
+        JDialog loginDialog = new JDialog(this, "Twitter", true);
+        ImageIcon icon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png")); 
+        loginDialog.setIconImage(icon.getImage());
+        
+        LoginTwitter loginForm = new LoginTwitter(this, loginDialog);
+        loginDialog.getContentPane().add(loginForm.getContentPane());
+        loginDialog.pack();
+        loginDialog.setSize(900, 550);
+        loginDialog.setLocationRelativeTo(this);
+        loginDialog.setVisible(true);
     }//GEN-LAST:event_jButton_TwitterActionPerformed
 
     private void jMenuItem_LockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_LockActionPerformed

@@ -5,7 +5,6 @@
 package com.unitec.mini.windows.ui;
 
 import java.awt.BorderLayout;
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;

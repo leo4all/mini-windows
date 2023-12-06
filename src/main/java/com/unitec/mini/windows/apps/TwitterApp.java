@@ -95,6 +95,8 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
                 super.internalFrameClosed(e);
             }
         });
+        
+        loadTweets();
     }
 
     public void loadTweets() {
@@ -104,13 +106,11 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         String content = "";
 
         for (TweetPost loadedPost : loadedPosts) {
-            //System.out.println("Username: " + loadedPost.getUsername());
-            //System.out.println("Content: " + loadedPost.getContent());
-            //System.out.println("Date: " + loadedPost.getPostDate());
             System.out.println("---");
             content += loadedPost.toString();
         }
-
+        System.out.println("Load content");
+        //System.out.println(content);
         timeLinePane.setText(content);
     }
 
@@ -145,6 +145,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         jScrollPane_timeLine.setViewportView(timeLinePane);
 
         jButton_AddImage.setText("I");
+        jButton_AddImage.setToolTipText("Media");
         jButton_AddImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_AddImageActionPerformed(evt);
@@ -152,6 +153,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         });
 
         jButton_Post.setText("Post");
+        jButton_Post.setEnabled(false);
         jButton_Post.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_PostActionPerformed(evt);
@@ -160,6 +162,11 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
 
         jButton_AddEmoji.setText("E");
 
+        textPane.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                textPaneKeyPressed(evt);
+            }
+        });
         jScrollPane_AddTweet.setViewportView(textPane);
 
         javax.swing.GroupLayout jPanel_AddTweetLayout = new javax.swing.GroupLayout(jPanel_AddTweet);
@@ -255,7 +262,12 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         timeLinePane.revalidate();
         timeLinePane.repaint();
         tweetManager.addTweetPost(post);
+        jButton_Post.setEnabled(false);
     }//GEN-LAST:event_jButton_PostActionPerformed
+
+    private void textPaneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textPaneKeyPressed
+        jButton_Post.setEnabled(true);
+    }//GEN-LAST:event_textPaneKeyPressed
 
     public static String processTextPaneContent(String html) {
         Document doc = Jsoup.parse(html);

@@ -44,8 +44,6 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
     JSpinner fontSizeSpinner;
     JButton fontColorBTN;
     JComboBox fontBox;
-    //JButton boldButton;
-    //JButton italicButton;
 
     JMenuBar menuBar;
     JMenu fileMenu;

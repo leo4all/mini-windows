@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.util.Locale;
+import javax.swing.JDialog;
 import net.miginfocom.swing.MigLayout;
 import org.jdesktop.animation.timing.Animator;
 import org.jdesktop.animation.timing.TimingTarget;
@@ -24,15 +25,21 @@ public class LoginTwitter extends javax.swing.JFrame {
     private final double coverSize = 40;
     private final double loginSize = 60;
     Dashboard dashboard;
+    JDialog parenJPanel;
     
-    public LoginTwitter(Dashboard dashboard) {
+    public LoginTwitter(Dashboard dashboard, JDialog parenJPanel) {
         this.dashboard = dashboard;
+        this.parenJPanel = parenJPanel;
         initComponents();
         init();
     }
 
     public Dashboard getDashboard() {
         return dashboard;
+    }
+    
+    public JDialog getParentPanelDialog(){
+        return parenJPanel;
     }
 
     private void init() {

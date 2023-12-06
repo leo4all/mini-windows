@@ -125,6 +125,7 @@
         <Component class="javax.swing.JButton" name="jButton_AddImage">
           <Properties>
             <Property name="text" type="java.lang.String" value="I"/>
+            <Property name="toolTipText" type="java.lang.String" value="Media"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_AddImageActionPerformed"/>
@@ -133,6 +134,7 @@
         <Component class="javax.swing.JButton" name="jButton_Post">
           <Properties>
             <Property name="text" type="java.lang.String" value="Post"/>
+            <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_PostActionPerformed"/>
@@ -151,6 +153,9 @@
           <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
           <SubComponents>
             <Component class="javax.swing.JTextPane" name="textPane">
+              <Events>
+                <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="textPaneKeyPressed"/>
+              </Events>
             </Component>
           </SubComponents>
         </Container>
