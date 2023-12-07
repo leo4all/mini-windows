@@ -7,12 +7,14 @@ package com.unitec.mini.windows.apps;
 import com.unitec.mini.windows.logic.TweetManager;
 import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.logic.TwitterAccount;
+import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
 import javax.swing.event.HyperlinkEvent;
@@ -30,16 +32,15 @@ import org.jsoup.select.Elements;
  *
  * @author leonel
  */
-public class TwitterApp extends javax.swing.JInternalFrame implements AppInterface {
-
+public class TwitterApp extends JInternalFrame implements AppInterface {
     private TwitterAccount currentAccount;
-    TweetManager tweetManager;
+    private TweetManager tweetManager;
+    private User userAuthen;
 
     /**
      * Creates new form Twitter
      */
-    public TwitterApp(TwitterAccount loggedAccount) {
-        currentAccount = loggedAccount;
+    public TwitterApp() {        
         initComponents();
         setComponents();
         setVisible(true);
@@ -48,60 +49,19 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
     public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png"));
         this.setFrameIcon(appIcon);
+        
         textPane.setContentType("text/html");
         timeLinePane.setContentType("text/html");
-
         timeLinePane.setEditorKit(new TimeLineEditorKit());
-        timeLinePane.addHyperlinkListener(new HyperlinkListener() {
-            @Override
-            public void hyperlinkUpdate(HyperlinkEvent e) {
-                if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-                    handleLinkClick(e.getDescription());
-                }
-            }
-        });
-
+        timeLinePane.addHyperlinkListener(new TimelineHyperlinkListener());
         timeLinePane.setText("");
 
-        
-        String[] emojis = {"😊", "❤️", "🎉", "🌟", "👍"};
-        JList<String> emojiList = new JList<>(emojis);
-
-        // Try to implement emoji picker -
-        emojiList.addListSelectionListener(e -> {
-            if (!e.getValueIsAdjusting()) {
-                String selectedEmoji = emojiList.getSelectedValue();
-                System.out.println("Selected Emoji: " + selectedEmoji);
-            }
-        });
-
-        JScrollPane scrollPane = new JScrollPane(emojiList);
-        tweetManager = new TweetManager(currentAccount);
-
-        // Add a listener on closing window, save all tweets to file...
-        this.addInternalFrameListener(new InternalFrameAdapter() {
-            public void internalFrameClosing(InternalFrameEvent e) {
-                System.out.println("internalFrameClosing....");
-                try {
-                    tweetManager.saveTweetPostsToFile();
-                } catch (Exception exception) {
-                    System.out.println("Error saving tweet file.");
-                }
-
-                super.internalFrameClosing(e);
-            }
-
-            @Override
-            public void internalFrameClosed(InternalFrameEvent e) {
-                System.out.println("internalFrameClosed....");
-                super.internalFrameClosed(e);
-            }
-        });
-        
+        addInternalFrameListener(new TwitterInternalFrameListener());
         loadTweets();
     }
 
     public void loadTweets() {
+        tweetManager = new TweetManager(getTwitterAccount());
         Date startDate = new Date(122, 0, 1);
         Date endDate = new Date();
         List<TweetPost> loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, currentAccount.getUsername());
@@ -114,6 +74,26 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         System.out.println("Load content");
         //System.out.println(content);
         timeLinePane.setText(content);
+    }
+    
+    public void setAuthenticatedUser(User user) {
+        this.userAuthen = user;
+    }
+    
+    public User getAuthenticatedUser(){
+        if (this.userAuthen != null) {
+            return this.userAuthen;
+        }
+
+        return null;
+    }
+    
+    public void setAccountAuth(TwitterAccount loggedAccount) {
+        this.currentAccount = loggedAccount;
+    }
+    
+    private TwitterAccount getTwitterAccount(){
+        return currentAccount;
     }
 
     /**
@@ -128,15 +108,14 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         jScrollPane_timeLine = new javax.swing.JScrollPane();
         timeLinePane = new javax.swing.JTextPane();
         jPanel_AddTweet = new javax.swing.JPanel();
-        jButton_AddImage = new javax.swing.JButton();
-        jButton_Post = new javax.swing.JButton();
-        jButton_AddEmoji = new javax.swing.JButton();
+        jButton_OpenAddImage = new javax.swing.JButton();
+        jButton_SubmitPost = new javax.swing.JButton();
+        jButton_OPenAddEmoji = new javax.swing.JButton();
         jScrollPane_AddTweet = new javax.swing.JScrollPane();
         textPane = new javax.swing.JTextPane();
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Twitter");
 
@@ -146,23 +125,28 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         timeLinePane.setBackground(new java.awt.Color(255, 255, 255));
         jScrollPane_timeLine.setViewportView(timeLinePane);
 
-        jButton_AddImage.setText("I");
-        jButton_AddImage.setToolTipText("Media");
-        jButton_AddImage.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OpenAddImage.setText("I");
+        jButton_OpenAddImage.setToolTipText("Media");
+        jButton_OpenAddImage.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_AddImageActionPerformed(evt);
+                jButton_OpenAddImageActionPerformed(evt);
             }
         });
 
-        jButton_Post.setText("Post");
-        jButton_Post.setEnabled(false);
-        jButton_Post.addActionListener(new java.awt.event.ActionListener() {
+        jButton_SubmitPost.setText("Post");
+        jButton_SubmitPost.setEnabled(false);
+        jButton_SubmitPost.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PostActionPerformed(evt);
+                jButton_SubmitPostActionPerformed(evt);
             }
         });
 
-        jButton_AddEmoji.setText("E");
+        jButton_OPenAddEmoji.setText("E");
+        jButton_OPenAddEmoji.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_OPenAddEmojiActionPerformed(evt);
+            }
+        });
 
         textPane.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
@@ -181,11 +165,11 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
                     .addGroup(jPanel_AddTweetLayout.createSequentialGroup()
                         .addComponent(jScrollPane_AddTweet, javax.swing.GroupLayout.PREFERRED_SIZE, 414, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton_Post))
+                        .addComponent(jButton_SubmitPost))
                     .addGroup(jPanel_AddTweetLayout.createSequentialGroup()
-                        .addComponent(jButton_AddImage)
+                        .addComponent(jButton_OpenAddImage)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton_AddEmoji)))
+                        .addComponent(jButton_OPenAddEmoji)))
                 .addContainerGap())
         );
         jPanel_AddTweetLayout.setVerticalGroup(
@@ -195,14 +179,14 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
                 .addGroup(jPanel_AddTweetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_AddTweetLayout.createSequentialGroup()
                         .addGap(35, 35, 35)
-                        .addComponent(jButton_Post)
+                        .addComponent(jButton_SubmitPost)
                         .addGap(77, 77, 77))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_AddTweetLayout.createSequentialGroup()
                         .addComponent(jScrollPane_AddTweet, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)))
                 .addGroup(jPanel_AddTweetLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton_AddImage)
-                    .addComponent(jButton_AddEmoji))
+                    .addComponent(jButton_OpenAddImage)
+                    .addComponent(jButton_OPenAddEmoji))
                 .addContainerGap())
         );
 
@@ -232,7 +216,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton_AddImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_AddImageActionPerformed
+    private void jButton_OpenAddImageActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OpenAddImageActionPerformed
         JFileChooser fileChooser = new JFileChooser();
         FileFilter filter = new FileNameExtensionFilter("Image files", "jpg", "jpeg", "png", "gif");
         fileChooser.setFileFilter(filter);
@@ -243,9 +227,9 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
             File imageFile = fileChooser.getSelectedFile();
             displayImage(imageFile);
         }
-    }//GEN-LAST:event_jButton_AddImageActionPerformed
+    }//GEN-LAST:event_jButton_OpenAddImageActionPerformed
 
-    private void jButton_PostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PostActionPerformed
+    private void jButton_SubmitPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SubmitPostActionPerformed
 
         String content = processTextPaneContent(parseContent(textPane.getText()));
         TweetPost post = new TweetPost(currentAccount.getUsername(), content);
@@ -264,12 +248,26 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         timeLinePane.revalidate();
         timeLinePane.repaint();
         tweetManager.addTweetPost(post);
-        jButton_Post.setEnabled(false);
-    }//GEN-LAST:event_jButton_PostActionPerformed
+        jButton_SubmitPost.setEnabled(false);
+    }//GEN-LAST:event_jButton_SubmitPostActionPerformed
 
     private void textPaneKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textPaneKeyPressed
-        jButton_Post.setEnabled(true);
+        jButton_SubmitPost.setEnabled(true);
     }//GEN-LAST:event_textPaneKeyPressed
+
+    private void jButton_OPenAddEmojiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPenAddEmojiActionPerformed
+        String[] emojis = {"😊", "❤️", "🎉", "🌟", "👍"};
+        JList<String> emojiList = new JList<>(emojis);
+
+        emojiList.addListSelectionListener(e -> {
+            if (!e.getValueIsAdjusting()) {
+                String selectedEmoji = emojiList.getSelectedValue();
+                System.out.println("Selected Emoji: " + selectedEmoji);
+            }
+        });
+
+        JScrollPane scrollPane = new JScrollPane(emojiList);
+    }//GEN-LAST:event_jButton_OPenAddEmojiActionPerformed
 
     public static String processTextPaneContent(String html) {
         Document doc = Jsoup.parse(html);
@@ -351,15 +349,42 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         }
     }
 
-    public void internalFrameClosing(InternalFrameEvent e) {
-        System.out.println("Close Frame");
-        //return;
+    class TwitterInternalFrameListener extends InternalFrameAdapter {
+        @Override
+        public void internalFrameOpened(InternalFrameEvent e) {
+            try {
+                tweetManager.saveTweetPostsToFile();
+            } catch (Exception exception) {
+                System.out.println("Error saving tweet file.");
+            }
+
+            super.internalFrameClosing(e);
+        }
+
+        @Override
+        public void internalFrameClosed(InternalFrameEvent e) {
+        
+        
+        }
+    }
+    
+    class TimelineHyperlinkListener implements HyperlinkListener {
+        @Override
+        public void hyperlinkUpdate(HyperlinkEvent e) {
+            if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                handleLinkClick(e.getDescription());
+            }
+        }
+
+        private void handleLinkClick(String description) {
+            System.out.println("Link clicked: " + description);
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton_AddEmoji;
-    private javax.swing.JButton jButton_AddImage;
-    private javax.swing.JButton jButton_Post;
+    private javax.swing.JButton jButton_OPenAddEmoji;
+    private javax.swing.JButton jButton_OpenAddImage;
+    private javax.swing.JButton jButton_SubmitPost;
     private javax.swing.JPanel jPanel_AddTweet;
     private javax.swing.JScrollPane jScrollPane_AddTweet;
     private javax.swing.JScrollPane jScrollPane_timeLine;

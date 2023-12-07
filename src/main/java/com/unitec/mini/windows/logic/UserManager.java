@@ -175,35 +175,4 @@ public class UserManager {
     public static List<User> getAllUsers() {
         return new ArrayList<>(users.values());
     }
-
-    public static class User {
-
-        private final String name;
-        private final String username;
-        private final String password;
-        private final String accountType;
-
-        public User(String name, String username, String password, String accountType) {
-            this.name = name;
-            this.username = username;
-            this.password = password;
-            this.accountType = accountType;
-        }
-
-        public String getName() {
-            return name;
-        }
-
-        public String getUsername() {
-            return username;
-        }
-
-        public String getPassword() {
-            return password;
-        }
-
-        public String getAccountType() {
-            return accountType;
-        }
-    }
 }

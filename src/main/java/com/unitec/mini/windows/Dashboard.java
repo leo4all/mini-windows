@@ -5,7 +5,6 @@
 package com.unitec.mini.windows;
 
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
-import com.unitec.mini.windows.ui.FolderButton;
 import com.unitec.mini.windows.logic.Folder;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.unitec.mini.windows.apps.AppInterface;
@@ -15,10 +14,9 @@ import com.unitec.mini.windows.apps.PaintApp;
 import com.unitec.mini.windows.apps.PlayerApp;
 import com.unitec.mini.windows.apps.SettingsApp;
 import com.unitec.mini.windows.apps.TerminalApp;
-import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
 import com.unitec.mini.windows.logic.TwitterAccount;
-import com.unitec.mini.windows.logic.UserManager.User;
+import com.unitec.mini.windows.logic.User;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
@@ -32,7 +30,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,6 +50,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+
 /**
  *
  * @author leonel
@@ -64,15 +62,21 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private ComponentMover cm;
     private static final int TIMER_DELAY = 250;
     private static final float OPACITY_CHANGE = 0.049f;
+    
     User userAuthen;
-            
+    
+    FinderApp finderApp;
+    EditorApp editorApp;
+    PaintApp paintApp;
+    PlayerApp playerApp;
+    TerminalApp terminalApp;
+    SettingsApp settingsAppp;
+
     public Dashboard() {
-        cm = new ComponentMover();
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
         Image appImage = appIcon.getImage();
         setIconImage(appImage);
-        
-        // Set the dock icon for macOS
+
         try {
             if(Taskbar.isTaskbarSupported()){
                 final Taskbar taskbar = Taskbar.getTaskbar();
@@ -85,7 +89,6 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         }
         
         //this.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
-        
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(env.getMaximumWindowBounds());
         setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
@@ -105,24 +108,17 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         timer.start();
         
         new ComponentMover(this, this.getRootPane());
-        //TwitterApp fd = new TwitterApp();
-        //fd.setVisible(false);
-        //jDesktopPane_Window.add(fd).setVisible(false);
         this.getRootPane().setDoubleBuffered(true);
     }
     
-    public void setAuthenticatedUser(User loggedUser){
-        userAuthen = loggedUser;
-    }
-    
-    public User getAuthenticatedUser(){
-        return userAuthen;
-    }
-
     public void updateTime(JLabel label){
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d   h:mm a");
         String currentTime = dateFormat.format(new Date());
         label.setText(currentTime);
+    }
+    
+    public void setAuthUser(User user){
+        this.userAuthen = user;
     }
 
     /**
@@ -162,12 +158,12 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jLabel_Timer_Top = new javax.swing.JLabel();
         jButton_Shutdown = new javax.swing.JButton();
         jPanel_SideBar = new javax.swing.JPanel();
-        jButton_Paint = new javax.swing.JButton();
-        jButton_Finder = new javax.swing.JButton();
-        jButton_Text_Editor = new javax.swing.JButton();
-        jButton_Player = new javax.swing.JButton();
-        jButton_Twitter = new javax.swing.JButton();
-        jButton_Terminal = new javax.swing.JButton();
+        jButton_OPen_Paint = new javax.swing.JButton();
+        jButton_OPen_Finder = new javax.swing.JButton();
+        jButton_Open_Text_Editor = new javax.swing.JButton();
+        jButton_OPen_Player = new javax.swing.JButton();
+        jButton_OPen_Twitter = new javax.swing.JButton();
+        jButton_OPen_Terminal = new javax.swing.JButton();
         jPanel_MainWindow = new javax.swing.JPanel();
         ImageIcon desktopIcon = new ImageIcon(getClass().getResource("/images/desktop-wallpaper.jpg"));
         Image desktopImage = desktopIcon.getImage();
@@ -423,118 +419,118 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
         jPanel_SideBar.setBackground(new java.awt.Color(66, 62, 62));
 
-        jButton_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png"))); // NOI18N
-        jButton_Paint.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Paint.setBorderPainted(false);
-        jButton_Paint.setContentAreaFilled(false);
-        jButton_Paint.setFocusPainted(false);
-        jButton_Paint.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png"))); // NOI18N
+        jButton_OPen_Paint.setBorder(BorderFactory.createEmptyBorder());
+        jButton_OPen_Paint.setBorderPainted(false);
+        jButton_OPen_Paint.setContentAreaFilled(false);
+        jButton_OPen_Paint.setFocusPainted(false);
+        jButton_OPen_Paint.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_PaintMouseEntered(evt);
+                jButton_OPen_PaintMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_PaintMouseExited(evt);
+                jButton_OPen_PaintMouseExited(evt);
             }
         });
-        jButton_Paint.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OPen_Paint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PaintActionPerformed(evt);
+                jButton_OPen_PaintActionPerformed(evt);
             }
         });
 
-        jButton_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_20.png"))); // NOI18N
-        jButton_Finder.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Finder.setBorderPainted(false);
-        jButton_Finder.setContentAreaFilled(false);
-        jButton_Finder.setFocusPainted(false);
-        jButton_Finder.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_OPen_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_20.png"))); // NOI18N
+        jButton_OPen_Finder.setBorder(BorderFactory.createEmptyBorder());
+        jButton_OPen_Finder.setBorderPainted(false);
+        jButton_OPen_Finder.setContentAreaFilled(false);
+        jButton_OPen_Finder.setFocusPainted(false);
+        jButton_OPen_Finder.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_FinderMouseEntered(evt);
+                jButton_OPen_FinderMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_FinderMouseExited(evt);
+                jButton_OPen_FinderMouseExited(evt);
             }
         });
-        jButton_Finder.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OPen_Finder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_FinderActionPerformed(evt);
+                jButton_OPen_FinderActionPerformed(evt);
             }
         });
 
-        jButton_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_20.png"))); // NOI18N
-        jButton_Text_Editor.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Text_Editor.setBorderPainted(false);
-        jButton_Text_Editor.setContentAreaFilled(false);
-        jButton_Text_Editor.setFocusPainted(false);
-        jButton_Text_Editor.setOpaque(false);
-        jButton_Text_Editor.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_Open_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_20.png"))); // NOI18N
+        jButton_Open_Text_Editor.setBorder(BorderFactory.createEmptyBorder());
+        jButton_Open_Text_Editor.setBorderPainted(false);
+        jButton_Open_Text_Editor.setContentAreaFilled(false);
+        jButton_Open_Text_Editor.setFocusPainted(false);
+        jButton_Open_Text_Editor.setOpaque(false);
+        jButton_Open_Text_Editor.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_Text_EditorMouseEntered(evt);
+                jButton_Open_Text_EditorMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_Text_EditorMouseExited(evt);
+                jButton_Open_Text_EditorMouseExited(evt);
             }
         });
-        jButton_Text_Editor.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Open_Text_Editor.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_Text_EditorActionPerformed(evt);
+                jButton_Open_Text_EditorActionPerformed(evt);
             }
         });
 
-        jButton_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_20.png"))); // NOI18N
-        jButton_Player.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Player.setBorderPainted(false);
-        jButton_Player.setContentAreaFilled(false);
-        jButton_Player.setFocusPainted(false);
-        jButton_Player.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_OPen_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_20.png"))); // NOI18N
+        jButton_OPen_Player.setBorder(BorderFactory.createEmptyBorder());
+        jButton_OPen_Player.setBorderPainted(false);
+        jButton_OPen_Player.setContentAreaFilled(false);
+        jButton_OPen_Player.setFocusPainted(false);
+        jButton_OPen_Player.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_PlayerMouseEntered(evt);
+                jButton_OPen_PlayerMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_PlayerMouseExited(evt);
+                jButton_OPen_PlayerMouseExited(evt);
             }
         });
-        jButton_Player.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OPen_Player.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_PlayerActionPerformed(evt);
+                jButton_OPen_PlayerActionPerformed(evt);
             }
         });
 
-        jButton_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_20.png"))); // NOI18N
-        jButton_Twitter.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Twitter.setBorderPainted(false);
-        jButton_Twitter.setContentAreaFilled(false);
-        jButton_Twitter.setFocusPainted(false);
-        jButton_Twitter.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_OPen_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_20.png"))); // NOI18N
+        jButton_OPen_Twitter.setBorder(BorderFactory.createEmptyBorder());
+        jButton_OPen_Twitter.setBorderPainted(false);
+        jButton_OPen_Twitter.setContentAreaFilled(false);
+        jButton_OPen_Twitter.setFocusPainted(false);
+        jButton_OPen_Twitter.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_TwitterMouseEntered(evt);
+                jButton_OPen_TwitterMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_TwitterMouseExited(evt);
+                jButton_OPen_TwitterMouseExited(evt);
             }
         });
-        jButton_Twitter.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OPen_Twitter.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_TwitterActionPerformed(evt);
+                jButton_OPen_TwitterActionPerformed(evt);
             }
         });
 
-        jButton_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_20.png"))); // NOI18N
-        jButton_Terminal.setBorder(BorderFactory.createEmptyBorder());
-        jButton_Terminal.setBorderPainted(false);
-        jButton_Terminal.setContentAreaFilled(false);
-        jButton_Terminal.setFocusPainted(false);
-        jButton_Terminal.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_OPen_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_20.png"))); // NOI18N
+        jButton_OPen_Terminal.setBorder(BorderFactory.createEmptyBorder());
+        jButton_OPen_Terminal.setBorderPainted(false);
+        jButton_OPen_Terminal.setContentAreaFilled(false);
+        jButton_OPen_Terminal.setFocusPainted(false);
+        jButton_OPen_Terminal.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_TerminalMouseEntered(evt);
+                jButton_OPen_TerminalMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_TerminalMouseExited(evt);
+                jButton_OPen_TerminalMouseExited(evt);
             }
         });
-        jButton_Terminal.addActionListener(new java.awt.event.ActionListener() {
+        jButton_OPen_Terminal.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_TerminalActionPerformed(evt);
+                jButton_OPen_TerminalActionPerformed(evt);
             }
         });
 
@@ -545,29 +541,29 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
             .addGroup(jPanel_SideBarLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jButton_Finder, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addComponent(jButton_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addComponent(jButton_Text_Editor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Player, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Terminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton_Twitter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton_OPen_Finder, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(jButton_OPen_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(jButton_Open_Text_Editor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_OPen_Player, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_OPen_Terminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jButton_OPen_Twitter, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(15, Short.MAX_VALUE))
         );
         jPanel_SideBarLayout.setVerticalGroup(
             jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_SideBarLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
-                .addComponent(jButton_Finder, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_OPen_Finder, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_Paint, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_OPen_Paint, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_Text_Editor, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_Open_Text_Editor, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton_Player, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_OPen_Player, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_Terminal, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_OPen_Terminal, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_Twitter, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_OPen_Twitter, javax.swing.GroupLayout.PREFERRED_SIZE, 43, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(396, Short.MAX_VALUE))
         );
 
@@ -619,53 +615,53 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton_Text_EditorMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Text_EditorMouseEntered
-        jButton_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_32.png")));
-    }//GEN-LAST:event_jButton_Text_EditorMouseEntered
+    private void jButton_Open_Text_EditorMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Open_Text_EditorMouseEntered
+        jButton_Open_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_32.png")));
+    }//GEN-LAST:event_jButton_Open_Text_EditorMouseEntered
 
-    private void jButton_Text_EditorMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Text_EditorMouseExited
-        jButton_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_20.png")));
-    }//GEN-LAST:event_jButton_Text_EditorMouseExited
+    private void jButton_Open_Text_EditorMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Open_Text_EditorMouseExited
+        jButton_Open_Text_Editor.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_editor_20.png")));
+    }//GEN-LAST:event_jButton_Open_Text_EditorMouseExited
 
-    private void jButton_TerminalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_TerminalMouseEntered
-        jButton_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_32.png")));
-    }//GEN-LAST:event_jButton_TerminalMouseEntered
+    private void jButton_OPen_TerminalMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_TerminalMouseEntered
+        jButton_OPen_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_32.png")));
+    }//GEN-LAST:event_jButton_OPen_TerminalMouseEntered
 
-    private void jButton_TerminalMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_TerminalMouseExited
-       jButton_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_20.png")));
-    }//GEN-LAST:event_jButton_TerminalMouseExited
+    private void jButton_OPen_TerminalMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_TerminalMouseExited
+       jButton_OPen_Terminal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_terminal_20.png")));
+    }//GEN-LAST:event_jButton_OPen_TerminalMouseExited
 
-    private void jButton_TwitterMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_TwitterMouseEntered
-        jButton_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_32.png")));
-    }//GEN-LAST:event_jButton_TwitterMouseEntered
+    private void jButton_OPen_TwitterMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_TwitterMouseEntered
+        jButton_OPen_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_32.png")));
+    }//GEN-LAST:event_jButton_OPen_TwitterMouseEntered
 
-    private void jButton_TwitterMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_TwitterMouseExited
-        jButton_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_20.png")));
-    }//GEN-LAST:event_jButton_TwitterMouseExited
+    private void jButton_OPen_TwitterMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_TwitterMouseExited
+        jButton_OPen_Twitter.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_twitter_20.png")));
+    }//GEN-LAST:event_jButton_OPen_TwitterMouseExited
 
-    private void jButton_FinderMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_FinderMouseEntered
-        jButton_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_32.png")));
-    }//GEN-LAST:event_jButton_FinderMouseEntered
+    private void jButton_OPen_FinderMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_FinderMouseEntered
+        jButton_OPen_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_32.png")));
+    }//GEN-LAST:event_jButton_OPen_FinderMouseEntered
 
-    private void jButton_FinderMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_FinderMouseExited
-        jButton_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_20.png")));
-    }//GEN-LAST:event_jButton_FinderMouseExited
+    private void jButton_OPen_FinderMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_FinderMouseExited
+        jButton_OPen_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_20.png")));
+    }//GEN-LAST:event_jButton_OPen_FinderMouseExited
 
-    private void jButton_PaintMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_PaintMouseEntered
-        jButton_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_32.png")));
-    }//GEN-LAST:event_jButton_PaintMouseEntered
+    private void jButton_OPen_PaintMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintMouseEntered
+        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_32.png")));
+    }//GEN-LAST:event_jButton_OPen_PaintMouseEntered
 
-    private void jButton_PaintMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_PaintMouseExited
-        jButton_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png")));
-    }//GEN-LAST:event_jButton_PaintMouseExited
+    private void jButton_OPen_PaintMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintMouseExited
+        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png")));
+    }//GEN-LAST:event_jButton_OPen_PaintMouseExited
 
-    private void jButton_PlayerMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_PlayerMouseEntered
-        jButton_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_32.png")));
-    }//GEN-LAST:event_jButton_PlayerMouseEntered
+    private void jButton_OPen_PlayerMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerMouseEntered
+        jButton_OPen_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_32.png")));
+    }//GEN-LAST:event_jButton_OPen_PlayerMouseEntered
 
-    private void jButton_PlayerMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_PlayerMouseExited
-        jButton_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_20.png")));
-    }//GEN-LAST:event_jButton_PlayerMouseExited
+    private void jButton_OPen_PlayerMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerMouseExited
+        jButton_OPen_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_20.png")));
+    }//GEN-LAST:event_jButton_OPen_PlayerMouseExited
 
     private void jPanel_FinderMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel_FinderMousePressed
         mouseX = evt.getX();
@@ -692,14 +688,22 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         String folderName = JOptionPane.showInputDialog(null, "Folder name");
-        createFolder(folderName, mouseX, mouseY, "Main");
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
-    private void jButton_FinderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_FinderActionPerformed
-        FinderApp fd = new FinderApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
-    }//GEN-LAST:event_jButton_FinderActionPerformed
+    private void jButton_OPen_FinderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_FinderActionPerformed
+        if (finderApp == null || finderApp.isClosed()) {
+            finderApp = new FinderApp(userAuthen);
+            setInternalFrameCenterLocation(finderApp);
+            jDesktopPane_Window.add(finderApp).setVisible(true);
+        } else {
+            finderApp.setVisible(true);
+            try {
+                finderApp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
+    }//GEN-LAST:event_jButton_OPen_FinderActionPerformed
 
     private void jButton_Finder_CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Finder_CloseActionPerformed
         jPanel_Finder.setVisible(false);
@@ -707,11 +711,20 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jPanel_MainWindow.repaint();
     }//GEN-LAST:event_jButton_Finder_CloseActionPerformed
 
-    private void jButton_Text_EditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Text_EditorActionPerformed
-        EditorApp fd = new EditorApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
-    }//GEN-LAST:event_jButton_Text_EditorActionPerformed
+    private void jButton_Open_Text_EditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Open_Text_EditorActionPerformed
+        if (editorApp == null || editorApp.isClosed()) {
+            editorApp = new EditorApp(userAuthen);
+            setInternalFrameCenterLocation(editorApp);
+            jDesktopPane_Window.add(editorApp).setVisible(true);
+        } else {
+            editorApp.setVisible(true);
+            try {
+                editorApp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
+    }//GEN-LAST:event_jButton_Open_Text_EditorActionPerformed
 
     private void jButton_Editor_CloseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Editor_CloseActionPerformed
         jPanel_Editor.setVisible(false);
@@ -821,26 +834,53 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         }
     }
     
-    private void jButton_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PaintActionPerformed
-        //Enviar la dirrecion que se envie la carpeta de imagenes del usurio login
-        PaintApp fd = new PaintApp(userloging(),true,null);
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
-    }//GEN-LAST:event_jButton_PaintActionPerformed
+    private void jButton_OPen_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintActionPerformed
+        if (paintApp == null || paintApp.isClosed()) {
+            paintApp = new PaintApp(userAuthen);
+            
+            setInternalFrameCenterLocation(paintApp);
+            jDesktopPane_Window.add(paintApp).setVisible(true);
+        } else {
+            paintApp.setVisible(true);
+            try {
+                paintApp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
+    }//GEN-LAST:event_jButton_OPen_PaintActionPerformed
 
-    private void jButton_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PlayerActionPerformed
-        PlayerApp fd = new PlayerApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
-    }//GEN-LAST:event_jButton_PlayerActionPerformed
+    private void jButton_OPen_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerActionPerformed
+        if (playerApp == null || playerApp.isClosed()) {
+            playerApp = new PlayerApp(userAuthen);
+            setInternalFrameCenterLocation(playerApp);
+            jDesktopPane_Window.add(playerApp).setVisible(true);
+        } else {
+            playerApp.setVisible(true);
+            try {
+                playerApp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
+    }//GEN-LAST:event_jButton_OPen_PlayerActionPerformed
 
-    private void jButton_TerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TerminalActionPerformed
-        TerminalApp fd = new TerminalApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
-    }//GEN-LAST:event_jButton_TerminalActionPerformed
+    private void jButton_OPen_TerminalActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_TerminalActionPerformed
+        if (terminalApp == null || terminalApp.isClosed()) {
+            terminalApp = new TerminalApp(userAuthen);
+            setInternalFrameCenterLocation(terminalApp);
+            jDesktopPane_Window.add(terminalApp).setVisible(true);
+        } else {
+            terminalApp.setVisible(true);
+            try {
+                terminalApp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
+    }//GEN-LAST:event_jButton_OPen_TerminalActionPerformed
 
-    private void jButton_TwitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_TwitterActionPerformed
+    private void jButton_OPen_TwitterActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_TwitterActionPerformed
 
         JDialog loginDialog = new JDialog(this, "Twitter", true);
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png")); 
@@ -852,7 +892,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         loginDialog.setSize(900, 550);
         loginDialog.setLocationRelativeTo(this);
         loginDialog.setVisible(true);
-    }//GEN-LAST:event_jButton_TwitterActionPerformed
+    }//GEN-LAST:event_jButton_OPen_TwitterActionPerformed
 
     private void jMenuItem_LockActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_LockActionPerformed
         LoginForm lgForm = new LoginForm();
@@ -861,9 +901,18 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }//GEN-LAST:event_jMenuItem_LockActionPerformed
 
     private void jMenuItem_SettingsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SettingsActionPerformed
-        SettingsApp fd = new SettingsApp();
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
+         if (settingsAppp == null || settingsAppp.isClosed()) {
+            settingsAppp = new SettingsApp(userAuthen);
+            setInternalFrameCenterLocation(settingsAppp);
+            jDesktopPane_Window.add(settingsAppp).setVisible(true);
+        } else {
+            settingsAppp.setVisible(true);
+            try {
+                settingsAppp.setSelected(true);
+            } catch (java.beans.PropertyVetoException e) {
+                System.out.println("Some error rised.");
+            }
+        }
     }//GEN-LAST:event_jMenuItem_SettingsActionPerformed
 
      @Override
@@ -871,9 +920,9 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }
 
     public void showTwitterApp(TwitterAccount account){
-        TwitterApp fd = new TwitterApp( account);
-        setInternalFrameCenterLocation(fd);
-        jDesktopPane_Window.add(fd).setVisible(true);
+        //TwitterApp fd = new TwitterApp( account);
+        //setInternalFrameCenterLocation(fd);
+        //jDesktopPane_Window.add(fd).setVisible(true);
     }
 
     private void setInternalFrameCenterLocation(JInternalFrame frame){
@@ -882,68 +931,6 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         frame.setLocation((desktopSize.width - jISize.width)/2,(desktopSize.height- jISize.height)/2);
     }
 
-    private void createFolder(String folderName, int posX, int posY, String belongsTo) {
-        Path folderPath = defaultFolderPath.resolve(folderName);
-        
-        int counter = 1;
-        
-        while (Files.exists(folderPath)) {
-            // Append counter index to the folder name
-            folderName = folderName + "_" + counter;
-            folderPath = defaultFolderPath.resolve(folderName);
-            counter++;
-        }
-
-        // Check if the folder exists
-        try {
-            // Create the folder
-            Files.createDirectory(folderPath);
-            FolderButton newButton = new FolderButton(folderName);
-
-            // Add folder attributes to the list
-            Folder folder = new Folder(folderName, posX, posY, belongsTo, folderPath.toString(), newButton);
-
-            System.out.println(folder);
-            System.out.println("Folder created successfully."+ folderPath.toString());
-
-
-            newButton.setBorder(BorderFactory.createEmptyBorder());
-            newButton.setContentAreaFilled(false);
-            newButton.setBorderPainted(false);
-            newButton.setFocusPainted(false);
-            newButton.setBounds(posX, posY, 100, 35); 
-            newButton.setIcon(new javax.swing.ImageIcon("/Users/leo/dev/unitec/proyecto-2/mini-windows/src/main/java/Images/icon_default_folder.png"));
-            newButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Handle button click event here
-                    //JOptionPane.showMessageDialog(null, "Button '" + folderName + "' clicked!");
-                    System.out.println("Click");
-                  
-                }
-            });
-            jPanel_Finder_Dashboard.add(newButton);
-
-            // Repaint the panel to reflect the changes
-            jPanel_Finder_Dashboard.revalidate();
-            jPanel_Finder_Dashboard.repaint();
-            folderList.add(folder);
-
-        } catch (Exception ex) {
-            System.err.println("Error creating folder: " + ex.getMessage());
-        }
-    }
-    
-    
-    public String userloging(){
-//       String User=login.getUserLoging();                                //si creo las carpeta de imagenes le cabio el files
-//    String dir="src/main/users"+"/"+User+"/Files";
-//        System.out.println("UserLoging: "+User+"\nUrl: "+dir);
-////    File Imagenes= new File(dir);
-////    return Imagenes;
-//     return dir;
-return null;
-    }
     /**
      * @param args the command line arguments
      */
@@ -1012,14 +999,14 @@ return null;
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton7;
     private javax.swing.JButton jButton_Editor_Close;
-    private javax.swing.JButton jButton_Finder;
     private javax.swing.JButton jButton_Finder_Close;
-    private javax.swing.JButton jButton_Paint;
-    private javax.swing.JButton jButton_Player;
+    private javax.swing.JButton jButton_OPen_Finder;
+    private javax.swing.JButton jButton_OPen_Paint;
+    private javax.swing.JButton jButton_OPen_Player;
+    private javax.swing.JButton jButton_OPen_Terminal;
+    private javax.swing.JButton jButton_OPen_Twitter;
+    private javax.swing.JButton jButton_Open_Text_Editor;
     private javax.swing.JButton jButton_Shutdown;
-    private javax.swing.JButton jButton_Terminal;
-    private javax.swing.JButton jButton_Text_Editor;
-    private javax.swing.JButton jButton_Twitter;
     private javax.swing.JDesktopPane jDesktopPane_Window;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Timer_Top;

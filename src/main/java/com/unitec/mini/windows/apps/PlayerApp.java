@@ -4,19 +4,21 @@
  */
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.logic.User;
 import java.awt.CardLayout;
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 
 /**
  *
  * @author leonel
  */
-public class PlayerApp extends javax.swing.JInternalFrame  implements AppInterface {
+public class PlayerApp extends JInternalFrame  implements AppInterface {
+    private User userAuth;
 
-    /**
-     * Creates new form Player
-     */
-    public PlayerApp() {
+    public PlayerApp(User user) {
+        this.userAuth = user;
+
         initComponents();
         setComponents();
     }
@@ -65,7 +67,6 @@ public class PlayerApp extends javax.swing.JInternalFrame  implements AppInterfa
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Media Player");
 

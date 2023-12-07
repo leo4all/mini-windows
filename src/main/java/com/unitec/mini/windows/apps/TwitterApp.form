@@ -4,7 +4,6 @@
   <Properties>
     <Property name="closable" type="boolean" value="true"/>
     <Property name="iconifiable" type="boolean" value="true"/>
-    <Property name="maximizable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="Twitter"/>
   </Properties>
@@ -85,12 +84,12 @@
                       <Group type="102" alignment="0" attributes="0">
                           <Component id="jScrollPane_AddTweet" min="-2" pref="414" max="-2" attributes="0"/>
                           <EmptySpace max="-2" attributes="0"/>
-                          <Component id="jButton_Post" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton_SubmitPost" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="jButton_AddImage" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton_OpenAddImage" min="-2" max="-2" attributes="0"/>
                           <EmptySpace type="separate" max="-2" attributes="0"/>
-                          <Component id="jButton_AddEmoji" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton_OPenAddEmoji" min="-2" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -104,7 +103,7 @@
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Group type="102" alignment="0" attributes="0">
                           <EmptySpace min="-2" pref="35" max="-2" attributes="0"/>
-                          <Component id="jButton_Post" min="-2" max="-2" attributes="0"/>
+                          <Component id="jButton_SubmitPost" min="-2" max="-2" attributes="0"/>
                           <EmptySpace min="-2" pref="77" max="-2" attributes="0"/>
                       </Group>
                       <Group type="102" alignment="1" attributes="0">
@@ -113,8 +112,8 @@
                       </Group>
                   </Group>
                   <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="jButton_AddImage" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="jButton_AddEmoji" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton_OpenAddImage" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jButton_OPenAddEmoji" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
@@ -122,28 +121,31 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Component class="javax.swing.JButton" name="jButton_AddImage">
+        <Component class="javax.swing.JButton" name="jButton_OpenAddImage">
           <Properties>
             <Property name="text" type="java.lang.String" value="I"/>
             <Property name="toolTipText" type="java.lang.String" value="Media"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_AddImageActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_OpenAddImageActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton_Post">
+        <Component class="javax.swing.JButton" name="jButton_SubmitPost">
           <Properties>
             <Property name="text" type="java.lang.String" value="Post"/>
             <Property name="enabled" type="boolean" value="false"/>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_PostActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_SubmitPostActionPerformed"/>
           </Events>
         </Component>
-        <Component class="javax.swing.JButton" name="jButton_AddEmoji">
+        <Component class="javax.swing.JButton" name="jButton_OPenAddEmoji">
           <Properties>
             <Property name="text" type="java.lang.String" value="E"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_OPenAddEmojiActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane_AddTweet">
           <AuxValues>

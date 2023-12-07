@@ -6,13 +6,15 @@ package com.unitec.mini.windows.logic;
 
 
 public class User {
-    private final String name;
-    private final String username;
-    private final String accountType;
+    private String name;
+    private String username;
+    private String accountType;
+    private String password;
 
     public User(String name, String username, String password, String accountType) {
         this.name = name;
         this.username = username;
+        this.password = password;
         this.accountType = accountType;
     }
 
@@ -26,5 +28,18 @@ public class User {
 
     public String getAccountType() {
         return accountType;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" + "name=" + name + ", username=" + username + ", accountType=" + accountType + ", password=" + password + '}';
     }
 }

@@ -1,6 +1,7 @@
 package com.unitec.mini.windows.apps;
 
 import com.unitec.mini.windows.LoginForm;
+import com.unitec.mini.windows.logic.User;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -18,14 +19,18 @@ import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.MutableAttributeSet;
 
-public class EditorApp extends javax.swing.JInternalFrame implements AppInterface {
+public class EditorApp extends JInternalFrame implements AppInterface {
     private final int DEFAULT_FONT_SIZE = 12;
     private final int DEFAULT_ALIGNMENT = StyleConstants.ALIGN_LEFT;
-    String userLogin= LoginForm.getUserLoging();
-    public EditorApp() {
+    private User userAuthen;
+    
+    public EditorApp(User user) {
+        this.userAuthen = user;
+
         initComponents();
         setComponents();
         setDefaultEditorAttributes();
@@ -513,53 +518,42 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
     }//GEN-LAST:event_jComboBox_Font_StyleItemStateChanged
 
     private void Btn_SaveinDocument_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SaveinDocument_userActionPerformed
-        // TODO add your handling code here:
         
-                    // Solicitar el nombre del documento al usuario
-            String fileName = JOptionPane.showInputDialog("Enter document name:");
-            if (fileName != null && !fileName.trim().isEmpty()) {
-                JFileChooser fileChooser = new JFileChooser();
-                fileChooser.setCurrentDirectory(new File("."));
-                
-                // Cambia la ruta del archivo según tu especificación y el nombre proporcionado
-                String filePath = "src/main/users/"+userLogin+"/"+"Documents/"+ fileName +".txt";
-                File file = new File(filePath);
-                PrintWriter fileOut = null;
+        String fileName = JOptionPane.showInputDialog("Enter document name:");
+        if (fileName != null && !fileName.trim().isEmpty()) {
+            JFileChooser fileChooser = new JFileChooser();
+            fileChooser.setCurrentDirectory(new File("."));
 
-                try {
-                    fileOut = new PrintWriter(file);
+            String filePath = "src/main/users/"+userAuthen+"/"+"Documents/"+ fileName +".txt";
+            File file = new File(filePath);
+            PrintWriter fileOut = null;
 
-                    int totalStyles = textPane.getStyledDocument().getLength();
-                    fileOut.println(totalStyles);
+            try {
+                fileOut = new PrintWriter(file);
 
-                    for (int i = 0; i < totalStyles; i++) {
-                        Element element = textPane.getStyledDocument().getCharacterElement(i);
-                        AttributeSet attrs = element.getAttributes();
+                int totalStyles = textPane.getStyledDocument().getLength();
+                fileOut.println(totalStyles);
 
-                        // Save text
-                        String text = textPane.getStyledDocument().getText(i, 1);
-                        fileOut.println(text);
-
-                        // Save color
-                        Color textColor = StyleConstants.getForeground(attrs);
-                        fileOut.println(String.format("#%06X", textColor.getRGB() & 0xFFFFFF));
-
-                        // Save font
-                        String fontFamily = StyleConstants.getFontFamily(attrs);
-                        fileOut.println(fontFamily);
-
-                        // Save size
-                        int fontSize = StyleConstants.getFontSize(attrs);
-                        fileOut.println(fontSize);
-                    }
-                } catch (FileNotFoundException | BadLocationException ex) {
-                    ex.printStackTrace();
-                } finally {
-                    if (fileOut != null) {
-                        fileOut.close();
-                    }
+                for (int i = 0; i < totalStyles; i++) {
+                    Element element = textPane.getStyledDocument().getCharacterElement(i);
+                    AttributeSet attrs = element.getAttributes();
+                    String text = textPane.getStyledDocument().getText(i, 1);
+                    fileOut.println(text);
+                    Color textColor = StyleConstants.getForeground(attrs);
+                    fileOut.println(String.format("#%06X", textColor.getRGB() & 0xFFFFFF));
+                    String fontFamily = StyleConstants.getFontFamily(attrs);
+                    fileOut.println(fontFamily);
+                    int fontSize = StyleConstants.getFontSize(attrs);
+                    fileOut.println(fontSize);
+                }
+            } catch (FileNotFoundException | BadLocationException ex) {
+                ex.printStackTrace();
+            } finally {
+                if (fileOut != null) {
+                    fileOut.close();
                 }
             }
+        }
     }//GEN-LAST:event_Btn_SaveinDocument_userActionPerformed
 
     private void switchAlignment(int alignment) {

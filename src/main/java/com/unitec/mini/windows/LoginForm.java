@@ -7,14 +7,13 @@ package com.unitec.mini.windows;
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.unitec.mini.windows.logic.FolderStructureCreator;
+import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.logic.UserManager;
-import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Taskbar;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
@@ -27,8 +26,7 @@ import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
 
 public class LoginForm extends javax.swing.JFrame {
-    String projectDir;
-    public static String UserLoging;
+    private User userAuth;
     
     public LoginForm() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
@@ -46,21 +44,10 @@ public class LoginForm extends javax.swing.JFrame {
         this.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
         initComponents();
         setComponents();
-        createUsersFolderStructure();
-    }
-    
-    
-
-    private void createUsersFolderStructure(){
-        projectDir = System.getProperty("user.dir") + "/src/main/users";
-        String adminFolderPath = UserManager.getDefaultUser();
-        String usersFilePath = adminFolderPath + File.separator + "users.twc";
-        FolderStructureCreator.createFolderFor(adminFolderPath);
-        FolderStructureCreator.createFile(projectDir, usersFilePath);
-
+        
         UserManager.createDefaultAdminUser();
+        FolderStructureCreator.createDefaultFolderForAdmin();
     }
-    
         
     public void setComponents(){ 
         updateTime(jLabel1);
@@ -244,8 +231,8 @@ public class LoginForm extends javax.swing.JFrame {
         
         UserManager.initialize();
         if (UserManager.authenticateUser(username, password)) {
-            openAuthenticatedFrame(UserManager.getUserByUsername(username));
-            UserLoging=username;
+            userAuth = UserManager.getUserByUsername(username);
+            openAuthenticatedFrame(userAuth);
             this.dispose();
         }else{
             JOptionPane.showMessageDialog(null, 
@@ -257,10 +244,9 @@ public class LoginForm extends javax.swing.JFrame {
     }//GEN-LAST:event_jButton_LoginActionPerformed
 
     private void openAuthenticatedFrame(User authenticatedUser) {
-        // Open the AuthenticatedFrame with the authenticated user
         SwingUtilities.invokeLater(() -> {
             Dashboard dashboard = new Dashboard();
-            dashboard.setAuthenticatedUser(authenticatedUser);
+            dashboard.setAuthUser(userAuth);
             dashboard.setExtendedState(JFrame.MAXIMIZED_BOTH);
             dashboard.setVisible(true);
         });
@@ -302,22 +288,19 @@ public class LoginForm extends javax.swing.JFrame {
         //</editor-fold>
         
         if( SystemInfo.isMacOS ) {
-             // take the menu bar off the jframe
-            System.setProperty("apple.laf.useScreenMenuBar", "true");
-            System.setProperty("Xdock:name", "Mini Windows - Login");
-
+             // Trying to set Windows title menu on Mac OS
              // Set the application name for the Mac menubar
-            System.setProperty("apple.awt.application.name", "Mini Windows - Login");
+            System.setProperty("apple.laf.useScreenMenuBar", "true");
 
-            // Set the name for the application menu
-            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Mini Windows - Login");
-            System.setProperty("Dcom.apple.mrj.application.apple.menu.about.name", "Mini Windows - Login");
+            System.setProperty("Xdock:name", "Mini Windows");
+            System.setProperty("apple.awt.application.name", "Mini Windows");
+            System.setProperty("com.apple.mrj.application.apple.menu.about.name", "Mini Windows");
+            System.setProperty("Dcom.apple.mrj.application.apple.menu.about.name", "Mini Windows");
+            System.setProperty( "apple.awt.application.appearance", "system" );
 
             if( SystemInfo.isMacFullWindowContentSupported ){
-                //.getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
+               //getRootPane().putClientProperty( "apple.awt.transparentTitleBar", true );
             }
-
-            System.setProperty( "apple.awt.application.appearance", "system" );
         }
         
         try {
@@ -329,14 +312,11 @@ public class LoginForm extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new LoginForm().setVisible(true);
+                (new LoginForm()).setVisible(true);
             }
         });
     }
 
-    public static String getUserLoging() {
-        return UserLoging;
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Login;

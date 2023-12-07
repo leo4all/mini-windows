@@ -4,15 +4,25 @@
  */
 package com.unitec.mini.windows.logic;
 
+import com.unitec.mini.windows.ui.FolderButton;
 import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
 
 /**
  *
  * @author leonel
  */
 public class FolderStructureCreator {
-    static String projectDir = System.getProperty("user.dir") + "/src/main/users";
-                
+    private static final String projectDir = System.getProperty("user.dir") + "/src/main/users";
+    
+    public static void createDefaultFolderForAdmin(){
+        
+    }
     public static void createFolderFor(String username){
         String folderPath = username;
         String documentsFolderPath = folderPath + File.separator + "Documents";
@@ -27,6 +37,13 @@ public class FolderStructureCreator {
         createFolder(projectDir, desktopFolderPath);
     }
 
+    public static String getUserRootFolder() {
+        return System.getProperty("user.dir") + 
+                File.separator +"src" + 
+                File.separator +"main" +
+                File.separator +"users";
+    }
+    
     public static void createFolder(String parentDir, String folderPath) {
         File folder = new File(parentDir, folderPath);
         if (!folder.exists()) {
@@ -57,54 +74,34 @@ public class FolderStructureCreator {
         }
     }
     
-    public void createFolderAtPosition(String folderName, int posX, int posY, String belongsTo){
-        /*File folderPath = new File(belongsTo, "");
+
+    public JButton createJButtonFolderAtPosition(String folderName, int posX, int posY, String belongsTo){
+        Path path = Paths.get(belongsTo);
+        FolderButton newButton = null;
+
         int counter = 1;
-        
-        while (Files.exists(folderPath)) {
-            // Append counter index to the folder name
-            folderName = folderName + "_" + counter;
-            folderPath = belongsTo.resolve(folderName);
+        while (Files.exists(path)) {
             counter++;
         }
 
-        // Check if the folder exists
         try {
-            // Create the folder
-            Files.createDirectory(folderPath);
-            FolderButton newButton = new FolderButton(folderName);
+            Files.createDirectory(path);
+            newButton = new FolderButton(folderName);
 
-            // Add folder attributes to the list
-            Folder folder = new Folder(folderName, posX, posY, belongsTo, folderPath.toString(), newButton);
-
-            System.out.println(folder);
-            System.out.println("Folder created successfully."+ folderPath.toString());
-
+            Folder folder = new Folder(folderName, posX, posY, belongsTo, path.toString(), newButton);
 
             newButton.setBorder(BorderFactory.createEmptyBorder());
             newButton.setContentAreaFilled(false);
             newButton.setBorderPainted(false);
             newButton.setFocusPainted(false);
             newButton.setBounds(posX, posY, 100, 35); 
-            newButton.setIcon(new javax.swing.ImageIcon("/Users/leo/dev/unitec/proyecto-2/mini-windows/src/main/java/Images/icon_default_folder.png"));
-            newButton.addActionListener(new ActionListener() {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    // Handle button click event here
-                    //JOptionPane.showMessageDialog(null, "Button '" + folderName + "' clicked!");
-                    System.out.println("Click");
-                  
-                }
-            });
-            jPanel_Finder_Dashboard.add(newButton);
-
-            // Repaint the panel to reflect the changes
-            jPanel_Finder_Dashboard.revalidate();
-            jPanel_Finder_Dashboard.repaint();
-            folderList.add(folder);
-
+            
+            ImageIcon iconFolder = new ImageIcon(getClass().getResource("/images/icon_default_folder.png"));
+            newButton.setIcon(iconFolder);
         } catch (Exception ex) {
             System.err.println("Error creating folder: " + ex.getMessage());
-        }*/
+        }
+        
+        return newButton;
     }
 }

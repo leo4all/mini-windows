@@ -5,6 +5,7 @@
 package com.unitec.mini.windows.apps;
 
 import com.unitec.mini.windows.logic.FolderStructureCreator;
+import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.logic.UserManager;
 import java.awt.Color;
 import java.util.Enumeration;
@@ -14,6 +15,7 @@ import javax.swing.ButtonGroup;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -25,10 +27,14 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author leonel
  */
-public class SettingsApp extends javax.swing.JInternalFrame  implements AppInterface{
+public class SettingsApp extends JInternalFrame  implements AppInterface{
     DefaultTableModel userTableModel;
+    User userAth;
 
-    public SettingsApp() {
+
+    public SettingsApp(User user) {
+        this.userAth = user;
+        
         initComponents();
         setComponents();
     }
@@ -54,7 +60,6 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         
     }
     
-
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -231,7 +236,6 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Settings");
 
@@ -327,7 +331,7 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
             }
             
             UserManager.initialize();
-            UserManager.User newUser = new UserManager.User(name, username, password, accountType);
+            User newUser = new User(name, username, password, accountType);
             boolean registrationSuccess = UserManager.registerUser(newUser);
             
             if (!registrationSuccess) {
@@ -420,12 +424,12 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         String usernameToEdit = getUsernameToEdit(); // Método para obtener el nombre de usuario a editar
 
         if (usernameToEdit != null && !usernameToEdit.isEmpty()){
-            UserManager.User existingUser = UserManager.getUserByUsername(usernameToEdit);
+            User existingUser = UserManager.getUserByUsername(usernameToEdit);
 
             if (existingUser != null) {
                 String[] newData = promptForNewUserData(existingUser);
 
-                UserManager.User newUser = new UserManager.User(
+                    User newUser = new User(
                     (newData[0] != null) ? newData[0] : existingUser.getName(),
                     (newData[1] != null) ? newData[1] : existingUser.getUsername(),
                     (newData[2] != null) ? newData[2] : existingUser.getPassword(),
@@ -467,82 +471,83 @@ public class SettingsApp extends javax.swing.JInternalFrame  implements AppInter
         }
     }
     }//GEN-LAST:event_BtnEditUserActionPerformed
-private String getUsernameToEdit(){
-    return JOptionPane.showInputDialog(
+    private String getUsernameToEdit(){
+        return JOptionPane.showInputDialog(
         null,
         "Enter the username of the user to edit:",
         "Enter Username",
         JOptionPane.QUESTION_MESSAGE
-    );
-}
-private String[] promptForNewUserData(UserManager.User existingUser){
-    JPanel userDataPanel = new JPanel();
-    GroupLayout layout = new GroupLayout(userDataPanel);
-    userDataPanel.setLayout(layout);
-
-    JLabel nameLabel = new JLabel("Enter the new name:");
-    JLabel usernameLabel = new JLabel("Enter the new username:");
-    JLabel passwordLabel = new JLabel("Enter the new password:");
-    JLabel accountTypeLabel = new JLabel("Select the new account type:");
-
-    JTextField nameField = new JTextField(existingUser.getName());
-    JTextField usernameField = new JTextField(existingUser.getUsername());
-    JPasswordField passwordField = new JPasswordField();
-    String[] accountTypes = {"administrator", "standard"};
-    JComboBox<String> accountTypeComboBox = new JComboBox<>(accountTypes);
-    accountTypeComboBox.setSelectedItem(existingUser.getAccountType());
-
-    layout.setAutoCreateGaps(true);
-    layout.setAutoCreateContainerGaps(true);
-
-    GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
-    hGroup.addGroup(layout.createParallelGroup()
-            .addComponent(nameLabel)
-            .addComponent(usernameLabel)
-            .addComponent(passwordLabel)
-            .addComponent(accountTypeLabel));
-    hGroup.addGroup(layout.createParallelGroup()
-            .addComponent(nameField)
-            .addComponent(usernameField)
-            .addComponent(passwordField)
-            .addComponent(accountTypeComboBox));
-    layout.setHorizontalGroup(hGroup);
-
-    GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            .addComponent(nameLabel)
-            .addComponent(nameField));
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            .addComponent(usernameLabel)
-            .addComponent(usernameField));
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            .addComponent(passwordLabel)
-            .addComponent(passwordField));
-    vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-            .addComponent(accountTypeLabel)
-            .addComponent(accountTypeComboBox));
-    layout.setVerticalGroup(vGroup);
-
-    int option = JOptionPane.showConfirmDialog(
-            null,
-            userDataPanel,
-            "Enter New User Data",
-            JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE
-    );
-
-    if (option == JOptionPane.OK_OPTION) {
-        String newName = nameField.getText();
-        String newUsername = usernameField.getText();
-        char[] newPasswordChars = passwordField.getPassword();
-        String newPassword = new String(newPasswordChars);  
-        String newAccountType = (String) accountTypeComboBox.getSelectedItem();
-
-        return new String[]{newName, newUsername, newPassword, newAccountType};
-    } else {
-        // Usuario canceló, devuelve null o maneja según sea necesario
-        return null;
+        );
     }
+    
+    private String[] promptForNewUserData(User existingUser){
+        JPanel userDataPanel = new JPanel();
+        GroupLayout layout = new GroupLayout(userDataPanel);
+        userDataPanel.setLayout(layout);
+
+        JLabel nameLabel = new JLabel("Enter the new name:");
+        JLabel usernameLabel = new JLabel("Enter the new username:");
+        JLabel passwordLabel = new JLabel("Enter the new password:");
+        JLabel accountTypeLabel = new JLabel("Select the new account type:");
+
+        JTextField nameField = new JTextField(existingUser.getName());
+        JTextField usernameField = new JTextField(existingUser.getUsername());
+        JPasswordField passwordField = new JPasswordField();
+        String[] accountTypes = {"administrator", "standard"};
+        JComboBox<String> accountTypeComboBox = new JComboBox<>(accountTypes);
+        accountTypeComboBox.setSelectedItem(existingUser.getAccountType());
+
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
+        GroupLayout.SequentialGroup hGroup = layout.createSequentialGroup();
+        hGroup.addGroup(layout.createParallelGroup()
+                .addComponent(nameLabel)
+                .addComponent(usernameLabel)
+                .addComponent(passwordLabel)
+                .addComponent(accountTypeLabel));
+        hGroup.addGroup(layout.createParallelGroup()
+                .addComponent(nameField)
+                .addComponent(usernameField)
+                .addComponent(passwordField)
+                .addComponent(accountTypeComboBox));
+        layout.setHorizontalGroup(hGroup);
+
+        GroupLayout.SequentialGroup vGroup = layout.createSequentialGroup();
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(nameLabel)
+                .addComponent(nameField));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(usernameLabel)
+                .addComponent(usernameField));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(passwordLabel)
+                .addComponent(passwordField));
+        vGroup.addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(accountTypeLabel)
+                .addComponent(accountTypeComboBox));
+        layout.setVerticalGroup(vGroup);
+
+        int option = JOptionPane.showConfirmDialog(
+                null,
+                userDataPanel,
+                "Enter New User Data",
+                JOptionPane.OK_CANCEL_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+
+        if (option == JOptionPane.OK_OPTION) {
+            String newName = nameField.getText();
+            String newUsername = usernameField.getText();
+            char[] newPasswordChars = passwordField.getPassword();
+            String newPassword = new String(newPasswordChars);  
+            String newAccountType = (String) accountTypeComboBox.getSelectedItem();
+
+            return new String[]{newName, newUsername, newPassword, newAccountType};
+        } else {
+            // Usuario canceló, devuelve null o maneja según sea necesario
+            return null;
+        }
 }
 
 
@@ -558,7 +563,7 @@ private String[] promptForNewUserData(UserManager.User existingUser){
     
     private void populateUserTable(){
         UserManager.initialize();
-        for (UserManager.User user : UserManager.getAllUsers()) {
+        for (User user : UserManager.getAllUsers()) {
             System.out.println(user);
             Vector<Object> rowData = new Vector<>();
             rowData.add(user.getName());

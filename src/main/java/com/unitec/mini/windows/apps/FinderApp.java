@@ -4,7 +4,10 @@
  */
 package com.unitec.mini.windows.apps;
 
+
+import com.unitec.mini.windows.logic.User;
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
@@ -12,10 +15,13 @@ import javax.swing.SwingUtilities;
  *
  * @author leonel
  */
-public class FinderApp extends javax.swing.JInternalFrame  implements AppInterface{
+public class FinderApp extends JInternalFrame  implements AppInterface{
     int mouseX, mouseY;
-  
-    public FinderApp() {
+    User userAuthen;
+
+    public FinderApp(User user) {
+        userAuthen = user;
+
         initComponents();
         setComponents();
     }
@@ -24,7 +30,7 @@ public class FinderApp extends javax.swing.JInternalFrame  implements AppInterfa
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_finder_20.png"));
         this.setFrameIcon(appIcon);
     }
-
+        
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -59,7 +65,6 @@ public class FinderApp extends javax.swing.JInternalFrame  implements AppInterfa
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Finder");
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());

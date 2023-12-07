@@ -5,6 +5,7 @@ package com.unitec.mini.windows.apps;
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
  */
 
+import com.unitec.mini.windows.logic.User;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -18,21 +19,23 @@ import java.util.concurrent.Executors;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
 import javax.swing.border.Border;
 /**
  *
  * @author leonel
  */
-public class PaintApp extends javax.swing.JInternalFrame  implements AppInterface {
+public class PaintApp extends JInternalFrame  implements AppInterface {
+    User userAuthen;
     private List<ImageIcon> imageList;
     private int currentIndex;
-    
-    public PaintApp(String pathUserLoging, boolean Tipodevista, Image ImageSpecific) {
+
+    public PaintApp(User user) {
+        this.userAuthen = user;
+
         initComponents();
         setComponents();
-        imageList = new ArrayList<>();
-        currentIndex = 0;  
     }
 
     public void setComponents(){
@@ -46,6 +49,9 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         } catch (Exception e) {
             
         }
+
+        imageList = new ArrayList<>();
+        currentIndex = 0;  
     }
     
     /**
@@ -109,22 +115,20 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
             .addGroup(jPanel_BotttonLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jButton_Previous)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jPanelSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 746, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(79, 79, 79)
+                .addGap(31, 31, 31)
                 .addComponent(jButton_Next)
-                .addGap(33, 33, 33))
+                .addGap(81, 81, 81))
         );
         jPanel_BotttonLayout.setVerticalGroup(
             jPanel_BotttonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_BotttonLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
                 .addGroup(jPanel_BotttonLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_Next)
                     .addComponent(jPanelSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 70, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton_Previous)
-                    .addGroup(jPanel_BotttonLayout.createSequentialGroup()
-                        .addComponent(jButton_Next)
-                        .addGap(8, 8, 8)))
+                    .addComponent(jButton_Previous))
                 .addContainerGap(24, Short.MAX_VALUE))
         );
 
@@ -148,11 +152,13 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.PREFERRED_SIZE, 955, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 8, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 743, Short.MAX_VALUE)
+            .addComponent(jPanel_MainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 646, Short.MAX_VALUE)
         );
 
         pack();

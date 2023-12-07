@@ -6,27 +6,30 @@ package com.unitec.mini.windows.apps;
 
 import com.unitec.mini.windows.logic.KeyConstantsNowAllowed;
 import com.unitec.mini.windows.logic.ShellCommandExecutor;
-import com.unitec.mini.windows.logic.UserManager.User;
+import com.unitec.mini.windows.logic.User;
 import java.awt.Color;
 import java.awt.event.KeyEvent;
 import java.io.File;
 
 import javax.swing.ImageIcon;
+import javax.swing.JInternalFrame;
 import javax.swing.text.DefaultCaret;
 
-public class TerminalApp extends javax.swing.JInternalFrame  implements AppInterface{
-    private User authUser;
+public class TerminalApp extends JInternalFrame implements AppInterface {
+    private User userAuthen;
     String username = "admin";
     private static int caretBlinkRate = 500;
 
     private ShellCommandExecutor commandExecutor;
-    
-    public TerminalApp() {
+
+    public TerminalApp(User user) {
+        this.userAuthen = user;
+
         initComponents();
         setComponents();
     }
 
-    public void setComponents(){
+    public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_terminal_20.png"));
         this.setFrameIcon(appIcon);
 
@@ -34,12 +37,8 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
         textCommandArea.setLineWrap(true);
         textCommandArea.setWrapStyleWord(true);
         textCommandArea.setEditable(false);
-        
-        try {   
-            if (authUser != null) {
-                username = authUser.getUsername();
-            }
 
+        try {
             String userPath = "/src/main/users" + File.separator + username;
             String projectDir = System.getProperty("user.dir") + userPath;
             File userRootdir = new File(projectDir);
@@ -48,14 +47,11 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
         } catch (Exception e) {
             System.out.println("folder not found. close app?");
         }
-        
+
         DefaultCaret caret = (DefaultCaret) textCommandArea.getCaret();
         caret.setBlinkRate(caretBlinkRate);
     }
-    
-    public void setAuthenticatedUser(User loggedUser){
-        authUser = loggedUser;
-    }
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -72,7 +68,6 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
 
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Terminal");
         setOpaque(false);
@@ -114,10 +109,10 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
 
     private void textCommandAreaKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_textCommandAreaKeyPressed
 
-        if(KeyConstantsNowAllowed.exists(evt.getKeyCode())){
+        if (KeyConstantsNowAllowed.exists(evt.getKeyCode())) {
             return;
         }
-        
+
         if (evt.getKeyCode() == KeyEvent.VK_BACK_SPACE) {
             String text = textCommandArea.getText();
             if (text.charAt(text.length() - 1) == '>') {
@@ -127,7 +122,7 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
             textCommandArea.setText(text.substring(0, text.length() - 1));
             return;
         }
-        
+
         if (evt.getKeyCode() == KeyEvent.VK_ENTER) {
             // Get all text from JTextarea
             // Get the last line staring after caret 
@@ -144,7 +139,7 @@ public class TerminalApp extends javax.swing.JInternalFrame  implements AppInter
 
         textCommandArea.setText(newText);
     }//GEN-LAST:event_textCommandAreaKeyPressed
-    
+
     @Override
     public void closeFrame() {
         try {
