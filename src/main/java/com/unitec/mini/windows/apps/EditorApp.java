@@ -1,6 +1,5 @@
 package com.unitec.mini.windows.apps;
 
-import com.unitec.mini.windows.LoginForm;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -9,9 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.Scanner;
-import javax.swing.Action;
 import javax.swing.JFileChooser;
-import javax.swing.JFrame;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -26,10 +23,8 @@ import javax.swing.text.MutableAttributeSet;
 public class EditorApp extends javax.swing.JInternalFrame implements AppInterface {
     private final int DEFAULT_FONT_SIZE = 12;
     private final int DEFAULT_ALIGNMENT = StyleConstants.ALIGN_LEFT;
-    private int currentAlignment = DEFAULT_ALIGNMENT;
 
     public EditorApp() {
-        String userLogin=LoginForm.getUserLoging();
         initComponents();
         setComponents();
         setDefaultEditorAttributes();
@@ -38,7 +33,6 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
     public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_editor_20.png"));
         this.setFrameIcon(appIcon);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         textPane.setFont(new Font("Arial", Font.PLAIN, 20));
 
         jComboBox_FontFamily.setSelectedItem("Arial");
