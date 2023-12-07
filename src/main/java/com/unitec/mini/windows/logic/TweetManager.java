@@ -21,22 +21,23 @@ import java.util.regex.Pattern;
  * @author leonel
  */
 public class TweetManager {
+
     private List<TweetPost> tweetPosts = new ArrayList<>();
-    private String projectDir = System.getProperty("user.dir") + "/src/main/users";
+    private String projectDir = System.getProperty("user.dir") + "/src/main/tweets";
     private String currentUser;
-    
+
     private static final Pattern USERNAME_PATTERN = Pattern.compile("data-username=\"([^\"]+)\"");
     private static final Pattern DATE_PATTERN = Pattern.compile("data-date=\"([^\"]+)\"");
     private static final Pattern CONTENT_PATTERN = Pattern.compile("<div class=\"twitter-widget\".*?>(.*?)</div>");
 
-    public TweetManager(String loggedUser){
-        this.currentUser = loggedUser;
+    public TweetManager(TwitterAccount account) {
+        this.currentUser = account.getUsername();
     }
-    
+
     public void addTweetPost(TweetPost post) {
         tweetPosts.add(post);
     }
-     
+
     public void saveTweetPostsToFile() {
         String fileName = projectDir + File.separator + currentUser + File.separator + "_tweetPosts.txt";
         try {
@@ -47,27 +48,34 @@ public class TweetManager {
 
             try (FileWriter writer = new FileWriter(fileName)) {
                 for (TweetPost tweetPost : tweetPosts) {
-                     writer.write(tweetPost.toString()+ "\n");
+                    writer.write(tweetPost.toString() + "\n");
                 }
             }
         } catch (Exception e) {
             System.out.println(e);
         }
     }
-    
+
     public List<TweetPost> loadTweetPostsByDateAndUser(Date startDate, Date endDate, String username) {
         List<TweetPost> filteredPosts = new ArrayList<>();
         String fileName = projectDir + File.separator + currentUser + File.separator + "_tweetPosts.txt";
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                TweetPost tweetPost = parseTweetPostFromHtml(line);
-                if (tweetPost != null &&
-                        tweetPost.getUsername().equals(username) &&
-                        tweetPost.getPostDate().compareTo(startDate) >= 0 &&
-                        tweetPost.getPostDate().compareTo(endDate) <= 0) {
-                    filteredPosts.add(tweetPost);
+        try {
+            File file = new File(fileName);
+            if (!file.exists()) {
+                file.createNewFile();
+            }
+
+            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    TweetPost tweetPost = parseTweetPostFromHtml(line);
+                    if (tweetPost != null
+                            && tweetPost.getUsername().equals(username)
+                            && tweetPost.getPostDate().compareTo(startDate) >= 0
+                            && tweetPost.getPostDate().compareTo(endDate) <= 0) {
+                        filteredPosts.add(tweetPost);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -76,7 +84,7 @@ public class TweetManager {
 
         return filteredPosts;
     }
-    
+
     private TweetPost parseTweetPostFromHtml(String html) {
         System.out.println(html);
 
@@ -94,7 +102,7 @@ public class TweetManager {
                 Date postDate = dateFormat.parse(dateString);
                 TweetPost post = new TweetPost(username, content);
                 post.setPostDate(postDate);
-            return post;
+                return post;
             } catch (ParseException e) {
                 e.printStackTrace();
             }

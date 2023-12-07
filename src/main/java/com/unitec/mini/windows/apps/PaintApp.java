@@ -70,7 +70,6 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         setBackground(new java.awt.Color(140, 136, 136));
         setClosable(true);
         setIconifiable(true);
-        setMaximizable(true);
         setResizable(true);
         setTitle("Media Player");
 
@@ -79,7 +78,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         jLabel_MainImage.setPreferredSize(new Dimension(400, 300));
         jPanel_MainPanel.add(jLabel_MainImage, java.awt.BorderLayout.CENTER);
 
-        jButton_Previous.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Paint/icons-previous.png"))); // NOI18N
+        jButton_Previous.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/paint/icons-previous.png"))); // NOI18N
         jButton_Previous.setToolTipText("Previous Image");
         jButton_Previous.setFocusable(false);
         jButton_Previous.addActionListener(new java.awt.event.ActionListener() {
@@ -94,7 +93,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
         jPanelSlider.setSize(new java.awt.Dimension(600, 70));
         jPanelSlider.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        jButton_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/Paint/icons-last-.png"))); // NOI18N
+        jButton_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/paint/icons-last.png"))); // NOI18N
         jButton_Next.setToolTipText("Next Image");
         jButton_Next.setFocusable(false);
         jButton_Next.addActionListener(new java.awt.event.ActionListener() {
@@ -110,7 +109,7 @@ public class PaintApp extends javax.swing.JInternalFrame  implements AppInterfac
             .addGroup(jPanel_BotttonLayout.createSequentialGroup()
                 .addGap(28, 28, 28)
                 .addComponent(jButton_Previous)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 120, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 138, Short.MAX_VALUE)
                 .addComponent(jPanelSlider, javax.swing.GroupLayout.PREFERRED_SIZE, 746, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(79, 79, 79)
                 .addComponent(jButton_Next)

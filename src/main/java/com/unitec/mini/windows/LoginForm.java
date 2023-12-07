@@ -248,9 +248,6 @@ public class LoginForm extends javax.swing.JFrame {
             UserLoging=username;
             this.dispose();
         }else{
-            //System.out.println(MessageAlerts.getInstance());
-            //showMessage("Please check your credentials", "Error", MessageAlerts.MessageType.ERROR);
-             
             JOptionPane.showMessageDialog(null, 
                 "Please check your credentials", 
                 "Error", 

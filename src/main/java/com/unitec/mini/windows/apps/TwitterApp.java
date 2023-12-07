@@ -6,6 +6,7 @@ package com.unitec.mini.windows.apps;
 
 import com.unitec.mini.windows.logic.TweetManager;
 import com.unitec.mini.windows.logic.TweetPost;
+import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
 import java.io.File;
 import java.util.Date;
@@ -31,13 +32,14 @@ import org.jsoup.select.Elements;
  */
 public class TwitterApp extends javax.swing.JInternalFrame implements AppInterface {
 
-    private String currentUser = "admin";
+    private TwitterAccount currentAccount;
     TweetManager tweetManager;
 
     /**
      * Creates new form Twitter
      */
-    public TwitterApp() {
+    public TwitterApp(TwitterAccount loggedAccount) {
+        currentAccount = loggedAccount;
         initComponents();
         setComponents();
         setVisible(true);
@@ -74,7 +76,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
         });
 
         JScrollPane scrollPane = new JScrollPane(emojiList);
-        tweetManager = new TweetManager(currentUser);
+        tweetManager = new TweetManager(currentAccount);
 
         // Add a listener on closing window, save all tweets to file...
         this.addInternalFrameListener(new InternalFrameAdapter() {
@@ -102,7 +104,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
     public void loadTweets() {
         Date startDate = new Date(122, 0, 1);
         Date endDate = new Date();
-        List<TweetPost> loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, currentUser);
+        List<TweetPost> loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, currentAccount.getUsername());
         String content = "";
 
         for (TweetPost loadedPost : loadedPosts) {
@@ -246,7 +248,7 @@ public class TwitterApp extends javax.swing.JInternalFrame implements AppInterfa
     private void jButton_PostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_PostActionPerformed
 
         String content = processTextPaneContent(parseContent(textPane.getText()));
-        TweetPost post = new TweetPost(currentUser, content);
+        TweetPost post = new TweetPost(currentAccount.getUsername(), content);
         String textStringFormatted = post.toString();
 
         String timeStringProcessed = processTextPaneContent(parseContent(timeLinePane.getText()));

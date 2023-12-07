@@ -17,10 +17,9 @@ import com.unitec.mini.windows.apps.SettingsApp;
 import com.unitec.mini.windows.apps.TerminalApp;
 import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
+import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.logic.UserManager.User;
 import java.awt.Color;
-import java.awt.Dialog;
-import java.awt.Dialog.ModalityType;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.GraphicsEnvironment;
@@ -66,8 +65,6 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private static final int TIMER_DELAY = 250;
     private static final float OPACITY_CHANGE = 0.049f;
     User userAuthen;
-    LoginForm login;
-    JDialog loginDialog;
             
     public Dashboard() {
         cm = new ComponentMover();
@@ -108,14 +105,18 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         timer.start();
         
         new ComponentMover(this, this.getRootPane());
-        TwitterApp fd = new TwitterApp();
-        fd.setVisible(false);
-        jDesktopPane_Window.add(fd).setVisible(false);
+        //TwitterApp fd = new TwitterApp();
+        //fd.setVisible(false);
+        //jDesktopPane_Window.add(fd).setVisible(false);
         this.getRootPane().setDoubleBuffered(true);
     }
     
     public void setAuthenticatedUser(User loggedUser){
         userAuthen = loggedUser;
+    }
+    
+    public User getAuthenticatedUser(){
+        return userAuthen;
     }
 
     public void updateTime(JLabel label){
@@ -869,8 +870,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     public void stateChanged(ChangeEvent e) {
     }
 
-    public void showTwitterApp(){
-        TwitterApp fd = new TwitterApp();
+    public void showTwitterApp(TwitterAccount account){
+        TwitterApp fd = new TwitterApp( account);
         setInternalFrameCenterLocation(fd);
         jDesktopPane_Window.add(fd).setVisible(true);
     }

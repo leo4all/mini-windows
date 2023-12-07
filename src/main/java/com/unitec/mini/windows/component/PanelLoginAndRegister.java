@@ -24,6 +24,8 @@ import net.miginfocom.swing.MigLayout;
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
     LoginTwitter loginForm;
+    private JButton selectImageButton;
+    private JLabel profileImageLabel;
 
     public PanelLoginAndRegister(LoginTwitter loginForm) {
         this.loginForm = loginForm;
@@ -32,8 +34,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         initRegister();
         initLogin();
     }
-private void initRegister() {
-        register.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]20[]15[]push"));
+
+    private void initRegister() {
+        register.setLayout(new MigLayout("wrap", "push[center]push", "push[]25[]10[]10[]20[]10[]push"));
         JLabel label = new JLabel("Create Account");
         label.setFont(new Font("sansserif", 1, 30));
         label.setForeground(new Color(173, 126, 151));
@@ -58,19 +61,26 @@ private void initRegister() {
         txtPass.setHint("Password");
         register.add(txtPass, "w 60%");
 
-        TwitterComboBox jComboBox1 = new TwitterComboBox();
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Male", "Female"}));
-        register.add(jComboBox1, "w 60%");
+        TwitterComboBox jComboBoxGender = new TwitterComboBox();
+        jComboBoxGender.setModel(new javax.swing.DefaultComboBoxModel<>(new String[]{"Male", "Female"}));
+        register.add(jComboBoxGender, "w 60%");
 
+        
         TwitterTextField txtAge = new TwitterTextField();
         ImageIcon txtAgeIcon = new ImageIcon(getClass().getResource("/images/user.png"));
         txtAge.setPrefixIcon(txtAgeIcon);
         txtAge.setHint("Age");
-        register.add(txtAge, "w 20%");
+        register.add(txtAge, "w 20%, alignx left");
+        
+        profileImageLabel = new JLabel("");
+        register.add(profileImageLabel, "grow, wrap");
+        
+        selectImageButton = new JButton("Select Image");
+        //selectImageButton.addActionListener(this::selectImageButtonActionPerformed);
+        register.add(selectImageButton, "wrap");
 
         
         Button cmd = new Button();
-        //cmd.setBackground(new Color(7, 164, 121));
         cmd.setBackground(new Color(173, 126, 151));
         cmd.setForeground(new Color(250, 250, 250));
         cmd.setText("SIGN UP");
@@ -82,18 +92,40 @@ private void initRegister() {
                 String name = txtUser.getText().trim();
                 String username = txtUsername.getText().trim();
                 String password = String.valueOf(txtPass.getPassword());
-                String gender = String.valueOf(jComboBox1.getSelectedItem());
-
+                String genderDropdown = String.valueOf(jComboBoxGender.getSelectedItem());
+                int age = Integer.parseInt(txtAge.getText());
+                int ACTIVE_STATUS = 1;
+                
+                char gender = 'M';
+                if (genderDropdown.equals("Female")) {
+                    gender = 'F';
+                }
+                
+                //String belongsTo = loginForm.getDashboard().getAuthenticatedUser().getUsername()
+                String belongsTo = "admin";
                 TwitterAccount newUser = new TwitterAccount(name, username,
                         password,
-                        'c',
-                        2,
-                        1,
+                        gender,
+                        age,
+                        ACTIVE_STATUS,
                         new File(""),
-                        ""
+                         belongsTo
                 );
 
-                JOptionPane.showMessageDialog(null, "Twitter accoun registered, please login.");
+                
+                boolean registered = TwitterUserManager.registerUser(newUser);
+                if (registered) {
+                    JOptionPane.showMessageDialog(null, "Twitter account registered, please login.");
+
+                    txtUser.setText("");
+                    txtUsername.setText("");
+                    txtPass.setText("");
+                    txtAge.setText("");
+
+                    return;
+                }
+                
+                JOptionPane.showMessageDialog(null, "Please verfied your input.");
             }
         });
         //
@@ -162,13 +194,22 @@ private void initRegister() {
         cmd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String email = txtEmail.getText().trim();
+                String username = txtEmail.getText().trim();
                 String password = String.valueOf(txtPass.getPassword());
-                System.out.println(email + " " + password);
-                boolean isAuthen = TwitterUserManager.authenticateUser(email, password);
-                if (isAuthen) {
-                    loginForm.getParentPanelDialog().dispose();
-                    loginForm.getDashboard().showTwitterApp();
+                TwitterUserManager.initialize();
+                boolean isAuthen = TwitterUserManager.authenticateUser(username, password);
+                if (!isAuthen) {
+                    JOptionPane.showMessageDialog(register, "Please check your credentials.");
+                    return;
+                    
+                }else{
+                    TwitterAccount account = TwitterUserManager.getAccountByUsername(username);
+                    if (account != null) {
+                        loginForm.getParentPanelDialog().dispose();
+                        loginForm.getDashboard().showTwitterApp(account);
+                    }else{
+                        System.out.println("An error occurr getting twitter account");
+                    }
                 }
             }
         });

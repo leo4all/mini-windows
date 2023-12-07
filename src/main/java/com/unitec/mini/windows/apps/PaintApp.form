@@ -28,7 +28,6 @@
     </Property>
     <Property name="closable" type="boolean" value="true"/>
     <Property name="iconifiable" type="boolean" value="true"/>
-    <Property name="maximizable" type="boolean" value="true"/>
     <Property name="resizable" type="boolean" value="true"/>
     <Property name="title" type="java.lang.String" value="Media Player"/>
   </Properties>
@@ -90,7 +89,7 @@
                   <Group type="102" alignment="0" attributes="0">
                       <EmptySpace min="-2" pref="28" max="-2" attributes="0"/>
                       <Component id="jButton_Previous" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace pref="120" max="32767" attributes="0"/>
+                      <EmptySpace pref="138" max="32767" attributes="0"/>
                       <Component id="jPanelSlider" min="-2" pref="746" max="-2" attributes="0"/>
                       <EmptySpace min="-2" pref="79" max="-2" attributes="0"/>
                       <Component id="jButton_Next" min="-2" max="-2" attributes="0"/>
@@ -119,7 +118,7 @@
             <Component class="javax.swing.JButton" name="jButton_Previous">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/Paint/icons-previous.png"/>
+                  <Image iconType="3" name="/images/paint/icons-previous.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Previous Image"/>
                 <Property name="focusable" type="boolean" value="false"/>
@@ -151,7 +150,7 @@
             <Component class="javax.swing.JButton" name="jButton_Next">
               <Properties>
                 <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-                  <Image iconType="3" name="/images/Paint/icons-last-.png"/>
+                  <Image iconType="3" name="/images/paint/icons-last.png"/>
                 </Property>
                 <Property name="toolTipText" type="java.lang.String" value="Next Image"/>
                 <Property name="focusable" type="boolean" value="false"/>
