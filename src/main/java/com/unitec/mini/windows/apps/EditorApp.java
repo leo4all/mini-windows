@@ -1,5 +1,6 @@
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.LoginForm;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
@@ -23,7 +24,7 @@ import javax.swing.text.MutableAttributeSet;
 public class EditorApp extends javax.swing.JInternalFrame implements AppInterface {
     private final int DEFAULT_FONT_SIZE = 12;
     private final int DEFAULT_ALIGNMENT = StyleConstants.ALIGN_LEFT;
-
+    String userLogin= LoginForm.getUserLoging();
     public EditorApp() {
         initComponents();
         setComponents();
@@ -68,6 +69,7 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
         jButton_Italic = new javax.swing.JButton();
         jButton_Underline = new javax.swing.JButton();
         jButton_Font_Color = new javax.swing.JButton();
+        Btn_SaveinDocument_user = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane_textPane = new javax.swing.JScrollPane();
         textPane = new javax.swing.JTextPane();
@@ -218,6 +220,13 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
             }
         });
 
+        Btn_SaveinDocument_user.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/editor/icon-save.png"))); // NOI18N
+        Btn_SaveinDocument_user.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                Btn_SaveinDocument_userActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -235,25 +244,29 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
                 .addComponent(jButton_Font_Color)
                 .addGap(16, 16, 16)
                 .addComponent(jPanel_Align, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(Btn_SaveinDocument_user, javax.swing.GroupLayout.PREFERRED_SIZE, 31, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox_FontFamily, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox_Font_Style, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox_Font_Size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.CENTER)
                     .addComponent(jButton_Font_Color)
                     .addComponent(jPanel_Font_Style, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addComponent(jPanel_Align, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_Align, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                .addComponent(jComboBox_FontFamily, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBox_Font_Style, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jComboBox_Font_Size, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(Btn_SaveinDocument_user))))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         jPanel2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -499,6 +512,56 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
         
     }//GEN-LAST:event_jComboBox_Font_StyleItemStateChanged
 
+    private void Btn_SaveinDocument_userActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_Btn_SaveinDocument_userActionPerformed
+        // TODO add your handling code here:
+        
+                    // Solicitar el nombre del documento al usuario
+            String fileName = JOptionPane.showInputDialog("Enter document name:");
+            if (fileName != null && !fileName.trim().isEmpty()) {
+                JFileChooser fileChooser = new JFileChooser();
+                fileChooser.setCurrentDirectory(new File("."));
+                
+                // Cambia la ruta del archivo según tu especificación y el nombre proporcionado
+                String filePath = "src/main/users/"+userLogin+"/"+"Documents/"+ fileName +".txt";
+                File file = new File(filePath);
+                PrintWriter fileOut = null;
+
+                try {
+                    fileOut = new PrintWriter(file);
+
+                    int totalStyles = textPane.getStyledDocument().getLength();
+                    fileOut.println(totalStyles);
+
+                    for (int i = 0; i < totalStyles; i++) {
+                        Element element = textPane.getStyledDocument().getCharacterElement(i);
+                        AttributeSet attrs = element.getAttributes();
+
+                        // Save text
+                        String text = textPane.getStyledDocument().getText(i, 1);
+                        fileOut.println(text);
+
+                        // Save color
+                        Color textColor = StyleConstants.getForeground(attrs);
+                        fileOut.println(String.format("#%06X", textColor.getRGB() & 0xFFFFFF));
+
+                        // Save font
+                        String fontFamily = StyleConstants.getFontFamily(attrs);
+                        fileOut.println(fontFamily);
+
+                        // Save size
+                        int fontSize = StyleConstants.getFontSize(attrs);
+                        fileOut.println(fontSize);
+                    }
+                } catch (FileNotFoundException | BadLocationException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    if (fileOut != null) {
+                        fileOut.close();
+                    }
+                }
+            }
+    }//GEN-LAST:event_Btn_SaveinDocument_userActionPerformed
+
     private void switchAlignment(int alignment) {
         StyledDocument doc = textPane.getStyledDocument();
         int start = textPane.getSelectionStart();
@@ -548,6 +611,7 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton Btn_SaveinDocument_user;
     private javax.swing.JButton jButton_Align_Center;
     private javax.swing.JButton jButton_Align_Left;
     private javax.swing.JButton jButton_Align_Right;
