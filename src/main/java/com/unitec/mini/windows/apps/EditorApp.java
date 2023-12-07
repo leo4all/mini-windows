@@ -1,5 +1,6 @@
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.LoginForm;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -52,6 +53,7 @@ public class EditorApp extends javax.swing.JInternalFrame implements AppInterfac
     JMenuItem exitItem;
 
     public EditorApp() {
+        String userLogin=LoginForm.getUserLoging();
         initComponents();
         setComponents();
     }
