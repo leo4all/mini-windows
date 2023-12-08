@@ -93,7 +93,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         setMaximizedBounds(env.getMaximumWindowBounds());
         setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
         initComponents();
-        
+        setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
+
         setLocationRelativeTo(null);
         
         folderList = new ArrayList<>();
@@ -987,7 +988,10 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Dashboard().setVisible(true);
+                Dashboard db = new Dashboard();
+                // TEMP delete main method. Initial project start on JLoginForm.
+                db.setAuthUser(new User("admin", "admin", "admin", "administrator"));
+                db.setVisible(true);
             }
         });
     }

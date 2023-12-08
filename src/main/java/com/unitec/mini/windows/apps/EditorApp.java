@@ -1,6 +1,5 @@
 package com.unitec.mini.windows.apps;
 
-import com.unitec.mini.windows.LoginForm;
 import com.unitec.mini.windows.logic.User;
 import java.awt.Color;
 import java.awt.Font;

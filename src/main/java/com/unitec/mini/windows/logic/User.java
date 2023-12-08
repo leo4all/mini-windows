@@ -18,6 +18,22 @@ public class User {
         this.accountType = accountType;
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public void setAccountType(String accountType) {
+        this.accountType = accountType;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+        
     public String getName() {
         return name;
     }
@@ -32,10 +48,6 @@ public class User {
 
     public String getPassword() {
         return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     @Override

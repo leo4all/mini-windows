@@ -345,7 +345,7 @@ public class SettingsApp extends JInternalFrame  implements AppInterface{
             rowData.add(newUser.getAccountType());
             userTableModel.addRow(rowData);
             
-            FolderStructureCreator.createFolderFor(username);
+            FolderStructureCreator.createDefaultFoldersFor(username);
             JOptionPane.showMessageDialog(null, "User registered successfully!");  
         }
     }//GEN-LAST:event_jButton_Add_UserActionPerformed

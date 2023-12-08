@@ -45,8 +45,9 @@ public class LoginForm extends javax.swing.JFrame {
         initComponents();
         setComponents();
         
-        UserManager.createDefaultAdminUser();
         FolderStructureCreator.createDefaultFolderForAdmin();
+        UserManager.createDefaultAdminUser();
+        
     }
         
     public void setComponents(){ 

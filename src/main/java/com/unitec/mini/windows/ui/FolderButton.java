@@ -16,7 +16,6 @@ import javax.swing.border.EmptyBorder;
  * @author leonel
  */
 public class FolderButton extends JButton {
-    static String projectDir = System.getProperty("user.dir") + "/src/main/users";
     private String labelText;
 
     public FolderButton(String labelText) {

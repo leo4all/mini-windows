@@ -14,10 +14,10 @@ import javax.swing.JInternalFrame;
  * @author leonel
  */
 public class PlayerApp extends JInternalFrame  implements AppInterface {
-    private User userAuth;
+    private User userAuthen;
 
     public PlayerApp(User user) {
-        this.userAuth = user;
+        this.userAuthen = user;
 
         initComponents();
         setComponents();
