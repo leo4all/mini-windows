@@ -65,8 +65,6 @@ public class FileSystemStructure {
         String location = FolderStructureCreator.getUserRootFolder(username);
         Path path = Paths.get(location);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(path.getFileName().toString());
-//        root.setAllowsChildren(true);
-
         try {
             Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                 private DefaultMutableTreeNode currentNode = root;

@@ -4,30 +4,38 @@
  */
 package com.unitec.mini.windows.apps;
 
-
 import com.unitec.mini.windows.logic.FileSystemStructure;
 import com.unitec.mini.windows.logic.User;
 import java.awt.Component;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.TreeNode;
+import javax.swing.tree.TreePath;
+import com.unitec.mini.windows.logic.FolderStructureCreator;
+import java.nio.file.Paths;
 
 /**
  *
  * @author leonel
  */
-public class FinderApp extends JInternalFrame  implements AppInterface{
-    int mouseX, mouseY;
-    User userAuthen;
-    FileSystemStructure.FileNode root = null;
-    DefaultTreeModel treeModel;
+public class FinderApp extends JInternalFrame implements AppInterface {
+
+    private int mouseX, mouseY;
+    private User userAuthen;
+    private FileSystemStructure.FileNode root = null;
+    private DefaultTreeModel treeModel;
+    private String defaultFoldertPath = "Desktop";
 
     public FinderApp(User user) {
         this.userAuthen = user;
@@ -36,28 +44,32 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
         setComponents();
     }
 
-    public void setComponents(){
+    public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_finder_20.png"));
         this.setFrameIcon(appIcon);
 
         try {
             DefaultMutableTreeNode root = FileSystemStructure.getFolderTreeNode(userAuthen.getUsername());
-             treeModel = new DefaultTreeModel(root);
+            treeModel = new DefaultTreeModel(root);
             jTree_Folder_Strcture.setModel(treeModel);
             jTree_Folder_Strcture.setCellRenderer(getDirectoryCellRenderer());
+            expandTree(jTree_Folder_Strcture);
+
+            jTextField_Path.setText(Paths.get("Users", userAuthen.getUsername(), defaultFoldertPath).toString());
+
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
-    public DefaultTreeCellRenderer getDirectoryCellRenderer(){
+
+    public DefaultTreeCellRenderer getDirectoryCellRenderer() {
         return new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
 
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-                
+
                 boolean isFolder = node.getAllowsChildren();
                 Icon icon = isFolder ? getFileTypeIcon(node.toString(), isFolder) : getFileTypeIcon(node.toString(), isFolder);
                 if (icon != null) {
@@ -68,12 +80,12 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
             }
         };
     }
-    
+
     private static Icon getFileTypeIcon(String fileName, boolean isFolder) {
         if (isFolder) {
             return UIManager.getIcon("FileView.directoryIcon");
         }
-        
+
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
         switch (extension) {
             case "txt":
@@ -85,6 +97,14 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
                 return UIManager.getIcon("FileView.fileIcon");
             default:
                 return UIManager.getIcon("FileView.fileIcon");
+        }
+    }
+
+    private static void expandTree(JTree tree) {
+        TreeNode root = (TreeNode) tree.getModel().getRoot();
+        for (int i = 0; i < root.getChildCount(); i++) {
+            TreeNode child = root.getChildAt(i);
+            tree.expandPath(new TreePath(new Object[]{root, child}));
         }
     }
 
@@ -177,24 +197,18 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
             .addGap(0, 549, Short.MAX_VALUE)
         );
 
-        jButton_New_Folder.setText("New Folder");
+        jPanel_Top_bar.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        javax.swing.GroupLayout jPanel_Top_barLayout = new javax.swing.GroupLayout(jPanel_Top_bar);
-        jPanel_Top_bar.setLayout(jPanel_Top_barLayout);
-        jPanel_Top_barLayout.setHorizontalGroup(
-            jPanel_Top_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Top_barLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jButton_New_Folder)
-                .addGap(16, 16, 16))
-        );
-        jPanel_Top_barLayout.setVerticalGroup(
-            jPanel_Top_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_Top_barLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jButton_New_Folder)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
+        jButton_New_Folder.setText("New Folder");
+        jButton_New_Folder.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_New_FolderActionPerformed(evt);
+            }
+        });
+        jPanel_Top_bar.add(jButton_New_Folder, new org.netbeans.lib.awtextra.AbsoluteConstraints(854, 6, -1, -1));
+
+        jTextField_Path.setEditable(false);
+        jTextField_Path.setAutoscrolls(false);
 
         jButton_Go_To_Home_Folder.setText("Home");
 
@@ -204,10 +218,10 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
             jPanel_Path_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Path_barLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton_Go_To_Home_Folder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jButton_Go_To_Home_Folder, javax.swing.GroupLayout.DEFAULT_SIZE, 105, Short.MAX_VALUE)
                 .addGap(32, 32, 32)
                 .addComponent(jTextField_Path, javax.swing.GroupLayout.PREFERRED_SIZE, 635, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         jPanel_Path_barLayout.setVerticalGroup(
             jPanel_Path_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -219,15 +233,15 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        jPanel_Top_bar.add(jPanel_Path_bar, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, -1, -1));
+
         javax.swing.GroupLayout jPanel_Top_PanelLayout = new javax.swing.GroupLayout(jPanel_Top_Panel);
         jPanel_Top_Panel.setLayout(jPanel_Top_PanelLayout);
         jPanel_Top_PanelLayout.setHorizontalGroup(
             jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel_Top_bar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jPanel_Path_bar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addComponent(jPanel_Top_bar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel_Top_PanelLayout.setVerticalGroup(
@@ -235,9 +249,7 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
             .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel_Top_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(6, 6, 6)
-                .addComponent(jPanel_Path_bar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel_FinderLayout = new javax.swing.GroupLayout(jPanel_Finder);
@@ -245,15 +257,14 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
         jPanel_FinderLayout.setHorizontalGroup(
             jPanel_FinderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_FinderLayout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(jPanel_FinderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_FinderLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
                         .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(18, 18, 18)
-                        .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel_FinderLayout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jPanel_Top_Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(6, 6, 6))
+                    .addComponent(jPanel_Top_Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jPanel_FinderLayout.setVerticalGroup(
@@ -261,14 +272,11 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
             .addGroup(jPanel_FinderLayout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jPanel_Top_Panel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel_FinderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_FinderLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel_FinderLayout.createSequentialGroup()
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(11, Short.MAX_VALUE))
+                    .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
 
         getContentPane().add(jPanel_Finder, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 990, 660));
@@ -277,7 +285,7 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
     }// </editor-fold>//GEN-END:initComponents
 
     private void jPanel_Finder_DashboardMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jPanel_Finder_DashboardMouseClicked
-        if(SwingUtilities.isRightMouseButton(evt)){
+        if (SwingUtilities.isRightMouseButton(evt)) {
             mouseX = evt.getX();
             mouseY = evt.getY();
             jPopupMenu_Finder_Options.show(evt.getComponent(), evt.getX(), evt.getY());
@@ -293,10 +301,61 @@ public class FinderApp extends JInternalFrame  implements AppInterface{
         String folderName = JOptionPane.showInputDialog(null, "Folder name");
         createFolder(folderName, mouseX, mouseY, "Main");
     }//GEN-LAST:event_jMenuItem_new_folderActionPerformed
-    
+
+    private void jButton_New_FolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_New_FolderActionPerformed
+        try {
+
+            JPanel panel = new JPanel();
+            panel.add(new JLabel("Folder name"));
+            JTextField input = new JTextField(10);
+            panel.add(input);
+
+            int result = JOptionPane.showOptionDialog(null,
+                    panel,
+                    "New Folder",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    new String[]{"Create", "Cancel"},
+                    null
+            );
+
+            if (result == JOptionPane.OK_OPTION) {
+                String folderName = input.getText().trim();
+                if (folderName != null && !folderName.isEmpty()) {
+
+                    // position is irrelevant in this case find other way.
+                    int x, y;
+                    x = y = 0;
+
+                    Object button = FolderStructureCreator.createButtonFolderAtPosition(
+                            userAuthen.getUsername(),
+                            defaultFoldertPath,
+                            folderName,
+                            x,
+                            y
+                    );
+
+                    if (button != null) {
+                        
+                    }else {
+                        JOptionPane.showMessageDialog(this, 
+                                "An error occur creating a folder.", 
+                                "Error", 
+                                JOptionPane.ERROR_MESSAGE
+                        );
+                    }
+                }
+            }
+
+        } catch (Exception e) {
+        }
+    }//GEN-LAST:event_jButton_New_FolderActionPerformed
+
     private void createFolder(String folderName, int posX, int posY, String belongsTo) {
-        
+
     }
+
     @Override
     public void closeFrame() {
         try {

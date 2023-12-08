@@ -105,7 +105,7 @@ public class FolderStructureCreator {
         return true;
     }
     
-    public JButton createButtonFolderAtPosition(String belongsTo,  String folderRoot, String newFolderName, int posX, int posY){
+    public static JButton createButtonFolderAtPosition(String belongsTo,  String folderRoot, String newFolderName, int posX, int posY){
         Path path = Paths.get(projectDir, usersPath, belongsTo, folderRoot, newFolderName);
         FolderButton newButton = null;
 
@@ -125,8 +125,8 @@ public class FolderStructureCreator {
             newButton.setFocusPainted(false);
             newButton.setBounds(posX, posY, 100, 35); 
             
-            ImageIcon iconFolder = new ImageIcon(getClass().getResource("/images/icon_default_folder.png"));
-            newButton.setIcon(iconFolder);
+            //ImageIcon iconFolder = new ImageIcon(getClass().getResource("/images/icon_default_folder.png"));
+            //newButton.setIcon(iconFolder);
         } catch (Exception ex) {
             System.err.println("Error creating folder: " + ex.getMessage());
             return null;
