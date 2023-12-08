@@ -4,6 +4,7 @@
  */
 package com.unitec.mini.windows.logic;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.FileVisitResult;
 import java.nio.file.Files;
@@ -20,6 +21,31 @@ import javax.swing.tree.DefaultMutableTreeNode;
  * @author leonel
  */
 public class FileSystemStructure {
+
+    public static DefaultMutableTreeNode getStructureForLocation(String username, String folder) {
+        String folderPath = FolderStructureCreator.getUserRootFolder(username);
+        String location = Paths.get(folderPath, folder).toString();
+
+        File rootFile = new File(location);
+        
+        if (!rootFile.exists() || !rootFile.isDirectory()) {
+            throw new IllegalArgumentException("Invalid location: " + location);
+        }
+
+        DefaultMutableTreeNode root = new DefaultMutableTreeNode(rootFile);
+        File parentFile = (File) root.getUserObject();
+        File[] files = parentFile.listFiles();
+
+        if (files != null) {
+            for (File file : files) {
+                DefaultMutableTreeNode childNode = new DefaultMutableTreeNode(file);
+                root.add(childNode);
+            }
+        }
+
+        return root;
+    }
+
 
     public static FileNode buildFileSystemStructure(String username) throws IOException {
         String location = FolderStructureCreator.getUserRootFolder(username);
@@ -61,7 +87,7 @@ public class FileSystemStructure {
         return root;
     }
 
-    public static DefaultMutableTreeNode getFolderTreeNode(String username) {
+    public static DefaultMutableTreeNode getFolderTree(String username) {
         String location = FolderStructureCreator.getUserRootFolder(username);
         Path path = Paths.get(location);
         DefaultMutableTreeNode root = new DefaultMutableTreeNode(path.getFileName().toString());
