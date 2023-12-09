@@ -35,6 +35,8 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.event.TreeSelectionEvent;
+import javax.swing.event.TreeSelectionListener;
 
 /**
  *
@@ -49,6 +51,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private final String INITIAL_PATH = "Desktop";
     private String currentLocationPath = INITIAL_PATH;
     private final List<JButton> buttons;
+    DefaultMutableTreeNode folderNode;
 
     public FinderApp(User user) {
         this.userAuthen = user;
@@ -64,10 +67,12 @@ public class FinderApp extends JInternalFrame implements AppInterface {
 
         try {
 
-            DefaultMutableTreeNode folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
-            jTree_Folder_Strcture.setModel(new DefaultTreeModel(folderNode));
-            jTree_Folder_Strcture.setCellRenderer(getDirectoryCellRenderer());
-            expandTree(jTree_Folder_Strcture);
+            folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
+            jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
+            jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
+            jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
+            
+            expandRootTree(jTree_Folder_Structure);
             jTextField_Path.setText(Paths.get("Users", userAuthen.getUsername(), INITIAL_PATH).toString());
             jPanel_Finder_Dashboard.setLayout(new FlowLayout(FlowLayout.LEADING));
             refreshUI();
@@ -78,7 +83,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         }
     }
 
-    public DefaultTreeCellRenderer getDirectoryCellRenderer() {
+    private DefaultTreeCellRenderer getDirectoryCellRenderer() {
         return new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
@@ -123,7 +128,22 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         }
     }
 
-    private static void expandTree(JTree tree) {
+    private class SelectorListener  implements TreeSelectionListener {
+        public void valueChanged(TreeSelectionEvent evt) {
+            JTree tree = (JTree) evt.getSource();
+            DefaultMutableTreeNode selectedNode; 
+            selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+
+            if (selectedNode.isLeaf()) {
+               String selectedNodeName = selectedNode.toString();
+                System.out.println(selectedNodeName);
+                //Object obj = evt.getNewLeadSelectionPath().getLastPathComponent();
+                //System.out.println("" + obj.toString().length());
+            }
+        }
+    }
+    
+    private static void expandRootTree(JTree tree) {
         TreeNode root = (TreeNode) tree.getModel().getRoot();
         for (int i = 0; i < root.getChildCount(); i++) {
             TreeNode child = root.getChildAt(i);
@@ -135,9 +155,8 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         DefaultMutableTreeNode currentFilesInDestination = FileSystemStructure.getStructureForLocation(userAuthen.getUsername(),
                 currentLocationPath
         );
-
+        
         createPanelElements(currentFilesInDestination);
-
         JPanel panel = new JPanel();
         panel.setSize(100, 100);
 
@@ -179,8 +198,13 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == doubleClick) {
                 if (button instanceof FolderButton) {
-                    jPanel_Finder_Dashboard.removeAll();
-                    moveToFolder(button);
+                    DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jTree_Folder_Structure.getLastSelectedPathComponent();
+                    //if (selectedNode != null) {
+                        
+                         //updateFinderDashboard(selectedNode);
+                    //}
+                    //moveToFolder(button);
+                    
                 } else if (button instanceof FileButton) {
                     FileButton fileButton = (FileButton) button;
                     System.out.println("Double-clicked on FileButton with extension: " + fileButton.getFileExtension());
@@ -197,6 +221,17 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             System.out.println(bt.getFolderLocation());
             refreshUI();
         }
+    }
+    
+     private void updateFinderDashboard(DefaultMutableTreeNode selectedNode) {
+        jPanel_Finder_Dashboard.removeAll();
+        
+        
+        JLabel label = new JLabel("Selected Node: " + selectedNode.getUserObject().toString());
+        jPanel_Finder_Dashboard.add(label);
+
+        jPanel_Finder_Dashboard.revalidate();
+        jPanel_Finder_Dashboard.repaint();
     }
 
     private void refreshUI(){
@@ -220,8 +255,22 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jPopupMenu_Finder_Options = new javax.swing.JPopupMenu();
-        jMenuItem_new_folder = new javax.swing.JMenuItem();
+        jPopupMenu_JTreeMenuFolderOptions = new javax.swing.JPopupMenu();
+        jMenu_New = new javax.swing.JMenu();
+        jMenuItem_JTree_Create_Folder = new javax.swing.JMenuItem();
+        jMenuItem_JTree_Create_File = new javax.swing.JMenuItem();
+        jSeparator_1 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_JTree_Cut = new javax.swing.JMenuItem();
+        jMenuItem_JTree_Copy = new javax.swing.JMenuItem();
+        jMenuItem_JTree_Paste = new javax.swing.JMenuItem();
+        jSeparator_2 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_JTree_Delete = new javax.swing.JMenuItem();
+        jPopupMenu_JTreeMenuFileOptions = new javax.swing.JPopupMenu();
+        jMenuItem_JTree_File_Cut = new javax.swing.JMenuItem();
+        jMenuItem_JTree_File_Copy = new javax.swing.JMenuItem();
+        jMenuItem_JTree_File_Paste = new javax.swing.JMenuItem();
+        jSeparator_4 = new javax.swing.JPopupMenu.Separator();
+        jMenuItem_JTree_File_Delete = new javax.swing.JMenuItem();
         jPanel_Finder = new javax.swing.JPanel();
         jPanel_Top_Panel = new javax.swing.JPanel();
         jPanel_Top_bar = new javax.swing.JPanel();
@@ -234,16 +283,64 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         jPanel_Main_Wrapper = new javax.swing.JPanel();
         jPanel_Sidebar = new javax.swing.JPanel();
         jScrollPane_Folder_Structure = new javax.swing.JScrollPane();
-        jTree_Folder_Strcture = new javax.swing.JTree();
+        jTree_Folder_Structure = new javax.swing.JTree();
         jPanel_Finder_Dashboard = new javax.swing.JPanel();
 
-        jMenuItem_new_folder.setText("New folder");
-        jMenuItem_new_folder.addActionListener(new java.awt.event.ActionListener() {
+        jMenu_New.setText("New");
+        jMenu_New.setToolTipText("");
+
+        jMenuItem_JTree_Create_Folder.setText("Folder");
+        jMenuItem_JTree_Create_Folder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jMenuItem_new_folderActionPerformed(evt);
+                jMenuItem_JTree_Create_FolderActionPerformed(evt);
             }
         });
-        jPopupMenu_Finder_Options.add(jMenuItem_new_folder);
+        jMenu_New.add(jMenuItem_JTree_Create_Folder);
+
+        jMenuItem_JTree_Create_File.setText("File");
+        jMenuItem_JTree_Create_File.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_JTree_Create_FileActionPerformed(evt);
+            }
+        });
+        jMenu_New.add(jMenuItem_JTree_Create_File);
+
+        jPopupMenu_JTreeMenuFolderOptions.add(jMenu_New);
+        jPopupMenu_JTreeMenuFolderOptions.add(jSeparator_1);
+
+        jMenuItem_JTree_Cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_Cut.setText("Cut");
+        jPopupMenu_JTreeMenuFolderOptions.add(jMenuItem_JTree_Cut);
+
+        jMenuItem_JTree_Copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_Copy.setText("Copy");
+        jPopupMenu_JTreeMenuFolderOptions.add(jMenuItem_JTree_Copy);
+
+        jMenuItem_JTree_Paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_Paste.setText("Paste");
+        jPopupMenu_JTreeMenuFolderOptions.add(jMenuItem_JTree_Paste);
+        jPopupMenu_JTreeMenuFolderOptions.add(jSeparator_2);
+
+        jMenuItem_JTree_Delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_Delete.setText("Delete");
+        jPopupMenu_JTreeMenuFolderOptions.add(jMenuItem_JTree_Delete);
+
+        jMenuItem_JTree_File_Cut.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_X, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_File_Cut.setText("Cut");
+        jPopupMenu_JTreeMenuFileOptions.add(jMenuItem_JTree_File_Cut);
+
+        jMenuItem_JTree_File_Copy.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_C, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_File_Copy.setText("Copy");
+        jPopupMenu_JTreeMenuFileOptions.add(jMenuItem_JTree_File_Copy);
+
+        jMenuItem_JTree_File_Paste.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_V, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_File_Paste.setText("Paste");
+        jPopupMenu_JTreeMenuFileOptions.add(jMenuItem_JTree_File_Paste);
+        jPopupMenu_JTreeMenuFileOptions.add(jSeparator_4);
+
+        jMenuItem_JTree_File_Delete.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_JTree_File_Delete.setText("Delete");
+        jPopupMenu_JTreeMenuFileOptions.add(jMenuItem_JTree_File_Delete);
 
         setClosable(true);
         setIconifiable(true);
@@ -357,10 +454,15 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         );
         jScrollPane_Folder_Structure.setBorder(null);
 
-        jTree_Folder_Strcture.setBackground(new Color(0, 0, 0, 0));
-        jTree_Folder_Strcture.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Places", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Helvetica Neue", 0, 14))); // NOI18N
-        jTree_Folder_Strcture.setFocusable(false);
-        jScrollPane_Folder_Structure.setViewportView(jTree_Folder_Strcture);
+        jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
+        jTree_Folder_Structure.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Places", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Helvetica Neue", 0, 14))); // NOI18N
+        jTree_Folder_Structure.setFocusable(false);
+        jTree_Folder_Structure.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                jTree_Folder_StructureMousePressed(evt);
+            }
+        });
+        jScrollPane_Folder_Structure.setViewportView(jTree_Folder_Structure);
 
         javax.swing.GroupLayout jPanel_SidebarLayout = new javax.swing.GroupLayout(jPanel_Sidebar);
         jPanel_Sidebar.setLayout(jPanel_SidebarLayout);
@@ -393,7 +495,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         jPanel_Finder_Dashboard.setLayout(jPanel_Finder_DashboardLayout);
         jPanel_Finder_DashboardLayout.setHorizontalGroup(
             jPanel_Finder_DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 792, Short.MAX_VALUE)
+            .addGap(0, 766, Short.MAX_VALUE)
         );
         jPanel_Finder_DashboardLayout.setVerticalGroup(
             jPanel_Finder_DashboardLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -408,8 +510,8 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                 .addContainerGap()
                 .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 794, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addComponent(jPanel_Finder_Dashboard, javax.swing.GroupLayout.PREFERRED_SIZE, 768, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(32, 32, 32))
         );
         jPanel_Main_WrapperLayout.setVerticalGroup(
             jPanel_Main_WrapperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -454,7 +556,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         if (SwingUtilities.isRightMouseButton(evt)) {
             mouseX = evt.getX();
             mouseY = evt.getY();
-            jPopupMenu_Finder_Options.show(evt.getComponent(), evt.getX(), evt.getY());
+            //jPopupMenu_Finder_Options.show(evt.getComponent(), evt.getX(), evt.getY());
         }
     }//GEN-LAST:event_jPanel_Finder_DashboardMouseClicked
 
@@ -463,42 +565,12 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         mouseY = evt.getY();
     }//GEN-LAST:event_jPanel_FinderMousePressed
 
-    private void jMenuItem_new_folderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_new_folderActionPerformed
-        String folderName = JOptionPane.showInputDialog(null, "Folder name");
-        /*String folderName = input.getText().trim();
-        if (folderName != null && !folderName.isEmpty()) {
-
-            // position is irrelevant in this case find other way.
-            int x, y;
-            x = y = 0;
-
-            Object button = FolderStructureCreator.createButtonFolderAtPosition(
-                    userAuthen.getUsername(),
-                    defaultFoldertPath,
-                    folderName,
-                    x,
-                    y
-            );
-
-            if (button != null) {
-
-            } else {
-                JOptionPane.showMessageDialog(this,
-                        "An error occur creating a folder.",
-                        "Error",
-                        JOptionPane.ERROR_MESSAGE
-                );
-            }
-        }*/
-
-    }//GEN-LAST:event_jMenuItem_new_folderActionPerformed
-
     private void jButton_New_FolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_New_FolderActionPerformed
         try {
 
             JPanel panel = new JPanel();
             panel.add(new JLabel("Folder name"));
-            JTextField input = new JTextField(10);
+            JTextField input = new JTextField(20);
             panel.add(input);
 
             int result = JOptionPane.showOptionDialog(null,
@@ -511,37 +583,53 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                     null
             );
 
-            if (result == JOptionPane.OK_OPTION) {
-                String folderName = input.getText().trim();
-                if (folderName != null && !folderName.isEmpty()) {
-                    int x, y;
-                    x = y = 0;
-
-                    Object button = FolderStructureCreator.createButtonFolderAtPosition(userAuthen.getUsername(),
-                            currentLocationPath,
-                            folderName,
-                            x,
-                            y
-                    );
-
-                    if (button == null) {
-                        JOptionPane.showMessageDialog(this,
-                                "An error occur creating a folder.",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                        return;
-                           
-                    } 
-
-                    refreshUI();
-                }
+            if (result != JOptionPane.OK_OPTION) {
+                return;
             }
+                
 
+            String folderName = input.getText().trim();
+            if (folderName != null && !folderName.isEmpty()) {
+                int x, y; x = y = 0;
+
+                Object button = FolderStructureCreator.createButtonFolderAtPosition(userAuthen.getUsername(),
+                        currentLocationPath,
+                        folderName,
+                        x,
+                        y
+                );
+
+                if (button != null) {
+                    updateJTreeFolderStructure();
+                    return;   
+                } 
+
+                JOptionPane.showMessageDialog(
+                        this,
+                            "An error occur creating a folder.",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                );
+            }
         } catch (Exception e) {
+            System.out.println(e);
         }
     }//GEN-LAST:event_jButton_New_FolderActionPerformed
 
+    private void updateJTreeFolderStructure(){
+        folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
+        jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
+
+        jTree_Folder_Structure.removeAll();
+        jTree_Folder_Structure.revalidate();
+        jTree_Folder_Structure.repaint();
+        jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
+        jTree_Folder_Structure.setFocusable(false);
+        jTree_Folder_Structure.setOpaque(false);
+        jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
+        expandRootTree(jTree_Folder_Structure);
+    }
+    
     private void jButton_Go_To_Home_FolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Go_To_Home_FolderActionPerformed
         currentLocationPath = INITIAL_PATH;
         refreshUI();
@@ -550,6 +638,54 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private void jButton_Go_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Go_BackActionPerformed
         
     }//GEN-LAST:event_jButton_Go_BackActionPerformed
+
+    private void jTree_Folder_StructureMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTree_Folder_StructureMousePressed
+        if (evt.isPopupTrigger()) {
+            jPopupMenu_JTreeMenuFolderOptions.show(this, evt.getX(), evt.getY());
+        }
+    }//GEN-LAST:event_jTree_Folder_StructureMousePressed
+
+    private void jMenuItem_JTree_Create_FolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_JTree_Create_FolderActionPerformed
+        JPanel panel = new JPanel();
+            panel.add(new JLabel("Folder name"));
+            JTextField input = new JTextField(20);
+            panel.add(input);
+
+            int result = JOptionPane.showOptionDialog(null,
+                    panel,
+                    "New Folder",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    new String[]{"Create", "Cancel"},
+                    null
+            );
+
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+    }//GEN-LAST:event_jMenuItem_JTree_Create_FolderActionPerformed
+
+    private void jMenuItem_JTree_Create_FileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_JTree_Create_FileActionPerformed
+        JPanel panel = new JPanel();
+            panel.add(new JLabel("File name"));
+            JTextField input = new JTextField(20);
+            panel.add(input);
+
+            int result = JOptionPane.showOptionDialog(null,
+                    panel,
+                    "New File",
+                    JOptionPane.OK_CANCEL_OPTION,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    new String[]{"Create", "Cancel"},
+                    null
+            );
+
+            if (result != JOptionPane.OK_OPTION) {
+                return;
+            }
+    }//GEN-LAST:event_jMenuItem_JTree_Create_FileActionPerformed
 
     @Override
     public void closeFrame() {
@@ -566,7 +702,17 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private javax.swing.JButton jButton_Go_To_Home_Folder;
     private javax.swing.JButton jButton_New_Folder;
     private javax.swing.JLabel jLabel_Current_Folder_Name;
-    private javax.swing.JMenuItem jMenuItem_new_folder;
+    private javax.swing.JMenuItem jMenuItem_JTree_Copy;
+    private javax.swing.JMenuItem jMenuItem_JTree_Create_File;
+    private javax.swing.JMenuItem jMenuItem_JTree_Create_Folder;
+    private javax.swing.JMenuItem jMenuItem_JTree_Cut;
+    private javax.swing.JMenuItem jMenuItem_JTree_Delete;
+    private javax.swing.JMenuItem jMenuItem_JTree_File_Copy;
+    private javax.swing.JMenuItem jMenuItem_JTree_File_Cut;
+    private javax.swing.JMenuItem jMenuItem_JTree_File_Delete;
+    private javax.swing.JMenuItem jMenuItem_JTree_File_Paste;
+    private javax.swing.JMenuItem jMenuItem_JTree_Paste;
+    private javax.swing.JMenu jMenu_New;
     private javax.swing.JPanel jPanel_Finder;
     private javax.swing.JPanel jPanel_Finder_Dashboard;
     private javax.swing.JPanel jPanel_Main_Wrapper;
@@ -574,9 +720,13 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private javax.swing.JPanel jPanel_Sidebar;
     private javax.swing.JPanel jPanel_Top_Panel;
     private javax.swing.JPanel jPanel_Top_bar;
-    private javax.swing.JPopupMenu jPopupMenu_Finder_Options;
+    private javax.swing.JPopupMenu jPopupMenu_JTreeMenuFileOptions;
+    private javax.swing.JPopupMenu jPopupMenu_JTreeMenuFolderOptions;
     private javax.swing.JScrollPane jScrollPane_Folder_Structure;
+    private javax.swing.JPopupMenu.Separator jSeparator_1;
+    private javax.swing.JPopupMenu.Separator jSeparator_2;
+    private javax.swing.JPopupMenu.Separator jSeparator_4;
     private javax.swing.JTextField jTextField_Path;
-    private javax.swing.JTree jTree_Folder_Strcture;
+    private javax.swing.JTree jTree_Folder_Structure;
     // End of variables declaration//GEN-END:variables
 }
