@@ -133,13 +133,19 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             JTree tree = (JTree) evt.getSource();
             DefaultMutableTreeNode selectedNode; 
             selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-
-            if (selectedNode.isLeaf()) {
+             
+            if (selectedNode !=null && selectedNode.isLeaf()) {
                String selectedNodeName = selectedNode.toString();
                 System.out.println(selectedNodeName);
                 //Object obj = evt.getNewLeadSelectionPath().getLastPathComponent();
                 //System.out.println("" + obj.toString().length());
+                
+                
             }
+
+            jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
+            jTree_Folder_Structure.setFocusable(false);
+            jTree_Folder_Structure.setOpaque(false);
         }
     }
     
@@ -453,10 +459,13 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         jScrollPane_Folder_Structure.setBackground(new Color(0, 0, 0, 0)
         );
         jScrollPane_Folder_Structure.setBorder(null);
+        jScrollPane_Folder_Structure.setFocusable(false);
+        jScrollPane_Folder_Structure.setOpaque(false);
 
         jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
         jTree_Folder_Structure.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Places", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Helvetica Neue", 0, 14))); // NOI18N
         jTree_Folder_Structure.setFocusable(false);
+        jTree_Folder_Structure.setOpaque(false);
         jTree_Folder_Structure.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 jTree_Folder_StructureMousePressed(evt);
