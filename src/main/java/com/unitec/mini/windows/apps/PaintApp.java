@@ -72,11 +72,11 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         jMenuBar = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem_OpenFolder = new javax.swing.JMenuItem();
+        jMenuItem_SaveImages = new javax.swing.JMenuItem();
 
         setBackground(new java.awt.Color(140, 136, 136));
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
         setTitle("Media Player");
 
         jPanel_MainPanel.setLayout(new java.awt.BorderLayout());
@@ -136,6 +136,7 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
 
         jMenu1.setText("File");
 
+        jMenuItem_OpenFolder.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_DOWN_MASK));
         jMenuItem_OpenFolder.setText("Open");
         jMenuItem_OpenFolder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,6 +144,15 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
             }
         });
         jMenu1.add(jMenuItem_OpenFolder);
+
+        jMenuItem_SaveImages.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_DOWN_MASK));
+        jMenuItem_SaveImages.setText("Save");
+        jMenuItem_SaveImages.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem_SaveImagesActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem_SaveImages);
 
         jMenuBar.add(jMenu1);
 
@@ -185,6 +195,10 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         showImage(++currentIndex);
         highlightSelectedThumbnail(currentIndex);
     }//GEN-LAST:event_jButton_NextActionPerformed
+
+    private void jMenuItem_SaveImagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SaveImagesActionPerformed
+        
+    }//GEN-LAST:event_jMenuItem_SaveImagesActionPerformed
 
     private void loadImages(File folder) {
         imageList.clear();
@@ -308,6 +322,7 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar;
     private javax.swing.JMenuItem jMenuItem_OpenFolder;
+    private javax.swing.JMenuItem jMenuItem_SaveImages;
     private javax.swing.JPanel jPanelSlider;
     private javax.swing.JPanel jPanel_Bottton;
     private javax.swing.JPanel jPanel_MainPanel;

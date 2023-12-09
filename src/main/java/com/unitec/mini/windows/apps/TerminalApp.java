@@ -74,14 +74,20 @@ public class TerminalApp extends JInternalFrame implements AppInterface {
 
         jPanel_Main.setBackground(new Color(0, 0, 0, 60));
 
+        jScrollPane1.setBackground(new Color(0, 0, 0, 0));
+        jScrollPane1.setFocusable(false);
+        jScrollPane1.setOpaque(false);
+
         textCommandArea.setEditable(false);
-        textCommandArea.setBackground(new java.awt.Color(0, 0, 0));
+        textCommandArea.setBackground(new Color(0, 0, 0, 0)
+        );
         textCommandArea.setColumns(20);
         textCommandArea.setFont(new java.awt.Font("Consolas", 0, 13)); // NOI18N
         textCommandArea.setForeground(new java.awt.Color(255, 255, 255));
         textCommandArea.setLineWrap(true);
         textCommandArea.setRows(5);
         textCommandArea.setCaretColor(new java.awt.Color(255, 255, 255));
+        textCommandArea.setOpaque(false);
         textCommandArea.addKeyListener(new java.awt.event.KeyAdapter() {
             public void keyPressed(java.awt.event.KeyEvent evt) {
                 textCommandAreaKeyPressed(evt);
