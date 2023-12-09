@@ -105,7 +105,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
 
     private static Icon getFileTypeIcon(String fileName, boolean isFolder) {
         if (isFolder) {
-            //System.out.println(fileName);
             return UIManager.getIcon("FileView.directoryIcon");
         }
 
@@ -180,6 +179,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == doubleClick) {
                 if (button instanceof FolderButton) {
+                    jPanel_Finder_Dashboard.removeAll();
                     moveToFolder(button);
                 } else if (button instanceof FileButton) {
                     FileButton fileButton = (FileButton) button;
@@ -200,6 +200,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     }
 
     private void refreshUI(){
+        
         jPanel_Finder_Dashboard.add(getElementsToPanel());
         jPanel_Finder_Dashboard.revalidate();
         jPanel_Finder_Dashboard.repaint();
@@ -229,6 +230,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         jButton_Go_To_Home_Folder = new javax.swing.JButton();
         jTextField_Path = new javax.swing.JTextField();
         jButton_New_Folder = new javax.swing.JButton();
+        jButton_Go_Back = new javax.swing.JButton();
         jPanel_Main_Wrapper = new javax.swing.JPanel();
         jPanel_Sidebar = new javax.swing.JPanel();
         jScrollPane_Folder_Structure = new javax.swing.JScrollPane();
@@ -276,12 +278,25 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         jTextField_Path.setAutoscrolls(false);
         jTextField_Path.setFocusable(false);
 
+        jButton_New_Folder.setBackground(new Color(0, 0, 0, 0)
+        );
         jButton_New_Folder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finder/icon-add-folder.png"))); // NOI18N
         jButton_New_Folder.setToolTipText("New Folder");
         jButton_New_Folder.setFocusable(false);
         jButton_New_Folder.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton_New_FolderActionPerformed(evt);
+            }
+        });
+
+        jButton_Go_Back.setBackground(new Color(0, 0, 0, 0)
+        );
+        jButton_Go_Back.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/finder/icon-go-back.png"))); // NOI18N
+        jButton_Go_Back.setFocusable(false);
+        jButton_Go_Back.setSize(new java.awt.Dimension(26, 26));
+        jButton_Go_Back.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Go_BackActionPerformed(evt);
             }
         });
 
@@ -295,28 +310,24 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                 .addGap(18, 18, 18)
                 .addComponent(jButton_Go_To_Home_Folder, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jTextField_Path, javax.swing.GroupLayout.PREFERRED_SIZE, 714, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_Path, javax.swing.GroupLayout.PREFERRED_SIZE, 678, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
+                .addComponent(jButton_Go_Back, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jButton_New_Folder, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(16, Short.MAX_VALUE))
         );
         jPanel_Path_barLayout.setVerticalGroup(
             jPanel_Path_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Path_barLayout.createSequentialGroup()
-                .addGap(9, 9, 9)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel_Path_barLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel_Path_barLayout.createSequentialGroup()
-                        .addComponent(jLabel_Current_Folder_Name, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Path_barLayout.createSequentialGroup()
-                        .addComponent(jTextField_Path)
-                        .addContainerGap())
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Path_barLayout.createSequentialGroup()
-                        .addComponent(jButton_New_Folder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(6, 6, 6))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Path_barLayout.createSequentialGroup()
-                        .addComponent(jButton_Go_To_Home_Folder, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addGap(6, 6, 6))))
+                    .addComponent(jLabel_Current_Folder_Name, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jButton_Go_To_Home_Folder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField_Path, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton_Go_Back)
+                    .addComponent(jButton_New_Folder, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(6, 6, 6))
         );
 
         jLabel_Current_Folder_Name.getAccessibleContext().setAccessibleDescription("");
@@ -536,6 +547,10 @@ public class FinderApp extends JInternalFrame implements AppInterface {
         refreshUI();
     }//GEN-LAST:event_jButton_Go_To_Home_FolderActionPerformed
 
+    private void jButton_Go_BackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Go_BackActionPerformed
+        
+    }//GEN-LAST:event_jButton_Go_BackActionPerformed
+
     @Override
     public void closeFrame() {
         try {
@@ -547,6 +562,7 @@ public class FinderApp extends JInternalFrame implements AppInterface {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton_Go_Back;
     private javax.swing.JButton jButton_Go_To_Home_Folder;
     private javax.swing.JButton jButton_New_Folder;
     private javax.swing.JLabel jLabel_Current_Folder_Name;
