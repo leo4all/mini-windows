@@ -231,23 +231,23 @@ public class LoginForm extends javax.swing.JFrame {
         String password = String.valueOf(jPasswordField.getPassword());
         
         UserManager.initialize();
-        if (UserManager.authenticateUser(username, password)) {
-            userAuth = UserManager.getUserByUsername(username);
-            openAuthenticatedFrame(userAuth);
-            this.dispose();
-        }else{
+        if (!UserManager.authenticateUser(username, password)) {
             JOptionPane.showMessageDialog(null, 
                 "Please check your credentials", 
                 "Error", 
                 JOptionPane.WARNING_MESSAGE
             );
+            return;
         }
+        
+        this.userAuth = UserManager.getUserByUsername(username);
+        openAuthenticatedFrame();
+        this.dispose();
     }//GEN-LAST:event_jButton_LoginActionPerformed
 
-    private void openAuthenticatedFrame(User authenticatedUser) {
+    private void openAuthenticatedFrame() {
         SwingUtilities.invokeLater(() -> {
-            Dashboard dashboard = new Dashboard();
-            dashboard.setAuthUser(userAuth);
+            Dashboard dashboard = new Dashboard(this.userAuth);
             dashboard.setExtendedState(JFrame.MAXIMIZED_BOTH);
             dashboard.setVisible(true);
         });

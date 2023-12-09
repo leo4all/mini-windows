@@ -8,6 +8,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -22,24 +23,28 @@ import java.util.regex.Pattern;
  */
 public class TweetManager {
 
-    private List<TweetPost> tweetPosts = new ArrayList<>();
+    private List<TweetPost> tweetPosts;
     private String projectDir = System.getProperty("user.dir") + "/src/main/tweets";
     private String currentUser;
-
+    private String username;
+    
     private static final Pattern USERNAME_PATTERN = Pattern.compile("data-username=\"([^\"]+)\"");
     private static final Pattern DATE_PATTERN = Pattern.compile("data-date=\"([^\"]+)\"");
     private static final Pattern CONTENT_PATTERN = Pattern.compile("<div class=\"twitter-widget\".*?>(.*?)</div>");
 
-    public TweetManager(TwitterAccount account) {
-        this.currentUser = account.getUsername();
+    public TweetManager(User userAuthen, TwitterAccount account) {
+        tweetPosts = new ArrayList<>();
+        this.currentUser = userAuthen.getUsername();
+        this.username = account.getUsername();
     }
 
     public void addTweetPost(TweetPost post) {
         tweetPosts.add(post);
     }
 
-    public void saveTweetPostsToFile() {
-        String fileName = projectDir + File.separator + currentUser + File.separator + "_tweetPosts.txt";
+    public void saveTweets(String username) {
+        String fileName = Paths.get(projectDir, currentUser, username, "_tweetPosts.txt").toString();
+
         try {
             File file = new File(fileName);
             if (!file.exists()) {
@@ -56,11 +61,19 @@ public class TweetManager {
         }
     }
 
-    public List<TweetPost> loadTweetPostsByDateAndUser(Date startDate, Date endDate, String username) {
-        List<TweetPost> filteredPosts = new ArrayList<>();
-        String fileName = projectDir + File.separator + currentUser + File.separator + "_tweetPosts.txt";
-
+    public List<TweetPost> loadTweetPostsByDateAndUser(Date startDate, Date endDate, String requestedAccount) {
+        if (requestedAccount != null) {
+            this.username = requestedAccount;
+        }
+       
+        String userPath = Paths.get(projectDir, currentUser, username).toString();
         try {
+             File directory = new File(userPath);
+            if (! directory.exists()){
+                directory.mkdir();
+            }
+
+            String fileName = Paths.get(userPath, "tweets.txt").toString();
             File file = new File(fileName);
             if (!file.exists()) {
                 file.createNewFile();
@@ -74,7 +87,7 @@ public class TweetManager {
                             && tweetPost.getUsername().equals(username)
                             && tweetPost.getPostDate().compareTo(startDate) >= 0
                             && tweetPost.getPostDate().compareTo(endDate) <= 0) {
-                        filteredPosts.add(tweetPost);
+                        tweetPosts.add(tweetPost);
                     }
                 }
             }
@@ -82,7 +95,7 @@ public class TweetManager {
             e.printStackTrace();
         }
 
-        return filteredPosts;
+        return tweetPosts;
     }
 
     private TweetPost parseTweetPostFromHtml(String html) {

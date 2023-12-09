@@ -5,7 +5,6 @@
 package com.unitec.mini.windows;
 
 import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialOceanicContrastIJTheme;
-import com.unitec.mini.windows.logic.Folder;
 import com.formdev.flatlaf.util.SystemInfo;
 import com.unitec.mini.windows.apps.AppInterface;
 import com.unitec.mini.windows.apps.EditorApp;
@@ -14,6 +13,7 @@ import com.unitec.mini.windows.apps.PaintApp;
 import com.unitec.mini.windows.apps.PlayerApp;
 import com.unitec.mini.windows.apps.SettingsApp;
 import com.unitec.mini.windows.apps.TerminalApp;
+import com.unitec.mini.windows.apps.TwitterApp;
 import com.unitec.mini.windows.logic.ComponentMover;
 import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.logic.User;
@@ -30,11 +30,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.nio.file.Path;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JDialog;
@@ -57,8 +54,6 @@ import javax.swing.event.ChangeListener;
  */
 public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     int mouseX, mouseY;
-    Path defaultFolderPath;
-    List<Folder> folderList;
     private ComponentMover cm;
     private static final int TIMER_DELAY = 250;
     private static final float OPACITY_CHANGE = 0.049f;
@@ -72,7 +67,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     TerminalApp terminalApp;
     SettingsApp settingsAppp;
 
-    public Dashboard() {
+    public Dashboard(User user) {
+        this.userAuthen = user;
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
         Image appImage = appIcon.getImage();
         setIconImage(appImage);
@@ -81,14 +77,10 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
             if(Taskbar.isTaskbarSupported()){
                 final Taskbar taskbar = Taskbar.getTaskbar();
                 taskbar.setIconImage(appImage);
-                //taskbar.setIconBadge("Mini Windows");
-                //taskbar.setDockIconBadge("Blah");
-
             }
         } catch (Exception e) {
         }
-        
-        //this.getRootPane().putClientProperty("apple.awt.draggableWindowBackground", true);
+
         GraphicsEnvironment env = GraphicsEnvironment.getLocalGraphicsEnvironment();
         setMaximizedBounds(env.getMaximumWindowBounds());
         setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
@@ -96,8 +88,6 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         setExtendedState(this.getExtendedState() | this.MAXIMIZED_BOTH);
 
         setLocationRelativeTo(null);
-        
-        folderList = new ArrayList<>();
         
         updateTime(jLabel_Timer_Top);
         Timer timer = new Timer(1000, new ActionListener() {
@@ -118,8 +108,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         label.setText(currentTime);
     }
     
-    public void setAuthUser(User user){
-        this.userAuthen = user;
+    private User getAuthUser(){
+        return userAuthen;
     }
 
     /**
@@ -159,7 +149,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jLabel_Timer_Top = new javax.swing.JLabel();
         jButton_Shutdown = new javax.swing.JButton();
         jPanel_SideBar = new javax.swing.JPanel();
-        jButton_OPen_Paint = new javax.swing.JButton();
+        jButton_Open_Paint = new javax.swing.JButton();
         jButton_OPen_Finder = new javax.swing.JButton();
         jButton_Open_Text_Editor = new javax.swing.JButton();
         jButton_OPen_Player = new javax.swing.JButton();
@@ -420,22 +410,22 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
         jPanel_SideBar.setBackground(new java.awt.Color(66, 62, 62));
 
-        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png"))); // NOI18N
-        jButton_OPen_Paint.setBorder(BorderFactory.createEmptyBorder());
-        jButton_OPen_Paint.setBorderPainted(false);
-        jButton_OPen_Paint.setContentAreaFilled(false);
-        jButton_OPen_Paint.setFocusPainted(false);
-        jButton_OPen_Paint.addMouseListener(new java.awt.event.MouseAdapter() {
+        jButton_Open_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png"))); // NOI18N
+        jButton_Open_Paint.setBorder(BorderFactory.createEmptyBorder());
+        jButton_Open_Paint.setBorderPainted(false);
+        jButton_Open_Paint.setContentAreaFilled(false);
+        jButton_Open_Paint.setFocusPainted(false);
+        jButton_Open_Paint.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseEntered(java.awt.event.MouseEvent evt) {
-                jButton_OPen_PaintMouseEntered(evt);
+                jButton_Open_PaintMouseEntered(evt);
             }
             public void mouseExited(java.awt.event.MouseEvent evt) {
-                jButton_OPen_PaintMouseExited(evt);
+                jButton_Open_PaintMouseExited(evt);
             }
         });
-        jButton_OPen_Paint.addActionListener(new java.awt.event.ActionListener() {
+        jButton_Open_Paint.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton_OPen_PaintActionPerformed(evt);
+                jButton_Open_PaintActionPerformed(evt);
             }
         });
 
@@ -543,7 +533,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
                 .addContainerGap()
                 .addGroup(jPanel_SideBarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                     .addComponent(jButton_OPen_Finder, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
-                    .addComponent(jButton_OPen_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
+                    .addComponent(jButton_Open_Paint, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 51, Short.MAX_VALUE)
                     .addComponent(jButton_Open_Text_Editor, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton_OPen_Player, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jButton_OPen_Terminal, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
@@ -556,7 +546,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
                 .addGap(50, 50, 50)
                 .addComponent(jButton_OPen_Finder, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jButton_OPen_Paint, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jButton_Open_Paint, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jButton_Open_Text_Editor, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
@@ -648,13 +638,13 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         jButton_OPen_Finder.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_finder_20.png")));
     }//GEN-LAST:event_jButton_OPen_FinderMouseExited
 
-    private void jButton_OPen_PaintMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintMouseEntered
-        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_32.png")));
-    }//GEN-LAST:event_jButton_OPen_PaintMouseEntered
+    private void jButton_Open_PaintMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Open_PaintMouseEntered
+        jButton_Open_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_32.png")));
+    }//GEN-LAST:event_jButton_Open_PaintMouseEntered
 
-    private void jButton_OPen_PaintMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintMouseExited
-        jButton_OPen_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png")));
-    }//GEN-LAST:event_jButton_OPen_PaintMouseExited
+    private void jButton_Open_PaintMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_Open_PaintMouseExited
+        jButton_Open_Paint.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_paint_20.png")));
+    }//GEN-LAST:event_jButton_Open_PaintMouseExited
 
     private void jButton_OPen_PlayerMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerMouseEntered
         jButton_OPen_Player.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icon_music_32.png")));
@@ -835,7 +825,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         }
     }
     
-    private void jButton_OPen_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PaintActionPerformed
+    private void jButton_Open_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Open_PaintActionPerformed
         if (paintApp == null || paintApp.isClosed()) {
             paintApp = new PaintApp(userAuthen);
             
@@ -849,7 +839,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
                 System.out.println("Some error rised.");
             }
         }
-    }//GEN-LAST:event_jButton_OPen_PaintActionPerformed
+    }//GEN-LAST:event_jButton_Open_PaintActionPerformed
 
     private void jButton_OPen_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerActionPerformed
         if (playerApp == null || playerApp.isClosed()) {
@@ -887,7 +877,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         ImageIcon icon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png")); 
         loginDialog.setIconImage(icon.getImage());
         
-        LoginTwitter loginForm = new LoginTwitter(this, loginDialog);
+        LoginTwitter loginForm = new LoginTwitter(this, loginDialog, userAuthen);
         loginDialog.getContentPane().add(loginForm.getContentPane());
         loginDialog.pack();
         loginDialog.setSize(900, 550);
@@ -921,9 +911,13 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     }
 
     public void showTwitterApp(TwitterAccount account){
-        //TwitterApp fd = new TwitterApp( account);
-        //setInternalFrameCenterLocation(fd);
-        //jDesktopPane_Window.add(fd).setVisible(true);
+         java.awt.EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                TwitterApp fd = new TwitterApp(getAuthUser(), account );
+                setInternalFrameCenterLocation(fd);
+                jDesktopPane_Window.add(fd).setVisible(true);
+            }
+        });
     }
 
     private void setInternalFrameCenterLocation(JInternalFrame frame){
@@ -988,9 +982,8 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Dashboard db = new Dashboard();
-                // TEMP delete main method. Initial project start on JLoginForm.
-                db.setAuthUser(new User("admin", "admin", "admin", "administrator"));
+                User user = new User("admin", "admin", "admin", "administrator"); //delete
+                Dashboard db = new Dashboard(user);
                 db.setVisible(true);
             }
         });
@@ -1005,10 +998,10 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private javax.swing.JButton jButton_Editor_Close;
     private javax.swing.JButton jButton_Finder_Close;
     private javax.swing.JButton jButton_OPen_Finder;
-    private javax.swing.JButton jButton_OPen_Paint;
     private javax.swing.JButton jButton_OPen_Player;
     private javax.swing.JButton jButton_OPen_Terminal;
     private javax.swing.JButton jButton_OPen_Twitter;
+    private javax.swing.JButton jButton_Open_Paint;
     private javax.swing.JButton jButton_Open_Text_Editor;
     private javax.swing.JButton jButton_Shutdown;
     private javax.swing.JDesktopPane jDesktopPane_Window;

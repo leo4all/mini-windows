@@ -9,6 +9,8 @@ import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.io.File;
 import java.util.Date;
 import java.util.List;
@@ -33,14 +35,19 @@ import org.jsoup.select.Elements;
  * @author leonel
  */
 public class TwitterApp extends JInternalFrame implements AppInterface {
-    private TwitterAccount currentAccount;
+    private TwitterAccount tweetAccount;
     private TweetManager tweetManager;
     private User userAuthen;
-
+    private Image backgroundImage;
+    List<TweetPost> loadedPosts;
+    
     /**
      * Creates new form Twitter
      */
-    public TwitterApp() {        
+    public TwitterApp(User userAuth, TwitterAccount account) {
+        this.tweetAccount = account;
+        this.userAuthen = userAuth;
+
         initComponents();
         setComponents();
         setVisible(true);
@@ -49,6 +56,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_twitter_20.png"));
         this.setFrameIcon(appIcon);
+        
+        ImageIcon backgroundImageIcon = new ImageIcon(getClass().getResource("/images/twitter-wallpaper.jpg"));
+        backgroundImage = backgroundImageIcon.getImage();
         
         textPane.setContentType("text/html");
         timeLinePane.setContentType("text/html");
@@ -61,10 +71,10 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     }
 
     public void loadTweets() {
-        tweetManager = new TweetManager(getTwitterAccount());
+        tweetManager = new TweetManager(userAuthen, tweetAccount);
         Date startDate = new Date(122, 0, 1);
         Date endDate = new Date();
-        List<TweetPost> loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, currentAccount.getUsername());
+        loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, null);
         String content = "";
 
         for (TweetPost loadedPost : loadedPosts) {
@@ -72,7 +82,6 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             content += loadedPost.toString();
         }
         System.out.println("Load content");
-        //System.out.println(content);
         timeLinePane.setText(content);
     }
     
@@ -89,11 +98,11 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     }
     
     public void setAccountAuth(TwitterAccount loggedAccount) {
-        this.currentAccount = loggedAccount;
+        this.tweetAccount = loggedAccount;
     }
     
     private TwitterAccount getTwitterAccount(){
-        return currentAccount;
+        return tweetAccount;
     }
 
     /**
@@ -105,6 +114,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jPanel2 = new javax.swing.JPanel();
+        jPanel3 = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         jScrollPane_timeLine = new javax.swing.JScrollPane();
         timeLinePane = new javax.swing.JTextPane();
         jPanel_AddTweet = new javax.swing.JPanel();
@@ -116,8 +128,20 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
 
         setClosable(true);
         setIconifiable(true);
-        setResizable(true);
         setTitle("Twitter");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 137, Short.MAX_VALUE)
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jPanel3.setLayout(new java.awt.CardLayout());
 
         jScrollPane_timeLine.setCursor(new java.awt.Cursor(java.awt.Cursor.DEFAULT_CURSOR));
 
@@ -190,28 +214,48 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addContainerGap())
         );
 
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel_AddTweet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jScrollPane_timeLine, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel_AddTweet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(jScrollPane_timeLine, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        jScrollPane_timeLine.getAccessibleContext().setAccessibleName("");
+
+        jPanel3.add(jPanel1, "card2");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(137, 137, 137)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel_AddTweet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jScrollPane_timeLine, javax.swing.GroupLayout.PREFERRED_SIZE, 500, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(99, Short.MAX_VALUE))
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 532, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(65, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(17, 17, 17)
-                .addComponent(jPanel_AddTweet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(18, 18, 18)
-                .addComponent(jScrollPane_timeLine, javax.swing.GroupLayout.PREFERRED_SIZE, 600, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(18, Short.MAX_VALUE))
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
+            .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, 823, Short.MAX_VALUE)
         );
-
-        jScrollPane_timeLine.getAccessibleContext().setAccessibleName("");
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -229,10 +273,18 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         }
     }//GEN-LAST:event_jButton_OpenAddImageActionPerformed
 
+    @Override
+    public void paint(Graphics g) {
+        super.paint(g);
+        if (backgroundImage != null) {
+            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
+        }
+    }
+
     private void jButton_SubmitPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SubmitPostActionPerformed
 
         String content = processTextPaneContent(parseContent(textPane.getText()));
-        TweetPost post = new TweetPost(currentAccount.getUsername(), content);
+        TweetPost post = new TweetPost(tweetAccount.getUsername(), content);
         String textStringFormatted = post.toString();
 
         String timeStringProcessed = processTextPaneContent(parseContent(timeLinePane.getText()));
@@ -353,7 +405,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         @Override
         public void internalFrameOpened(InternalFrameEvent e) {
             try {
-                tweetManager.saveTweetPostsToFile();
+                tweetManager.saveTweets(title);
             } catch (Exception exception) {
                 System.out.println("Error saving tweet file.");
             }
@@ -385,6 +437,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     private javax.swing.JButton jButton_OPenAddEmoji;
     private javax.swing.JButton jButton_OpenAddImage;
     private javax.swing.JButton jButton_SubmitPost;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel_AddTweet;
     private javax.swing.JScrollPane jScrollPane_AddTweet;
     private javax.swing.JScrollPane jScrollPane_timeLine;

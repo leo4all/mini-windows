@@ -3,6 +3,7 @@ package com.unitec.mini.windows.component;
 import com.unitec.mini.windows.LoginTwitter;
 import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.logic.TwitterUserManager;
+import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.ui.Button;
 import com.unitec.mini.windows.ui.TwitterComboBox;
 import com.unitec.mini.windows.ui.TwitterPasswordField;
@@ -22,14 +23,14 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import net.miginfocom.swing.MigLayout;
 
 public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
-
+    private User userAuthen;
     LoginTwitter loginForm;
     private JButton selectImageButton;
     private JLabel profileImageLabel;
 
     public PanelLoginAndRegister(LoginTwitter loginForm) {
         this.loginForm = loginForm;
-
+        
         initComponents();
         initRegister();
         initLogin();
@@ -147,7 +148,6 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             if (result == JFileChooser.APPROVE_OPTION) {
                 File selectedFile = fileChooser.getSelectedFile();
 
-                // Redimensionar la imagen antes de mostrarla
                 ImageIcon selectedImageIcon = resizeImage(selectedFile.getAbsolutePath(), 100, 100);
                 profileImageLabel.setIcon(selectedImageIcon);
             }
@@ -172,11 +172,11 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
 
         login.add(label);
 
-        TwitterTextField txtEmail = new TwitterTextField();
+        TwitterTextField textUsername = new TwitterTextField();
         ImageIcon txtEmailIcon = new ImageIcon(getClass().getResource("/images/icons-twitter-20.png"));
-        txtEmail.setPrefixIcon(txtEmailIcon);
-        txtEmail.setHint("Username");
-        login.add(txtEmail, "w 60%");
+        textUsername.setPrefixIcon(txtEmailIcon);
+        textUsername.setHint("Username");
+        login.add(textUsername, "w 60%");
 
         TwitterPasswordField txtPass = new TwitterPasswordField();
         ImageIcon txtPassIcon = new ImageIcon(getClass().getResource("/images/pass.png"));
@@ -194,7 +194,7 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
         cmd.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent ae) {
-                String username = txtEmail.getText().trim();
+                String username = textUsername.getText().trim();
                 String password = String.valueOf(txtPass.getPassword());
                 TwitterUserManager.initialize();
                 boolean isAuthen = TwitterUserManager.authenticateUser(username, password);
@@ -202,15 +202,17 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     JOptionPane.showMessageDialog(register, "Please check your credentials.");
                     return;
                     
-                }else{
-                    TwitterAccount account = TwitterUserManager.getAccountByUsername(username);
-                    if (account != null) {
-                        loginForm.getParentPanelDialog().dispose();
-                        loginForm.getDashboard().showTwitterApp(account);
-                    }else{
-                        System.out.println("An error occurr getting twitter account");
-                    }
                 }
+
+                TwitterAccount account = TwitterUserManager.getAccountByUsername(username);
+                if (account == null) {
+                    JOptionPane.showMessageDialog(register, "Please verify user has an account.");
+                    return;
+                }
+                
+                loginForm.getParentPanelDialog().dispose();
+                loginForm.getDashboard().showTwitterApp(account);
+                
             }
         });
     }

@@ -73,6 +73,7 @@ public class TerminalApp extends JInternalFrame implements AppInterface {
         setOpaque(false);
 
         jPanel_Main.setBackground(new Color(0, 0, 0, 60));
+        jPanel_Main.setOpaque(false);
 
         jScrollPane1.setBackground(new Color(0, 0, 0, 0));
         jScrollPane1.setFocusable(false);

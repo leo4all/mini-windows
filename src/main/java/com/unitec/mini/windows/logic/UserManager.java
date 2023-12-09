@@ -13,11 +13,11 @@ import java.util.List;
 import java.util.Map;
 
 public class UserManager {
-    private static final String DEFAUL_USER = "admin";
-    private static final String DEFAUL_PASSWORD = "admin";
+    private static final String DEFAULT_USER = "admin";
+    private static final String DEFAULT_PASSWORD = "admin";
 
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
-    private static final String USERS_FILE_PATH = DEFAUL_USER + File.separator + "users.twc";
+    private static final String USERS_FILE_PATH = DEFAULT_USER + File.separator + "users.twc";
     private static final Map<String, User> users = new HashMap<>();
     private static UserManager instance = null;
 
@@ -49,7 +49,7 @@ public class UserManager {
      
     public static void createDefaultAdminUser() {
         if (!users.containsKey("admin")) {
-            User adminUser = new User("John Doe", DEFAUL_USER, DEFAUL_PASSWORD, "administrator");
+            User adminUser = new User("John Doe", DEFAULT_USER, DEFAULT_PASSWORD, "administrator");
             users.put("admin", adminUser);
             saveUser(adminUser);
         }
@@ -108,10 +108,10 @@ public class UserManager {
     }
 
     public static String getDefaultPassword() {
-        return DEFAUL_PASSWORD;
+        return DEFAULT_PASSWORD;
     }
 
     public static String getDefaultUser() {
-        return DEFAUL_USER;
+        return DEFAULT_USER;
     }
 }

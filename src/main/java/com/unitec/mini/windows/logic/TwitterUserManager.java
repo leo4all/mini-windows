@@ -7,6 +7,7 @@ package com.unitec.mini.windows.logic;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
@@ -19,9 +20,9 @@ import java.util.logging.Logger;
  * @author leonel
  */
 public class TwitterUserManager {
-
+    private static final String DEFAULT_ACCOUNT_FILE = "twitter_accounts.twc";
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
-    private static final String USERS_FILE_PATH = "admin" + File.separator + "twitter_users.twc";
+
     private static final Map<String, TwitterAccount> accounts = new HashMap<>();
     private static TwitterUserManager instance = null;
     
@@ -52,7 +53,9 @@ public class TwitterUserManager {
     }
 
     private static void loadAccounts() {
-        try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "r")) {
+        String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
+        
+        try (RandomAccessFile file = new RandomAccessFile(path, "r")) {
             while (file.getFilePointer() < file.length()) {
                 String name = file.readUTF();
                 String username = file.readUTF();
@@ -96,7 +99,8 @@ public class TwitterUserManager {
     }
     
     private static void saveUser(TwitterAccount account) {
-        try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
+        String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
+        try (RandomAccessFile file = new RandomAccessFile(path, "rw")) {
             file.seek(file.length());
             file.writeUTF(account.getName());
             file.writeUTF(account.getUsername());

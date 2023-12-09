@@ -3,6 +3,7 @@ package com.unitec.mini.windows;
 
 import com.unitec.mini.windows.component.PanelCover;
 import com.unitec.mini.windows.component.PanelLoginAndRegister;
+import com.unitec.mini.windows.logic.User;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.text.DecimalFormat;
@@ -26,8 +27,10 @@ public class LoginTwitter extends javax.swing.JFrame {
     private final double loginSize = 60;
     Dashboard dashboard;
     JDialog parenJPanel;
+    private User userAuthen;
     
-    public LoginTwitter(Dashboard dashboard, JDialog parenJPanel) {
+    public LoginTwitter(Dashboard dashboard, JDialog parenJPanel, User user) {
+        this.userAuthen = user;
         this.dashboard = dashboard;
         this.parenJPanel = parenJPanel;
         initComponents();

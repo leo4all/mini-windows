@@ -24,14 +24,15 @@ public class FolderStructureCreator {
     private static final String usersPath =  File.separator + "src"+
             File.separator+"main"+
             File.separator+"users";
-
+    private static final String DEFAULT_USER_FILE = "users.twc";
+    
     public static void createDefaultFolderForAdmin(){
         /**
          * Initialize default folder root structure
          * Initialize default files for users and followers
          */
         createDefaultFoldersFor(UserManager.getDefaultUser());
-        createFileWithContent(UserManager.getDefaultUser(), "users.twc", null, null );
+        createFileWithContent(UserManager.getDefaultUser(), DEFAULT_USER_FILE, null, null );
         createFileWithContent(UserManager.getDefaultUser(), "twitter_accounts.twc", null, null );
     }
 
