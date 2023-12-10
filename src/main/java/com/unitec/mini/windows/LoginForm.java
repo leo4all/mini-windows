@@ -150,10 +150,8 @@ public class LoginForm extends javax.swing.JFrame {
 
         jSeparator1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
 
-        jTextFieldUsername.setText("admin");
         jTextFieldUsername.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-locked-user.png"))); // NOI18N
 
-        jPasswordField.setText("admin");
         jPasswordField.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-lock.png"))); // NOI18N
 
         jButton_Login.setFont(new java.awt.Font("Khmer Sangam MN", 1, 24)); // NOI18N
