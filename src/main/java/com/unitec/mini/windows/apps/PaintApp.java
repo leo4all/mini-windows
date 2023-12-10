@@ -7,7 +7,6 @@ package com.unitec.mini.windows.apps;
 
 import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.LoginForm;
-import static com.unitec.mini.windows.apps.EditorApp.guardar;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -223,23 +222,17 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         return;
     }
 
-    // Establecer el directorio de destino
     String targetDirectoryPath = "src/main/users/" + UserLoging + "/Images";
 
-    // Verificar si el directorio de origen existe y es un directorio
     if (Saving != null && Saving.exists() && Saving.isDirectory()) {
-        // Obtener todos los archivos en el directorio de origen
+        
         File[] files = Saving.listFiles();
-
-        // Verificar si hay archivos para mover
         if (files != null && files.length > 0) {
-            // Crear el directorio de destino si no existe
             File targetDirectory = new File(targetDirectoryPath);
             if (!targetDirectory.exists()) {
                 targetDirectory.mkdirs();
             }
 
-            // Utilizar ExecutorService para realizar el movimiento de archivos de manera concurrente
             ExecutorService executor = Executors.newFixedThreadPool(files.length);
             for (File file : files) {
                 executor.execute(() -> {
@@ -254,12 +247,9 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
                 });
             }
 
-            // Apagar ExecutorService después de completar todas las tareas
             executor.shutdown();
 
-            // Esperar a que todas las tareas se completen antes de mostrar el mensaje
             while (!executor.isTerminated()) {
-                // Esperar
             }
 
             JOptionPane.showMessageDialog(null, "Imágenes guardadas exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);

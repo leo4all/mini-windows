@@ -4,24 +4,29 @@
  */
 package com.unitec.mini.windows.logic;
 
-import java.io.File;
+
+import java.io.IOException;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  *
  * @author leonel
  */
-public class TwitterAccount {
+public class TwitterAccount implements Serializable{
 
     private String name;
     private String username;
     private String password;
     private char gender;
-    int age;
+    private int age;
     private int status;
     private String picturePath;
     private Date dateReg;
     private String belongsTo;
+    
+    private static final long serialVersionUID = 1L;
+    
 
     public TwitterAccount() {
 
@@ -125,6 +130,18 @@ public class TwitterAccount {
         this.belongsTo = belongsTo;
     }
 
+    
+    private void writeObject(java.io.ObjectOutputStream out) throws IOException {
+        out.defaultWriteObject();
+        out.writeObject(dateReg != null ? dateReg.getTime() : null);
+    }
+
+    private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        Long dateRegMillis = (Long) in.readObject();
+        dateReg = (dateRegMillis != null) ? new Date(dateRegMillis) : null;
+    }
+
     @Override
     public String toString() {
         return "TwitterAccount{" + "name=" + name + ", "
@@ -138,5 +155,4 @@ public class TwitterAccount {
                 + "belongsTo=" + belongsTo + 
         '}';
     }
-
 }

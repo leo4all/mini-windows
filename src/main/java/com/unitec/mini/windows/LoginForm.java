@@ -24,11 +24,12 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
-import javax.swing.event.InternalFrameEvent;
+
 
 public class LoginForm extends javax.swing.JFrame {
     private User userAuth;
-    
+    public static String userLoging;
+
     public LoginForm() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icons-ubuntu.png"));
         Image appImage = appIcon.getImage();
@@ -149,15 +150,8 @@ public class LoginForm extends javax.swing.JFrame {
 
         jSeparator1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
 
-        jTextFieldUsername.setText("admin");
         jTextFieldUsername.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-locked-user.png"))); // NOI18N
-        jTextFieldUsername.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextFieldUsernameActionPerformed(evt);
-            }
-        });
 
-        jPasswordField.setText("admin");
         jPasswordField.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-lock.png"))); // NOI18N
 
         jButton_Login.setFont(new java.awt.Font("Khmer Sangam MN", 1, 24)); // NOI18N
@@ -247,7 +241,7 @@ public class LoginForm extends javax.swing.JFrame {
         openAuthenticatedFrame();
         this.dispose();
     }//GEN-LAST:event_jButton_LoginActionPerformed
-public static String userLoging;
+
 
     public static String getUserLoging() {
         return userLoging;
@@ -264,10 +258,6 @@ public static String userLoging;
     private void jButton_ShutdownActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ShutdownActionPerformed
         System.exit(0);
     }//GEN-LAST:event_jButton_ShutdownActionPerformed
-
-    private void jTextFieldUsernameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextFieldUsernameActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jTextFieldUsernameActionPerformed
 
     /**
      * @param args the command line arguments

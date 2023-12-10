@@ -113,9 +113,9 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                          belongsTo
                 );
 
-                
-                boolean registered = TwitterUserManager.registerUser(newUser);
-                if (registered) {
+                TwitterUserManager userManager = new TwitterUserManager();
+                boolean isRegistered = userManager.saveUser(newUser);
+                if (isRegistered) {
                     JOptionPane.showMessageDialog(null, "Twitter account registered, please login.");
 
                     txtUser.setText("");
@@ -196,15 +196,16 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
             public void actionPerformed(ActionEvent ae) {
                 String username = textUsername.getText().trim();
                 String password = String.valueOf(txtPass.getPassword());
-                TwitterUserManager.initialize();
-                boolean isAuthen = TwitterUserManager.authenticateUser(username, password);
+                TwitterUserManager userManager = new TwitterUserManager();
+                userManager.loadAccounts();
+                boolean isAuthen = userManager.authenticateUser(username, password);
                 if (!isAuthen) {
                     JOptionPane.showMessageDialog(register, "Please check your credentials.");
                     return;
                     
                 }
 
-                TwitterAccount account = TwitterUserManager.getAccountByUsername(username);
+                TwitterAccount account = userManager.getAccountByUsername(username);
                 if (account == null) {
                     JOptionPane.showMessageDialog(register, "Please verify user has an account.");
                     return;

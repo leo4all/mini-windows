@@ -4,28 +4,27 @@
  */
 package com.unitec.mini.windows.logic;
 
-import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
  * @author leonel
  */
 public class TwitterUserManager {
-    private static final String DEFAULT_ACCOUNT_FILE = "twitter_accounts.twc";
-    private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
 
-    private static final Map<String, TwitterAccount> accounts = new HashMap<>();
+    private static final String DEFAULT_ACCOUNT_FILE = "twitter_accounts.dat";
+    private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
+    private Map<String, TwitterAccount> accounts = new HashMap<>();
     private static TwitterUserManager instance = null;
-    
+
     public static TwitterUserManager getInstance() {
         if (instance == null) {
             instance = new TwitterUserManager();
@@ -33,93 +32,56 @@ public class TwitterUserManager {
         return instance;
     }
 
-
-    public TwitterUserManager() {
-
-    }
     
-    public static void initialize() {
-        loadAccounts();
-    }
 
-    public static TwitterAccount getAccountByUsername(String username) {
-        return accounts.get(username);
-    }
-
-    public static boolean authenticateUser(String username, String password) {
-        TwitterAccount account = accounts.get(username);
-        System.out.println(account);
-        return account != null && account.getPassword().equals(password);
-    }
-
-    private static void loadAccounts() {
+    public void saveAccounts() {
         String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
-        
-        try (RandomAccessFile file = new RandomAccessFile(path, "r")) {
-            System.out.println(file);
-            while (file.getFilePointer() < file.length()) {
-                String name = file.readUTF();
-                String username = file.readUTF();
-                String password = file.readUTF();
-                int age = file.readInt();
-                String dateRegistered = file.readUTF();
-                char gender = file.readChar();
-                int status = file.readInt();
-                String belongsTo = file.readUTF();
-                String profilePic = "path";
-                TwitterAccount account = new TwitterAccount(
-                        name,
-                        username,
-                        password,
-                        gender,
-                        age,
-                        status,
-                        profilePic,
-                         belongsTo
-                );
-               
-               SimpleDateFormat formatter = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy"); 
-               account.setDateReg(formatter.parse(dateRegistered));
-               accounts.put(username, account);
-            }
+
+        try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(path))) {
+            oos.writeObject(accounts);
         } catch (IOException e) {
-            System.out.println(e);
-        } catch (ParseException ex) {
-            Logger.getLogger(TwitterUserManager.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }
-    
-    public static boolean registerUser(TwitterAccount account) {
-        if (accounts.containsKey(account.getUsername())) {
-            return false;
-        }
-        
-        saveUser(account);
-        accounts.put(account.getBelongsTo(), account);
-        return true;
-    }
-    
-    private static void saveUser(TwitterAccount account) {
-        String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
-        try (RandomAccessFile file = new RandomAccessFile(path, "rw")) {
-            file.seek(file.length());
-            file.writeUTF(account.getName());
-            file.writeUTF(account.getUsername());
-            file.writeUTF(account.getPassword());
-            file.writeInt(account.getAge());
-            file.writeUTF(account.getDateReg().toString());
-            file.writeChar(account.getGender());
-            file.writeInt(account.getStatus());
-            file.writeUTF(account.getBelongsTo());
-            file.close();
-        } catch (IOException e) {
+            System.out.println("Error writing accounts to file: " + path);
             e.printStackTrace();
         }
-        
-        try {
-            TweetManager.createDefaulTweetFolder(account.getUsername());    
-        } catch (Exception e) {
+    }
+
+    public void loadAccounts() {
+        String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
+
+        try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(path))) {
+            accounts = (Map<String, TwitterAccount>) ois.readObject();
+        } catch (FileNotFoundException e) {
+            System.out.println("File not found: " + path);
+            e.printStackTrace();
+        } catch (IOException | ClassNotFoundException e) {
+            System.out.println("Error reading accounts from file: " + path);
+            e.printStackTrace();
         }
-        
+    }
+
+    public boolean saveUser(TwitterAccount account) {
+        accounts.put(account.getUsername(), account);
+        saveAccounts();
+
+        try {
+            TweetManager.createDefaultTweetFolder(account.getUsername());
+            return true;
+        } catch (Exception e) {
+            System.out.println("Error creating tweet folder for user: " + account.getUsername());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean authenticateUser(String username, String password) {
+        if (accounts.containsKey(username)) {
+            TwitterAccount account = accounts.get(username);
+            return account.getPassword().equals(password);
+        }
+        return false;
+    }
+
+    public TwitterAccount getAccountByUsername(String username) {
+        return accounts.get(username);
     }
 }

@@ -22,7 +22,7 @@ import javax.swing.JButton;
 public class FolderStructureCreator {
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
     private static final String DEFAULT_USER_FILE = "user_account.twc";
-    private static final String DEFAULT_TWITTER_FILE = "twitter_accounts.twc";
+    private static final String DEFAULT_TWITTER_FILE = "twitter_accounts.dat";
     
     public static void createDefaultFolderForAdmin(){
         createDefaultFoldersFor(UserManager.getDefaultUser());
@@ -56,7 +56,6 @@ public class FolderStructureCreator {
     
     public static boolean createFile(String location, String filename) {
         File file = new File(location, filename);
-        System.out.println(file.toString());
         if (!file.exists()) {
             try {
                 if (!file.createNewFile()) {

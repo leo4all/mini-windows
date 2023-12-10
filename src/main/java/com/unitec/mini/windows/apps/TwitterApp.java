@@ -73,9 +73,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 @Override
                 protected List<TweetPost> doInBackground() {
                     try {
-                        Date startDate = new Date(122, 0, 1);
-                        Date endDate = new Date();
-                        return tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, null);
+                        return tweetManager.loadTweetPostsByDateAndUser(new Date(), new Date(), tweetAccount.getUsername());
                     } catch (Exception ex) {
                         ex.printStackTrace(); 
                         return null;
@@ -88,9 +86,11 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                         List<TweetPost> tweets = get();
                         if (tweets != null) {
                              StringBuilder sb = new StringBuilder();
-                            for (TweetPost tweet : tweets) {
-                                sb.append(tweet.getContent()).append("\n");
+                             for (int i = tweets.size() - 1; i >= 0; i--) {
+                                TweetPost tweet = tweets.get(i);
+                                sb.append(tweet.toString()).append("\n");
                             }
+
                             timeLinePane.setText(sb.toString());
                         }
                     } catch (Exception ex) {
@@ -413,7 +413,6 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         @Override
         public void internalFrameOpened(InternalFrameEvent e) {
             try {
-                tweetManager.saveTweets(title);
             } catch (Exception exception) {
                 System.out.println("Error saving tweet file.");
             }
@@ -423,8 +422,8 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
 
         @Override
         public void internalFrameClosed(InternalFrameEvent e) {
-        
-        
+            tweetManager.saveTweets();
+            super.internalFrameClosed(e);
         }
     }
     
