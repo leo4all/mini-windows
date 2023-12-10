@@ -843,7 +843,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jButton_OPen_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerActionPerformed
         if (playerApp == null || playerApp.isClosed()) {
-            playerApp = new PlayerApp(userAuthen);
+            playerApp = new PlayerApp(userAuthen,false," ");
             setInternalFrameCenterLocation(playerApp);
             jDesktopPane_Window.add(playerApp).setVisible(true);
         } else {

@@ -28,10 +28,6 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
-/**
- *
- * @author leonel
- */
 public class PlayerApp extends JInternalFrame  implements AppInterface {
     boolean playing = false;
     String UserLoging=LoginForm.getUserLoging();
@@ -41,8 +37,11 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
     String currentSongName = "";
     MP3Player songPlayer;
     private FileSystemView fileSystemView;
-    public PlayerApp(User user) {
+    public PlayerApp(User user,boolean finder,String Path) {
             initComponents();
+            if(finder){
+            musicPath=Path;
+            }
             startMusic();
         try {
             initializeDataFile();
@@ -51,14 +50,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        jSlider1.setValue(0);
-        this.setLocation(50, 50);
-         jSlider1.setEnabled(false);
-        jSlider1.setValue(0);
-        jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
-            public void stateChanged(javax.swing.event.ChangeEvent evt) {
-            }
-        });
         Volumen.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlider2StateChanged(evt);
@@ -99,7 +90,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
             return 0;
         }
     }
-     
     private int totalFrames(FileInputStream fileInputStream) throws IOException {
         Bitstream bitstream = new Bitstream(fileInputStream);
         int totalFrames = 0;
@@ -295,7 +285,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     float changedCalc = (float) (currentVolume + (double) volumeToCut);
     volControl.setValue(changedCalc);
 }
-     
     public ImageIcon setImageWithSize(ImageIcon originalIcon, int width, int height) {
     try {
         Image originalImage = originalIcon.getImage();
@@ -307,7 +296,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         return null;
     }
 }
-
     public void ImageofMusic() {
     try {
             int selectedIndex = panelList.getSelectedIndex();
@@ -317,7 +305,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             ImageIcon fileIcon = (ImageIcon) fileSystemView.getSystemIcon(play1);
             Imagecancion.setIcon(setImageWithSize(fileIcon,54,54));
         } catch (Exception e) {
-            System.out.println("Problem playing music");
             JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
         }
 }
@@ -337,9 +324,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
 
         jPanel1 = new javax.swing.JPanel();
         songTitleLbl = new javax.swing.JLabel();
-        jSlider1 = new javax.swing.JSlider();
         Volumen = new javax.swing.JSlider();
-        segundos = new javax.swing.JLabel();
         BtnPlay = new javax.swing.JButton();
         BtnStop = new javax.swing.JButton();
         forwardBtn = new javax.swing.JButton();
@@ -364,8 +349,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         songTitleLbl.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         songTitleLbl.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         songTitleLbl.setText("SONG TITLE");
-
-        segundos.setText("00:00");
 
         BtnPlay.setText("Play");
         BtnPlay.addActionListener(new java.awt.event.ActionListener() {
@@ -411,65 +394,53 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(110, Short.MAX_VALUE)
-                .addComponent(Btnback)
-                .addGap(3, 3, 3)
-                .addComponent(BtnPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(BtnStop)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(forwardBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addContainerGap()
+                .addComponent(Btnseleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 254, Short.MAX_VALUE)
                 .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(segundos)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 406, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(102, 102, 102)
+                        .addComponent(Btnback)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel2))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGap(6, 6, 6)
-                        .addComponent(Btnseleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(BtnPlay)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(BtnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(forwardBtn)
+                        .addGap(50, 50, 50)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jLabel2)))
+                .addContainerGap(75, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel1)
-                    .addComponent(jLabel2))
+                .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(Btnseleccionado)
-                .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                        .addGap(0, 0, Short.MAX_VALUE)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(Btnback, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtnPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(segundos)))
-                            .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(0, 0, Short.MAX_VALUE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel1)
+                            .addComponent(Volumen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel2))
+                        .addGap(3, 3, 3))
+                    .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(BtnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(BtnPlay, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(Btnback, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)))
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(Btnseleccionado)
+                    .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -515,7 +486,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1050, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -523,7 +494,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 484, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, Short.MAX_VALUE))
@@ -533,7 +504,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
-        // TODO add your handling code here:
         try {
             JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
             chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
@@ -562,30 +532,25 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                 } else {
                     playSong(currentSongName);
                 }
-                jSlider1.setValue(0);
             } else {
                 playing = false;
                 BtnPlay.setText("Pause");
                 songPlayer.pause();
-                jSlider1.setValue(0);
             }
             ImageofMusic();
         }
     }//GEN-LAST:event_BtnPlayActionPerformed
 
     private void BtnStopActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnStopActionPerformed
-        // TODO add your handling code here:
         if (songPlayer != null) {
             playing = false;
             BtnPlay.setText("PLAY");
             songPlayer.stop();
-            jSlider1.setValue(0);
             ImageofMusic();
         }
     }//GEN-LAST:event_BtnStopActionPerformed
 
     private void forwardBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_forwardBtnActionPerformed
-        // TODO add your handling code here:
         if (songPlayer != null) {
             songPlayer.skipForward();
             for (int i = 0; i < panelList.getModel().getSize(); i++) {
@@ -607,7 +572,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     }//GEN-LAST:event_forwardBtnActionPerformed
 
     private void BtnbackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnbackActionPerformed
-        // TODO add your handling code here:
         if (songPlayer != null) {
             songPlayer.skipBackward();
             for (int i = 0; i < panelList.getModel().getSize(); i++) {
@@ -643,7 +607,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         songPlayer = new MP3Player(songFile);
         songPlayer.play();
         playing = true;
-        jSlider1.setValue(0);
         BtnPlay.setText("PAUSE");
         setAllBtns(true);
         updateData(musicPath, songSeek, currentSongName);
@@ -713,9 +676,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JSlider jSlider1;
     private javax.swing.JList<String> panelList;
-    private javax.swing.JLabel segundos;
     private javax.swing.JLabel songTitleLbl;
     // End of variables declaration//GEN-END:variables
 }
