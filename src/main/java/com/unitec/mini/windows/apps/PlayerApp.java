@@ -1,21 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JInternalFrame.java to edit this template
- */
 package com.unitec.mini.windows.apps;
-
-import com.unitec.mini.windows.apps.AppInterface;
+import com.unitec.mini.windows.LoginForm;
+import static com.unitec.mini.windows.apps.EditorApp.guardar;
 import com.unitec.mini.windows.logic.User;
 import javax.swing.ImageIcon;
-import java.awt.CardLayout;
 import javax.swing.JInternalFrame;
 import javax.swing.*;
-import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import jaco.mp3.player.MP3Player;
+import java.awt.Image;
 import java.io.FileInputStream;
-import java.io.IOException;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.FloatControl;
@@ -26,25 +20,30 @@ import javax.sound.sampled.Port;
 import javax.swing.filechooser.FileSystemView;
 import javazoom.jl.decoder.Bitstream;
 import javazoom.jl.decoder.JavaLayerException;
+import javax.swing.JOptionPane;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 /**
  *
  * @author leonel
  */
 public class PlayerApp extends JInternalFrame  implements AppInterface {
-    private User userAuthen;
     boolean playing = false;
+    String UserLoging=LoginForm.getUserLoging();
     String dataPath = "data.flw";
-    String musicPath = "";
+    String musicPath = "src/main/users/" + UserLoging + "/Music";
     long songSeek = 0;
     String currentSongName = "";
     MP3Player songPlayer;
-    private long startTime;
-    Timer timer;
-    javazoom.jl.player.Player player;
-    File simpan;
     private FileSystemView fileSystemView;
     public PlayerApp(User user) {
             initComponents();
+            startMusic();
         try {
             initializeDataFile();
             loadSongs();
@@ -54,13 +53,10 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         }
         jSlider1.setValue(0);
         this.setLocation(50, 50);
-        timer = new Timer(1000, e -> updateSlider());
-        timer.setInitialDelay(0);
          jSlider1.setEnabled(false);
         jSlider1.setValue(0);
         jSlider1.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
-                updateSlider();
             }
         });
         Volumen.addChangeListener(new javax.swing.event.ChangeListener() {
@@ -68,9 +64,29 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
                 jSlider2StateChanged(evt);
             }
         });
-        Startminutes();
-        
+        addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                songPlayer.stop();
+            }
+        });
     }
+    public void startMusic() {
+    try {
+        String musicFolderPath = "src/main/users/" + UserLoging + "/Music";
+        File selectedFolder = new File(musicFolderPath);
+        if (!selectedFolder.exists()) {
+            return;
+        }
+        musicPath = selectedFolder.getCanonicalPath();
+        songSeek = 0;
+        currentSongName = "";
+        updateData(musicPath, songSeek, currentSongName);
+        loadSongs();
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
      private long getTotalDuration(String filePath) {
         try (FileInputStream fileInputStream = new FileInputStream(filePath)) {
             Bitstream bitstream = new Bitstream(fileInputStream);
@@ -83,7 +99,7 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
             return 0;
         }
     }
-
+     
     private int totalFrames(FileInputStream fileInputStream) throws IOException {
         Bitstream bitstream = new Bitstream(fileInputStream);
         int totalFrames = 0;
@@ -108,65 +124,12 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
             loadDataFromDisk(data);
         }
     }
-    public void startTimmerandIcon() {
-    if (a == 0) {
-        try {
-            int selectedIndex = panelList.getSelectedIndex();
-            String selectedSongName = panelList.getSelectedValue();
-            File play1 = new File(musicPath + File.separator + selectedSongName+".mp3");
-            //songPlayer = new MP3Player(play1.toURI().toURL());
-
-            fileSystemView = FileSystemView.getFileSystemView();
-            ImageIcon fileIcon = (ImageIcon) fileSystemView.getSystemIcon(play1);
-            Imagecancion.setIcon(fileIcon);
-            new Thread(() -> {
-                try {
-                    //songPlayer.play();
-                    startTime = System.currentTimeMillis();
-
-                    while (songPlayer != null && !songPlayer.isStopped()) {
-                        Thread.sleep(100);
-                    }
-
-                    // Stop the timer when the song is stopped
-                    //timer.stop();
-
-                    segundos.setText("00:00");
-                    jSlider1.setValue(0);
-                    jSlider1.setEnabled(false);
-                    a = 0;
-                } catch (Exception e) {
-                    System.out.println("Error playing music");
-                    JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.ERROR_MESSAGE);
-                }
-            }).start();
-
-        } catch (Exception e) {
-            System.out.println("Problem playing music");
-            JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
-        }
-    } else {
-        if (songPlayer.isPaused()) {
-            //System.out.println("play");
-            //songPlayer.play();
-            //timer.start();
-        } else {
-            //System.out.println("paused");
-            //songPlayer.pause();
-            //timer.stop();
-        }
-    }
-}
-
-
-
     private void initializeDefaultData(File data) throws Exception {
         RandomAccessFile rfdata = new RandomAccessFile(data, "rw");
         rfdata.writeUTF("");
         rfdata.writeLong(0);
         rfdata.writeUTF("");
         rfdata.close();
-
         songTitleLbl.setText("NOT PLAYING");
         setAllBtns(false);
     }
@@ -209,16 +172,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         Btnback.setEnabled(enabled);
         forwardBtn.setEnabled(enabled);
     }
-    public static int a=0;
-    private void Startminutes() {
-        if (songPlayer != null && songPlayer.isStopped()) {
-            timer.stop();
-            segundos.setText("00:00");
-            jSlider1.setValue(0);
-            jSlider1.setEnabled(false); 
-            a = 0;
-        }
-    }
     private void playLastSong() {
         if (currentSongName.equals("")) {
             songTitleLbl.setText("NOT PLAYING");
@@ -247,7 +200,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         }
     }
     private void loadSongs() {
-        System.out.println("Cargando todas las canciones...");
         ArrayList<String> songs = getSongNamesFromPath(musicPath);
         panelList.removeAll();
         DefaultListModel<String> model = new DefaultListModel<>();
@@ -258,74 +210,10 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         setAllBtns(false);
         songTitleLbl.setText("NOT PLAYING");
     }
-
     private void removeAllSongs() {
         DefaultListModel<String> model = new DefaultListModel<>();
         panelList.setModel(model);
     }
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
-    // </editor-fold>
-
-
-    private void playBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
-      if (songPlayer != null) {
-        if (songPlayer.isStopped() || songPlayer.isPaused()) {
-            timer.stop();
-            playing = true;
-            BtnPlay.setText("PAUSE");
-            System.out.println("Primer if.. pase segun");
-            if (!songPlayer.isStopped()) {
-                songPlayer.play();
-                timer.start();
-                System.out.println("Aqui se dio play");
-            } else {
-                System.out.println("Antes de while");
-                while (songPlayer != null && !songPlayer.isStopped()) {
-                    System.out.println("Dentro de While");
-                    timer.stop();
-                }
-                timer.start();
-                startTimmerandIcon();
-                playSong(currentSongName);
-            }
-            System.out.println("El slider");
-            jSlider1.setValue(0);
-        } else {
-            System.out.println("AQUI PAUSO");
-            playing = false;
-            BtnPlay.setText("PLAY");
-            songPlayer.pause();
-            jSlider1.setValue(0);
-            timer.stop(); 
-        }
-    }
-    }                                       
-    
-    private void backBtnActionPerformed(java.awt.event.ActionEvent evt) {                                        
-        // TODO add your handling code here:
-        if (songPlayer != null) {
-            songPlayer.skipBackward();
-            for (int i = 0; i < panelList.getModel().getSize(); i++) {
-                String n = panelList.getModel().getElementAt(i);
-                if (n.equals(currentSongName)) {
-                    if (i - 1 == -1) {
-                        currentSongName = panelList.getModel().getElementAt(0);
-                    } else {
-                        currentSongName = panelList.getModel().getElementAt(i - 1);
-                    }
-                    songTitleLbl.setText(currentSongName);
-                    updateData(musicPath, songSeek, currentSongName);
-                    playSong(currentSongName);
-                    break;
-                }
-            }
-        }
-    }                                       
-
     private void playSong(String songName) {
          String path = musicPath + File.separator + songName + ".mp3";
         if (songPlayer != null) {
@@ -336,42 +224,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         playing = true;
         BtnPlay.setText("PAUSE");
     }
-    private void AñadirActionPerformed(java.awt.event.ActionEvent evt) {                                       
-        if (songPlayer != null) {
-            songPlayer.stop();
-        }
-        try {
-            JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.showOpenDialog(this);
-            File selectedFolder = chooser.getSelectedFile();
-            if (selectedFolder == null) {
-                return;
-            }
-            musicPath = selectedFolder.getCanonicalPath();
-            songSeek = 0;
-            currentSongName = "";
-            updateData(musicPath, songSeek, currentSongName);
-            loadSongs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }                                      
-
-  
-private void updateSlider() {
-        if (songPlayer != null && !songPlayer.isPaused()) {
-        long currentTime = System.currentTimeMillis();
-        long elapsedTimeInMillis = currentTime - startTime;
-        int elapsedTimeInSeconds = (int) (elapsedTimeInMillis / 1000);
-        int minutes = elapsedTimeInSeconds / 60;
-        int seconds = elapsedTimeInSeconds % 60;
-        String elapsedTimeString = String.format("%02d:%02d", minutes, seconds);
-        segundos.setText(elapsedTimeString);
-        jSlider1.setValue(elapsedTimeInSeconds);
-    }
-    }
-
     public void updateList() {
     ArrayList<String> updateList = getSongNamesFromPath(musicPath);
     DefaultListModel<String> model = new DefaultListModel<>();
@@ -443,39 +295,42 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     float changedCalc = (float) (currentVolume + (double) volumeToCut);
     volControl.setValue(changedCalc);
 }
-     public void setImagePause() {
-        try {
-            BtnPlay.setIcon(null);
-            // Ruta completa de la imagen de pausa
-            String path = "/images/IconPlayMusic.png";
-            ImageIcon icon = new ImageIcon(path);
-            BtnPlay.setIcon(icon);
+     
+    public ImageIcon setImageWithSize(ImageIcon originalIcon, int width, int height) {
+    try {
+        Image originalImage = originalIcon.getImage();
+        Image scaledImage = originalImage.getScaledInstance(width, height, Image.SCALE_SMOOTH);
+
+        return new ImageIcon(scaledImage);
+    } catch (Exception e) {
+        e.printStackTrace();
+        return null;
+    }
+}
+
+    public void ImageofMusic() {
+    try {
+            int selectedIndex = panelList.getSelectedIndex();
+            String selectedSongName = panelList.getSelectedValue();
+            File play1 = new File(musicPath + File.separator + selectedSongName+".mp3");
+            fileSystemView = FileSystemView.getFileSystemView();
+            ImageIcon fileIcon = (ImageIcon) fileSystemView.getSystemIcon(play1);
+            Imagecancion.setIcon(setImageWithSize(fileIcon,54,54));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("Problem playing music");
+            JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
+        }
+}
+    private String getCurrentSongName() {
+    for (int i = 0; i < panelList.getModel().getSize(); i++) {
+        String n = panelList.getModel().getElementAt(i);
+        if (n.equals(currentSongName)) {
+            return currentSongName;
         }
     }
-
-    // Función para establecer la imagen de reproducción
-    public void setImagePlay() {
-        try {
-            BtnPlay.setIcon(null);
-            // Ruta completa de la imagen de reproducción
-            String path = "/images/imagePlay.png";
-            ImageIcon icon = new ImageIcon(path);
-            BtnPlay.setIcon(icon);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-
-
-    
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
+        System.out.println("nada");
+    return "";
+}
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -490,7 +345,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         forwardBtn = new javax.swing.JButton();
         Btnback = new javax.swing.JButton();
         Btnseleccionado = new javax.swing.JButton();
-        BtnAñadir = new javax.swing.JButton();
         Imagecancion = new javax.swing.JLabel();
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
@@ -499,6 +353,8 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         jMenuItem1 = new javax.swing.JMenuItem();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setClosable(true);
         setIconifiable(true);
@@ -546,13 +402,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             }
         });
 
-        BtnAñadir.setText("Add");
-        BtnAñadir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnAñadirActionPerformed(evt);
-            }
-        });
-
         jLabel1.setText("--");
 
         jLabel2.setText("++");
@@ -570,8 +419,8 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                 .addComponent(BtnStop)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(forwardBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 32, Short.MAX_VALUE)
-                .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 54, Short.MAX_VALUE)
+                .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
@@ -589,9 +438,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                         .addComponent(jLabel2))
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(Btnseleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(BtnAñadir)))
+                        .addComponent(Btnseleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -602,29 +449,27 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                     .addComponent(jLabel1)
                     .addComponent(jLabel2))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(BtnAñadir)
-                    .addComponent(Btnseleccionado))
+                .addComponent(Btnseleccionado)
                 .addGap(0, 0, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel1Layout.createSequentialGroup()
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(segundos))))
-                        .addGap(0, 0, Short.MAX_VALUE))
-                    .addGroup(jPanel1Layout.createSequentialGroup()
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                         .addGap(0, 0, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                             .addComponent(forwardBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(BtnStop, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(Btnback, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(BtnPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                            .addComponent(BtnPlay, javax.swing.GroupLayout.PREFERRED_SIZE, 29, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel1Layout.createSequentialGroup()
+                                .addComponent(songTitleLbl, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                                    .addComponent(jSlider1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(segundos)))
+                            .addComponent(Imagecancion, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
 
@@ -638,13 +483,29 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
 
         jMenu1.setText("File");
 
-        jMenuItem1.setText("OPen");
+        jMenuItem1.setText("Add");
         jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jMenuItem1ActionPerformed(evt);
             }
         });
         jMenu1.add(jMenuItem1);
+
+        jMenuItem2.setText("Save songs");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem2);
+
+        jMenuItem3.setText("Open user folder");
+        jMenuItem3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem3ActionPerformed(evt);
+            }
+        });
+        jMenu1.add(jMenuItem3);
 
         jMenuBar1.add(jMenu1);
 
@@ -673,43 +534,42 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
         // TODO add your handling code here:
+        try {
+            JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
+            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+            chooser.showOpenDialog(this);
+            File selectedFolder = chooser.getSelectedFile();
+            if (selectedFolder == null) {
+                return;
+            }
+            musicPath = selectedFolder.getCanonicalPath();
+            songSeek = 0;
+            currentSongName = "";
+            updateData(musicPath, songSeek, currentSongName);
+            loadSongs();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }//GEN-LAST:event_jMenuItem1ActionPerformed
 
     private void BtnPlayActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnPlayActionPerformed
         if (songPlayer != null) {
             if (songPlayer.isStopped() || songPlayer.isPaused()) {
-                timer.stop();
                 playing = true;
                 BtnPlay.setText("Play");
-                setImagePause();
-                //BtnPlay.setIcon(frameIcon);
-                
-                System.out.println("Primer if.. pase segun");
                 if (!songPlayer.isStopped()) {
                     songPlayer.play();
-                    timer.start();
-                    System.out.println("Aqui se dio play");
                 } else {
-                    System.out.println("Antes de while");
-                    while (songPlayer != null && !songPlayer.isStopped()) {
-                        System.out.println("Dentro de While");
-                        timer.stop();
-                    }
-                    timer.start();
-                    startTimmerandIcon();
                     playSong(currentSongName);
                 }
-                System.out.println("El slider");
                 jSlider1.setValue(0);
             } else {
-                System.out.println("AQUI PAUSO");
                 playing = false;
                 BtnPlay.setText("Pause");
-                setImagePlay();
                 songPlayer.pause();
                 jSlider1.setValue(0);
-                timer.stop();
             }
+            ImageofMusic();
         }
     }//GEN-LAST:event_BtnPlayActionPerformed
 
@@ -719,8 +579,8 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             playing = false;
             BtnPlay.setText("PLAY");
             songPlayer.stop();
-            Startminutes();
             jSlider1.setValue(0);
+            ImageofMusic();
         }
     }//GEN-LAST:event_BtnStopActionPerformed
 
@@ -742,6 +602,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                     break;
                 }
             }
+            ImageofMusic();
         }
     }//GEN-LAST:event_forwardBtnActionPerformed
 
@@ -763,6 +624,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                     break;
                 }
             }
+            ImageofMusic();
         }
     }//GEN-LAST:event_BtnbackActionPerformed
 
@@ -781,41 +643,51 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         songPlayer = new MP3Player(songFile);
         songPlayer.play();
         playing = true;
-        //
         jSlider1.setValue(0);
-        timer.start();
-        //
         BtnPlay.setText("PAUSE");
         setAllBtns(true);
         updateData(musicPath, songSeek, currentSongName);
+        ImageofMusic();
     }//GEN-LAST:event_BtnseleccionadoActionPerformed
 
-    private void BtnAñadirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnAñadirActionPerformed
-        if (songPlayer != null) {
-            songPlayer.stop();
-        }
-        try {
-            JFileChooser chooser = new JFileChooser(System.getProperty("user.home"));
-            chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-            chooser.showOpenDialog(this);
-            File selectedFolder = chooser.getSelectedFile();
-            if (selectedFolder == null) {
-                return;
-            }
-            musicPath = selectedFolder.getCanonicalPath();
-            songSeek = 0;
-            currentSongName = "";
-            updateData(musicPath, songSeek, currentSongName);
-            loadSongs();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }//GEN-LAST:event_BtnAñadirActionPerformed
-
     private void panelListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_panelListValueChanged
-        // TODO add your handling code here:
+
     }//GEN-LAST:event_panelListValueChanged
 
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        if (musicPath == null || musicPath.isEmpty()) {
+        return;
+    }
+        if (songPlayer != null) {
+            if(!songPlayer.isStopped() || !songPlayer.isPaused()){
+        songPlayer.stop();
+            }
+    }
+    String destinationFolderPath = "src/main/users/" + UserLoging + "/Music";
+    try {
+        File sourceFolder = new File(musicPath);
+        File destinationFolder = new File(destinationFolderPath);
+        if (!destinationFolder.exists()) {
+            destinationFolder.mkdirs();
+        }
+        File[] files = sourceFolder.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                Path sourcePath = file.toPath();
+                Path destinationPath = new File(destinationFolder, file.getName()).toPath();
+                Files.move(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            }
+        }
+        JOptionPane.showInternalInputDialog(null,"Se ha modificado./n Cambie de al user folder en file.");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
+    private void jMenuItem3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem3ActionPerformed
+         startMusic();
+    }//GEN-LAST:event_jMenuItem3ActionPerformed
+    static boolean guardar=true;
     @Override
     public void closeFrame() {
         try {
@@ -824,10 +696,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             e.printStackTrace();
         }
     }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton BtnAñadir;
     private javax.swing.JButton BtnPlay;
     private javax.swing.JButton BtnStop;
     private javax.swing.JButton Btnback;
@@ -840,6 +709,8 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JSlider jSlider1;
