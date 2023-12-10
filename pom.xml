@@ -70,7 +70,8 @@
         <dependency>
             <groupId>com.github.axet</groupId>
             <artifactId>javamp3</artifactId>
-            <version>0.9.3</version>
+            <version>1.0.0</version>
+            <type>jar</type>
              <scope>system</scope>
             <systemPath>${project.basedir}/src/main/resources/lib/jaco-mp3-player-0.9.3.jar</systemPath>
         </dependency>
