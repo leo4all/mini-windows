@@ -27,6 +27,8 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
 public class PlayerApp extends JInternalFrame  implements AppInterface {
     boolean playing = false;
     String UserLoging=LoginForm.getUserLoging();
@@ -60,6 +62,15 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
                 songPlayer.stop();
             }
         });
+        panelList.addListSelectionListener(new ListSelectionListener() {
+    public void valueChanged(ListSelectionEvent event) {
+        if (!event.getValueIsAdjusting()){
+            JList source = (JList)event.getSource();
+            String selected = source.getSelectedValue().toString();
+            changeSong();
+        }
+    }
+});
     }
     public void startMusic() {
     try {
@@ -304,7 +315,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             ImageIcon fileIcon = (ImageIcon) fileSystemView.getSystemIcon(play1);
             Imagecancion.setIcon(setImageWithSize(fileIcon,54,54));
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
+            //JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
         }
 }
     private String getCurrentSongName() {
@@ -317,12 +328,31 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         System.out.println("nada");
     return "";
 }
+    public void changeSong(){
+     if (songPlayer != null) {
+            songPlayer.stop();
+        }
+        if (panelList.getSelectedValue() == null) {
+            JOptionPane.showMessageDialog(this, "Seleccione primero una cancion para reproducir.");
+            return;
+        }
+        currentSongName = panelList.getSelectedValue();
+        updateData(musicPath, songSeek, currentSongName);
+        songTitleLbl.setText(currentSongName);
+        File songFile = new File(musicPath + File.separator + currentSongName + ".mp3");
+        songPlayer = new MP3Player(songFile);
+        songPlayer.play();
+        playing = true;
+        BtnPlay.setText("PAUSE");
+        setAllBtns(true);
+        updateData(musicPath, songSeek, currentSongName);
+        ImageofMusic();
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
         jPanel_Top_Panel = new javax.swing.JPanel();
-        Btnseleccionado = new javax.swing.JButton();
         jPanel2 = new javax.swing.JPanel();
         Btnback = new javax.swing.JButton();
         BtnPlay = new javax.swing.JButton();
@@ -346,13 +376,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         setIconifiable(true);
         setResizable(true);
         setTitle("Media Player");
-
-        Btnseleccionado.setText("Select");
-        Btnseleccionado.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                BtnseleccionadoActionPerformed(evt);
-            }
-        });
 
         Btnback.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/ImageAnterior.png"))); // NOI18N
         Btnback.addActionListener(new java.awt.event.ActionListener() {
@@ -447,18 +470,12 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         jPanel_Top_PanelLayout.setHorizontalGroup(
             jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(Btnseleccionado, javax.swing.GroupLayout.PREFERRED_SIZE, 66, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(84, 84, 84)
                 .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGap(24, 24, 24))
         );
         jPanel_Top_PanelLayout.setVerticalGroup(
             jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(Btnseleccionado)
-                .addContainerGap())
             .addComponent(jPanel2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -630,27 +647,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
         }
     }//GEN-LAST:event_BtnbackActionPerformed
 
-    private void BtnseleccionadoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_BtnseleccionadoActionPerformed
-        if (songPlayer != null) {
-            songPlayer.stop();
-        }
-        if (panelList.getSelectedValue() == null) {
-            JOptionPane.showMessageDialog(this, "Seleccione primero una cancion para reproducir.");
-            return;
-        }
-        currentSongName = panelList.getSelectedValue();
-        updateData(musicPath, songSeek, currentSongName);
-        songTitleLbl.setText(currentSongName);
-        File songFile = new File(musicPath + File.separator + currentSongName + ".mp3");
-        songPlayer = new MP3Player(songFile);
-        songPlayer.play();
-        playing = true;
-        BtnPlay.setText("PAUSE");
-        setAllBtns(true);
-        updateData(musicPath, songSeek, currentSongName);
-        ImageofMusic();
-    }//GEN-LAST:event_BtnseleccionadoActionPerformed
-
     private void panelListValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_panelListValueChanged
 
     }//GEN-LAST:event_panelListValueChanged
@@ -701,7 +697,6 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     private javax.swing.JButton BtnPlay;
     private javax.swing.JButton BtnStop;
     private javax.swing.JButton Btnback;
-    private javax.swing.JButton Btnseleccionado;
     private javax.swing.JLabel Imagecancion;
     private javax.swing.JSlider Volumen;
     private javax.swing.JButton forwardBtn;
