@@ -102,14 +102,14 @@ public class PanelLoginAndRegister extends javax.swing.JLayeredPane {
                     gender = 'F';
                 }
                 
-                //String belongsTo = loginForm.getDashboard().getAuthenticatedUser().getUsername()
-                String belongsTo = "admin";
+                String belongsTo = loginForm.getDashboard().getAuthUser().getUsername();
+                String profilePicture = "location";
                 TwitterAccount newUser = new TwitterAccount(name, username,
                         password,
                         gender,
                         age,
                         ACTIVE_STATUS,
-                        new File(""),
+                        profilePicture,
                          belongsTo
                 );
 

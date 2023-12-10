@@ -56,6 +56,7 @@ public class TwitterUserManager {
         String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
         
         try (RandomAccessFile file = new RandomAccessFile(path, "r")) {
+            System.out.println(file);
             while (file.getFilePointer() < file.length()) {
                 String name = file.readUTF();
                 String username = file.readUTF();
@@ -65,15 +66,15 @@ public class TwitterUserManager {
                 char gender = file.readChar();
                 int status = file.readInt();
                 String belongsTo = file.readUTF();
-
-               TwitterAccount account = new TwitterAccount(
+                String profilePic = "path";
+                TwitterAccount account = new TwitterAccount(
                         name,
                         username,
                         password,
                         gender,
                         age,
                         status,
-                        new File(""),
+                        profilePic,
                          belongsTo
                 );
                
@@ -110,7 +111,6 @@ public class TwitterUserManager {
             file.writeChar(account.getGender());
             file.writeInt(account.getStatus());
             file.writeUTF(account.getBelongsTo());
-            System.out.println(account);
             file.close();
         } catch (IOException e) {
             e.printStackTrace();

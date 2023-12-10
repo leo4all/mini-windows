@@ -108,7 +108,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
         label.setText(currentTime);
     }
     
-    private User getAuthUser(){
+    public User getAuthUser(){
         return userAuthen;
     }
 

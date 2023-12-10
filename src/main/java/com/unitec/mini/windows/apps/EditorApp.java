@@ -377,11 +377,6 @@ public class EditorApp extends JInternalFrame implements AppInterface {
             MutableAttributeSet inputAttributes = textPane.getInputAttributes();
             inputAttributes.removeAttributes(inputAttributes);
             StyleConstants.setForeground(inputAttributes, selectedColor);
-            
-            System.out.println(selectedColor);
-            System.out.println(start);
-            System.out.println(end);
-            System.out.println(textPane.getText());
         }
     }//GEN-LAST:event_jButton_Font_ColorActionPerformed
 

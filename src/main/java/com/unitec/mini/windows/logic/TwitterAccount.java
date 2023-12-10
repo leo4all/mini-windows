@@ -19,7 +19,7 @@ public class TwitterAccount {
     private char gender;
     int age;
     private int status;
-    private File pictFile;
+    private String picturePath;
     private Date dateReg;
     private String belongsTo;
 
@@ -39,7 +39,7 @@ public class TwitterAccount {
             char gender,
             int age,
             int status,
-            File pictFile,
+            String picturePath,
             String belongsTo
     ) {
         this.name = name;
@@ -48,7 +48,7 @@ public class TwitterAccount {
         this.gender = gender;
         this.age = age;
         this.status = status;
-        this.pictFile = pictFile;
+        this.picturePath = picturePath;
         this.belongsTo = belongsTo;
         this.dateReg = new Date();
     }
@@ -101,12 +101,12 @@ public class TwitterAccount {
         this.status = status;
     }
 
-    public File getPictFile() {
-        return pictFile;
+    public String getPictFile() {
+        return picturePath;
     }
 
-    public void setPictFile(File pictFile) {
-        this.pictFile = pictFile;
+    public void setPictFile(String path) {
+        this.picturePath = path;
     }
 
     public Date getDateReg() {
@@ -133,7 +133,7 @@ public class TwitterAccount {
                 + "gender=" + gender + ", "
                 + "age=" + age + ", "
                 + "status=" + status + ", "
-                + "pictFile=" + pictFile + ", "
+                + "pictFile=" + picturePath + ", "
                 + "dateReg=" + dateReg + ", "
                 + "belongsTo=" + belongsTo + 
         '}';

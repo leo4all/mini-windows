@@ -100,7 +100,6 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             };
 
            worker.execute();
-        
     }
     
     public void setAuthenticatedUser(User user) {
@@ -324,7 +323,6 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         emojiList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 String selectedEmoji = emojiList.getSelectedValue();
-                System.out.println("Selected Emoji: " + selectedEmoji);
             }
         });
 
@@ -355,12 +353,12 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     private void handleLinkClick(String link) {
         if ("hashtag".equals(link)) {
             String hashtag = extractHashtag(link);
-            System.out.println("Clicked on hashtag: " + hashtag);
+            
         }
 
         if ("mention".equals(link)) {
             String mention = extractMention(link);
-            System.out.println("Clicked on mention: " + mention);
+            
         }
     }
 
