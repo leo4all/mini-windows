@@ -24,18 +24,19 @@ import java.util.regex.Pattern;
 public class TweetManager {
 
     private List<TweetPost> tweetPosts;
-    private String projectDir = System.getProperty("user.dir") + "/src/main/tweets";
+    private static final String projectDir = System.getProperty("user.dir") + "/src/main/tweets";
     private String currentUser;
     private String username;
-    
+    private static final String DEFAULT_FILE = "tweets.twc";
+
     private static final Pattern USERNAME_PATTERN = Pattern.compile("data-username=\"([^\"]+)\"");
     private static final Pattern DATE_PATTERN = Pattern.compile("data-date=\"([^\"]+)\"");
     private static final Pattern CONTENT_PATTERN = Pattern.compile("<div class=\"twitter-widget\".*?>(.*?)</div>");
 
     public TweetManager(User userAuthen, TwitterAccount account) {
         tweetPosts = new ArrayList<>();
-        this.currentUser = userAuthen.getUsername();
-        this.username = account.getUsername();
+        currentUser = userAuthen.getUsername();
+        username = account.getUsername();
     }
 
     public void addTweetPost(TweetPost post) {
@@ -43,7 +44,7 @@ public class TweetManager {
     }
 
     public void saveTweets(String username) {
-        String fileName = Paths.get(projectDir, currentUser, username, "_tweetPosts.txt").toString();
+        String fileName = Paths.get(projectDir, username, DEFAULT_FILE).toString();
 
         try {
             File file = new File(fileName);
@@ -62,45 +63,41 @@ public class TweetManager {
     }
 
     public List<TweetPost> loadTweetPostsByDateAndUser(Date startDate, Date endDate, String requestedAccount) {
-        if (requestedAccount != null) {
-            this.username = requestedAccount;
+        if (requestedAccount == null && this.username == null) {
+            return null;
         }
-       
-        String userPath = Paths.get(projectDir, currentUser, username).toString();
-        try {
-             File directory = new File(userPath);
-            if (! directory.exists()){
-                directory.mkdir();
-            }
 
-            String fileName = Paths.get(userPath, "tweets.txt").toString();
-            File file = new File(fileName);
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-
-            try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
-                String line;
-                while ((line = reader.readLine()) != null) {
-                    TweetPost tweetPost = parseTweetPostFromHtml(line);
-                    if (tweetPost != null
-                            && tweetPost.getUsername().equals(username)
-                            && tweetPost.getPostDate().compareTo(startDate) >= 0
-                            && tweetPost.getPostDate().compareTo(endDate) <= 0) {
-                        tweetPosts.add(tweetPost);
-                    }
+        String fileName = Paths.get(projectDir, username, DEFAULT_FILE).toString();
+        
+        System.out.println(fileName);
+        /*try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                TweetPost tweetPost = parseTweetPostFromHtml(line);
+                if (tweetPost != null && tweetPost.getUsername().equals(username)) {
+                    //tweetPosts.add(tweetPost);
                 }
             }
         } catch (Exception e) {
+            System.out.println("Error creating file");
             e.printStackTrace();
-        }
+        }*/
 
         return tweetPosts;
     }
+    
+    
+    public static void createDefaulTweetFolder(String username){
+        String location = Paths.get(projectDir, username).toString();
+        try {
+            FolderStructureCreator.createFolder(location);
+            FolderStructureCreator.createFile(location, "tweets.twc");
+        } catch (Exception e) {
+            System.out.println("Error creating twitter folder account.");
+        }
+    }
 
     private TweetPost parseTweetPostFromHtml(String html) {
-        System.out.println(html);
-
         Matcher usernameMatcher = USERNAME_PATTERN.matcher(html);
         Matcher dateMatcher = DATE_PATTERN.matcher(html);
         Matcher contentMatcher = CONTENT_PATTERN.matcher(html);

@@ -9,7 +9,6 @@ import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.logic.TwitterAccount;
 import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
-import java.awt.Graphics;
 import java.awt.Image;
 import java.io.File;
 import java.util.Date;
@@ -19,6 +18,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
+import javax.swing.SwingWorker;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
 import javax.swing.event.InternalFrameAdapter;
@@ -67,22 +67,40 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         timeLinePane.setText("");
 
         addInternalFrameListener(new TwitterInternalFrameListener());
-        loadTweets();
-    }
-
-    public void loadTweets() {
         tweetManager = new TweetManager(userAuthen, tweetAccount);
-        Date startDate = new Date(122, 0, 1);
-        Date endDate = new Date();
-        loadedPosts = tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, null);
-        String content = "";
+        
+        SwingWorker<List<TweetPost>, Void> worker = new SwingWorker<>() {
+                @Override
+                protected List<TweetPost> doInBackground() {
+                    try {
+                        Date startDate = new Date(122, 0, 1);
+                        Date endDate = new Date();
+                        return tweetManager.loadTweetPostsByDateAndUser(startDate, endDate, null);
+                    } catch (Exception ex) {
+                        ex.printStackTrace(); 
+                        return null;
+                    }
+                }
 
-        for (TweetPost loadedPost : loadedPosts) {
-            System.out.println("---");
-            content += loadedPost.toString();
-        }
-        System.out.println("Load content");
-        timeLinePane.setText(content);
+                @Override
+                protected void done() {
+                    try {
+                        List<TweetPost> tweets = get();
+                        if (tweets != null) {
+                             StringBuilder sb = new StringBuilder();
+                            for (TweetPost tweet : tweets) {
+                                sb.append(tweet.getContent()).append("\n");
+                            }
+                            timeLinePane.setText(sb.toString());
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            };
+
+           worker.execute();
+        
     }
     
     public void setAuthenticatedUser(User user) {
@@ -272,14 +290,6 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             displayImage(imageFile);
         }
     }//GEN-LAST:event_jButton_OpenAddImageActionPerformed
-
-    @Override
-    public void paint(Graphics g) {
-        super.paint(g);
-        if (backgroundImage != null) {
-            g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-        }
-    }
 
     private void jButton_SubmitPostActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_SubmitPostActionPerformed
 

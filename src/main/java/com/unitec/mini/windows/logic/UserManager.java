@@ -7,6 +7,7 @@ package com.unitec.mini.windows.logic;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -17,7 +18,8 @@ public class UserManager {
     private static final String DEFAULT_PASSWORD = "admin";
 
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
-    private static final String USERS_FILE_PATH = DEFAULT_USER + File.separator + "users.twc";
+    private static final String DEFAULT_USER_FILE = "user_account.twc";
+
     private static final Map<String, User> users = new HashMap<>();
     private static UserManager instance = null;
 
@@ -33,7 +35,8 @@ public class UserManager {
     }
 
     private static void loadUserOffsets() {
-        try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "r")) {
+        String location = Paths.get(projectDir, DEFAULT_USER, DEFAULT_USER_FILE).toString();
+        try (RandomAccessFile file = new RandomAccessFile(location, "r")) {
             while (file.getFilePointer() < file.length()) {
                 String username = file.readUTF();
                 String password = file.readUTF();
@@ -72,7 +75,8 @@ public class UserManager {
     }
 
     private static void saveUser(User user) {
-        try (RandomAccessFile file = new RandomAccessFile(projectDir + File.separator + USERS_FILE_PATH, "rw")) {
+        String location = Paths.get(projectDir, DEFAULT_USER, DEFAULT_USER_FILE).toString();
+        try (RandomAccessFile file = new RandomAccessFile(location, "rw")) {
             file.seek(file.length());
             file.writeUTF(user.getUsername());
             file.writeUTF(user.getPassword());

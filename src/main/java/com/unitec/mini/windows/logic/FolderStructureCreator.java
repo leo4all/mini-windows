@@ -20,24 +20,18 @@ import javax.swing.JButton;
  * @author leonel
  */
 public class FolderStructureCreator {
-    private static final String projectDir = System.getProperty("user.dir");
-    private static final String usersPath =  File.separator + "src"+
-            File.separator+"main"+
-            File.separator+"users";
-    private static final String DEFAULT_USER_FILE = "users.twc";
+    private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
+    private static final String DEFAULT_USER_FILE = "user_account.twc";
+    private static final String DEFAULT_TWITTER_FILE = "twitter_accounts.twc";
     
     public static void createDefaultFolderForAdmin(){
-        /**
-         * Initialize default folder root structure
-         * Initialize default files for users and followers
-         */
         createDefaultFoldersFor(UserManager.getDefaultUser());
         createFileWithContent(UserManager.getDefaultUser(), DEFAULT_USER_FILE, null, null );
-        createFileWithContent(UserManager.getDefaultUser(), "twitter_accounts.twc", null, null );
+        createFileWithContent(UserManager.getDefaultUser(), DEFAULT_TWITTER_FILE, null, null );
     }
 
     public static void createDefaultFoldersFor(String username){
-        String location = Paths.get(projectDir, usersPath, username).toString();
+        String location = Paths.get(projectDir, username).toString();
         createFolder(location);
         
         for (String folder : new String[]{"Documents", "Music", "", "Images", "Desktop"}) {
@@ -60,15 +54,30 @@ public class FolderStructureCreator {
         return true;
     }
     
+    public static boolean createFile(String location, String filename) {
+        File file = new File(location, filename);
+        System.out.println(file.toString());
+        if (!file.exists()) {
+            try {
+                if (!file.createNewFile()) {
+                    return false;
+                } 
+            } catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        
+        return true;
+    }
+    
     public static boolean createFileWithContent(String username, String fileName, String folderPath, Object content){
-        String location = Paths.get(projectDir, usersPath, username).toString();        
+        String location = Paths.get(projectDir, username).toString();        
 
-        // Create default user folder in case user folder no exists.
         if(!createFolder(location)){
             return false;
         }
         
-        // Create a new folder in case provided, related to current user.
         if (folderPath != null && !folderPath.isEmpty()) {
             String newFolder = Paths.get(location, folderPath).toString();
             if(!createFolder(location)){
@@ -78,7 +87,6 @@ public class FolderStructureCreator {
             location = newFolder;
         }
 
-        // Create file, related to current location.
         String filePath = Paths.get( location, fileName).toString();
         File file = new File(filePath);
         if (!file.exists()) {
@@ -92,7 +100,7 @@ public class FolderStructureCreator {
             }
         }
         
-        // Write content to file in case content is provided.
+
         if (content != null && file.exists()) {
             try (BufferedWriter writer = new BufferedWriter(new FileWriter(file))) {
                 writer.write(content.toString());
@@ -106,7 +114,7 @@ public class FolderStructureCreator {
     }
     
     public static JButton createButtonFolderAtPosition(String belongsTo,  String folderRoot, String newFolderName, int posX, int posY){
-        Path path = Paths.get(projectDir, usersPath, belongsTo, folderRoot, newFolderName);
+        Path path = Paths.get(projectDir, belongsTo, folderRoot, newFolderName);
         FolderButton newButton = null;
 
         int counter = 1;
@@ -136,28 +144,12 @@ public class FolderStructureCreator {
     }
     
     public static boolean isFolderExistsForUser(String username){
-        Path location = Paths.get(projectDir, usersPath, username);
+        Path location = Paths.get(projectDir, username);
         return Files.exists(location) && Files.isDirectory(location);
-    }
-    
-    public static boolean createFile(String parentDir, String filePath) {
-        File file = new File(parentDir, filePath);
-        if (!file.exists()) {
-            try {
-                if (!file.createNewFile()) {
-                    return false;
-                } 
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        
-        return true;
     }
 
     public static String getUserRootFolder(String username) {
-        return Paths.get(projectDir, usersPath, username).toString();
+        return Paths.get(projectDir, username).toString();
     }
         
     public static String getProjectPath(){

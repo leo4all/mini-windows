@@ -138,7 +138,7 @@ public class FileSystemStructure {
 
     private static boolean shouldExclude(String fileName) {
         return fileName.equals("twitter_accounts.twc")
-                || fileName.equals("users.twc")
+                || fileName.equals("user_accounts.twc")
                 || fileName.equals("tweets.twc")
                 || fileName.equals("following.twc")
                 || fileName.equals("followers.twc");

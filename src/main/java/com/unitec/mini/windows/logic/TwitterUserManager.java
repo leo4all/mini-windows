@@ -115,5 +115,11 @@ public class TwitterUserManager {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        
+        try {
+            TweetManager.createDefaulTweetFolder(account.getUsername());    
+        } catch (Exception e) {
+        }
+        
     }
 }
