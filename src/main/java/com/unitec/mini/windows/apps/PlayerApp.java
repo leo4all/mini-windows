@@ -1,6 +1,5 @@
 package com.unitec.mini.windows.apps;
 import com.unitec.mini.windows.LoginForm;
-import static com.unitec.mini.windows.apps.EditorApp.guardar;
 import com.unitec.mini.windows.logic.User;
 import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
