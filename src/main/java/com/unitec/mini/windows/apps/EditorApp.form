@@ -24,6 +24,9 @@
                 <Property name="mnemonic" type="int" value="78"/>
                 <Property name="text" type="java.lang.String" value="New"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jMenuItem_NewActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JMenuItem" name="jMenuItem_Open">
               <Properties>
@@ -138,9 +141,7 @@
                   <Component id="jButton_Font_Color" min="-2" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                   <Component id="jPanel_Align" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace max="32767" attributes="0"/>
-                  <Component id="Btn_SaveinDocument_user" min="-2" pref="31" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
+                  <EmptySpace pref="206" max="32767" attributes="0"/>
               </Group>
           </Group>
         </DimensionLayout>
@@ -158,13 +159,10 @@
                       <Component id="jPanel_Align" alignment="0" min="-2" max="-2" attributes="0"/>
                       <Group type="102" attributes="0">
                           <EmptySpace max="-2" attributes="0"/>
-                          <Group type="103" groupAlignment="0" attributes="0">
-                              <Group type="103" groupAlignment="3" attributes="0">
-                                  <Component id="jComboBox_FontFamily" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jComboBox_Font_Style" alignment="3" min="-2" max="-2" attributes="0"/>
-                                  <Component id="jComboBox_Font_Size" alignment="3" min="-2" max="-2" attributes="0"/>
-                              </Group>
-                              <Component id="Btn_SaveinDocument_user" alignment="0" min="-2" max="-2" attributes="0"/>
+                          <Group type="103" groupAlignment="3" attributes="0">
+                              <Component id="jComboBox_FontFamily" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBox_Font_Style" alignment="3" min="-2" max="-2" attributes="0"/>
+                              <Component id="jComboBox_Font_Size" alignment="3" min="-2" max="-2" attributes="0"/>
                           </Group>
                       </Group>
                   </Group>
@@ -383,16 +381,6 @@
           </Properties>
           <Events>
             <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jButton_Font_ColorActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="javax.swing.JButton" name="Btn_SaveinDocument_user">
-          <Properties>
-            <Property name="icon" type="javax.swing.Icon" editor="org.netbeans.modules.form.editors2.IconEditor">
-              <Image iconType="3" name="/images/editor/icon-save.png"/>
-            </Property>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="Btn_SaveinDocument_userActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

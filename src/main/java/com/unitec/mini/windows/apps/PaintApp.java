@@ -6,12 +6,18 @@ package com.unitec.mini.windows.apps;
  */
 
 import com.unitec.mini.windows.logic.User;
+import com.unitec.mini.windows.LoginForm;
+import static com.unitec.mini.windows.apps.EditorApp.guardar;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
@@ -21,7 +27,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.border.Border;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
 /**
  *
  * @author leonel
@@ -30,19 +39,26 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
     User userAuthen;
     private List<ImageIcon> imageList;
     private int currentIndex;
-
+    private String UserLoging=LoginForm.getUserLoging();
     public PaintApp(User user) {
         this.userAuthen = user;
 
         initComponents();
         setComponents();
+        loadAndShowImages();
+        addInternalFrameListener(new InternalFrameAdapter() {
+            @Override
+            public void internalFrameClosing(InternalFrameEvent e) {
+                mover=true;
+            }
+        });
     }
 
     public void setComponents(){
         this.setTitle("Visor de imágenes");
         try {
             
-            String userPath = "/src/main/users" + File.separator + "admin";
+            String userPath = "/src/main/users" + File.separator + "UserLoging";
             String projectDir = System.getProperty("user.dir") + userPath;
             File userRootdir = new File(projectDir);
             loadImages(userRootdir);
@@ -96,7 +112,6 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         jPanelSlider.setBackground(new Color(0,0,0));
         jPanelSlider.setOpaque(false);
         jPanelSlider.setPreferredSize(new java.awt.Dimension(600, 80));
-        jPanelSlider.setSize(new java.awt.Dimension(600, 70));
         jPanelSlider.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jButton_Next.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/paint/icons-last.png"))); // NOI18N
@@ -155,6 +170,7 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         jMenu1.add(jMenuItem_SaveImages);
 
         jMenuBar.add(jMenu1);
+        jMenu1.getAccessibleContext().setAccessibleDescription("");
 
         setJMenuBar(jMenuBar);
 
@@ -183,6 +199,7 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         if (result == JFileChooser.APPROVE_OPTION) {
             File selectedFolder = fileChooser.getSelectedFile();
             loadImages(selectedFolder);
+            Saving= selectedFolder;
         }
     }//GEN-LAST:event_jMenuItem_OpenFolderActionPerformed
 
@@ -195,9 +212,64 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         showImage(++currentIndex);
         highlightSelectedThumbnail(currentIndex);
     }//GEN-LAST:event_jButton_NextActionPerformed
-
+    static File Saving;
+    static boolean mover=true;
     private void jMenuItem_SaveImagesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem_SaveImagesActionPerformed
-        
+                                                       // Guardar imágenes de la carpeta
+
+    // Verificar si ya se realizó la acción de guardar
+    if (!mover) {
+        JOptionPane.showMessageDialog(null, "No hay posibles imágenes que guardar", "Acción no permitida", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+
+    // Establecer el directorio de destino
+    String targetDirectoryPath = "src/main/users/" + UserLoging + "/Images";
+
+    // Verificar si el directorio de origen existe y es un directorio
+    if (Saving != null && Saving.exists() && Saving.isDirectory()) {
+        // Obtener todos los archivos en el directorio de origen
+        File[] files = Saving.listFiles();
+
+        // Verificar si hay archivos para mover
+        if (files != null && files.length > 0) {
+            // Crear el directorio de destino si no existe
+            File targetDirectory = new File(targetDirectoryPath);
+            if (!targetDirectory.exists()) {
+                targetDirectory.mkdirs();
+            }
+
+            // Utilizar ExecutorService para realizar el movimiento de archivos de manera concurrente
+            ExecutorService executor = Executors.newFixedThreadPool(files.length);
+            for (File file : files) {
+                executor.execute(() -> {
+                    try {
+                        Path sourcePath = file.toPath();
+                        Path targetPath = new File(targetDirectory, file.getName()).toPath();
+                        Files.move(sourcePath, targetPath, StandardCopyOption.REPLACE_EXISTING);
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                        // Manejar la excepción según sea necesario
+                    }
+                });
+            }
+
+            // Apagar ExecutorService después de completar todas las tareas
+            executor.shutdown();
+
+            // Esperar a que todas las tareas se completen antes de mostrar el mensaje
+            while (!executor.isTerminated()) {
+                // Esperar
+            }
+
+            JOptionPane.showMessageDialog(null, "Imágenes guardadas exitosamente", "Éxito", JOptionPane.INFORMATION_MESSAGE);
+        } else {
+            JOptionPane.showMessageDialog(null, "No hay imágenes para mover", "Aviso", JOptionPane.WARNING_MESSAGE);
+        }
+    } else {
+        JOptionPane.showMessageDialog(null, "El directorio de origen no existe o no es un directorio válido", "Error", JOptionPane.ERROR_MESSAGE);
+    }
+
     }//GEN-LAST:event_jMenuItem_SaveImagesActionPerformed
 
     private void loadImages(File folder) {
@@ -229,7 +301,24 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
 
         executorService.shutdown();
     }
-    
+    private void loadAndShowImages() {
+        try {
+            // Ruta del directorio de imágenes
+            String userPath = "src/main/users/" + UserLoging + "/Images";
+            File userImagesDir = new File(userPath);
+
+            // Verificar si el directorio de imágenes existe y es un directorio
+            if (userImagesDir.exists() && userImagesDir.isDirectory()) {
+                loadImages(userImagesDir);
+                showImage(currentIndex);
+                populateThumbnailCarousel();
+            } else {
+                JOptionPane.showMessageDialog(this, "El directorio de imágenes no existe.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
     private boolean isImageFile(File file) {
         String name = file.getName().toLowerCase();
         return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif");

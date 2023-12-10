@@ -24,6 +24,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 import javax.swing.UIManager;
 import javax.swing.UnsupportedLookAndFeelException;
+import javax.swing.event.InternalFrameEvent;
 
 public class LoginForm extends javax.swing.JFrame {
     private User userAuth;
@@ -47,6 +48,7 @@ public class LoginForm extends javax.swing.JFrame {
         
         FolderStructureCreator.createDefaultFolderForAdmin();
         UserManager.createDefaultAdminUser();
+        
         
     }
         
@@ -147,6 +149,7 @@ public class LoginForm extends javax.swing.JFrame {
 
         jSeparator1.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
 
+        jTextFieldUsername.setText("admin");
         jTextFieldUsername.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-locked-user.png"))); // NOI18N
         jTextFieldUsername.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -154,6 +157,7 @@ public class LoginForm extends javax.swing.JFrame {
             }
         });
 
+        jPasswordField.setText("admin");
         jPasswordField.setPrefixIcon(new javax.swing.ImageIcon(getClass().getResource("/images/icons-lock.png"))); // NOI18N
 
         jButton_Login.setFont(new java.awt.Font("Khmer Sangam MN", 1, 24)); // NOI18N
@@ -229,7 +233,6 @@ public class LoginForm extends javax.swing.JFrame {
     private void jButton_LoginActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_LoginActionPerformed
         String username = jTextFieldUsername.getText();
         String password = String.valueOf(jPasswordField.getPassword());
-        
         UserManager.initialize();
         if (!UserManager.authenticateUser(username, password)) {
             JOptionPane.showMessageDialog(null, 
@@ -239,11 +242,16 @@ public class LoginForm extends javax.swing.JFrame {
             );
             return;
         }
-        
+        userLoging=password;
         this.userAuth = UserManager.getUserByUsername(username);
         openAuthenticatedFrame();
         this.dispose();
     }//GEN-LAST:event_jButton_LoginActionPerformed
+public static String userLoging;
+
+    public static String getUserLoging() {
+        return userLoging;
+    }
 
     private void openAuthenticatedFrame() {
         SwingUtilities.invokeLater(() -> {
