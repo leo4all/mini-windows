@@ -320,19 +320,26 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     }
 }
     public void ImageofMusic() {
-        if(finder){
-    try {
+    if (!finder) {
+        try {
             int selectedIndex = panelList.getSelectedIndex();
             String selectedSongName = panelList.getSelectedValue();
-            File play1 = new File(musicPath + File.separator + selectedSongName+".mp3");
+            File play1 = new File(musicPath + File.separator + selectedSongName + ".mp3");
             fileSystemView = FileSystemView.getFileSystemView();
             ImageIcon fileIcon = (ImageIcon) fileSystemView.getSystemIcon(play1);
-            Imagecancion.setIcon(setImageWithSize(fileIcon,54,54));
+
+            if (fileIcon != null) {
+                Imagecancion.setIcon(setImageWithSize(fileIcon, 54, 54));
+            } else {
+                // Handle the case when fileIcon is null
+                System.err.println("fileIcon is null for: " + selectedSongName);
+            }
         } catch (Exception e) {
-            //JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
+            e.printStackTrace();
         }
-        }
+    }
 }
+
     private String getCurrentSongName() {
     for (int i = 0; i < panelList.getModel().getSize(); i++) {
         String n = panelList.getModel().getElementAt(i);
