@@ -66,20 +66,9 @@ EditorApp word;
         initComponents();
         setComponents();
         UserManager.getAllUsers();
+        
     }
     
-//    String rutaDirectorioUsuario;
-//            if (log.UserLoging != null && log.UserLoging.equals("admin")) {
-//           
-//                rutaDirectorioUsuario = "Z/";
-//                
-//            } else {
-//                rutaDirectorioUsuario = "Z/"+log.UserLoging ;
-//               
-//            }
-//        
-//           DefaultMutableTreeNode root = createTreeNode(new File(rutaDirectorioUsuario));
-//           treeModel = new DefaultTreeModel(root);
      public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_finder_20.png"));
         this.setFrameIcon(appIcon);
@@ -103,6 +92,10 @@ EditorApp word;
                 jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
                 expandRootTree(jTree_Folder_Structure);
             }
+            jTextField_Path.setText(Paths.get("Users", userAuthen.getUsername(), INITIAL_PATH).toString());
+            jPanel_Finder_Dashboard.setLayout(new FlowLayout(FlowLayout.LEADING));
+            refreshUI();
+            jLabel_Current_Folder_Name.setText(currentLocationPath);
             // Resto del código omitido para simplificar
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,18 +139,46 @@ EditorApp word;
                 return UIManager.getIcon("FileView.fileIcon");
         }
     }
+    private String getSelectedNodePath(DefaultMutableTreeNode selectedNode) {
+    StringBuilder pathBuilder = new StringBuilder("src/main/users");
+
+    // Variable para evitar agregar "root" al principio de la cadena
+    boolean isFirstNode = true;
+
+    // Recorrer hacia arriba en la jerarquía del árbol para construir la ruta
+    while (selectedNode != null) {
+        String nodeName = selectedNode.toString();
+
+        // Verificar si es el primer nodo para evitar agregar "root"
+        if (isFirstNode) {
+            isFirstNode = false;
+        } else {
+            // Insertar el nombre del nodo al principio de la cadena
+            pathBuilder.insert(13, "/" + nodeName);
+        }
+
+        // Obtener el nodo padre para la siguiente iteración
+        selectedNode = (DefaultMutableTreeNode) selectedNode.getParent();
+    }
+
+    return pathBuilder.toString();
+}
+
+
     private class SelectorListener implements TreeSelectionListener {
     public void valueChanged(TreeSelectionEvent evt) {
         JTree tree = (JTree) evt.getSource();
         DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
         if (selectedNode != null && selectedNode.isLeaf()) {
+            System.out.println("Veremos: "+getSelectedNodePath(selectedNode));
             String selectedNodeName = selectedNode.toString();
             String fullPath = currentLocationPath + File.separator + selectedNodeName;
             File selectedFile = new File(fullPath);
-
             String fileExtension = getFileExtension(selectedFile);
-
+            if(!userAuthen.getUsername().equals("admin")){
+            
+            System.out.println("FULL PATH: "+fullPath);
             if ("txt".equalsIgnoreCase(fileExtension)) {
                sendtxt("src/main/users/" + LoginForm.getUserLoging() + "/Documents/" + selectedNodeName);
             } else if ("png".equalsIgnoreCase(fileExtension)) {
@@ -165,6 +186,16 @@ EditorApp word;
             } else if ("mp3".equalsIgnoreCase(fileExtension)) {
              sendMusic("src/main/users/" + LoginForm.getUserLoging() + "/Music/" + selectedNodeName,selectedNodeName);
             } else {
+            }
+            }else{
+//            if ("txt".equalsIgnoreCase(fileExtension)) {
+//               sendtxt(getSelectedNodePath(selectedNode));
+//            } else if ("png".equalsIgnoreCase(fileExtension)) {
+//             sendImage(getSelectedNodePath(selectedNode));
+//            } else if ("mp3".equalsIgnoreCase(fileExtension)) {
+//             sendMusic(getSelectedNodePath(selectedNode),selectedNodeName);
+//            } else {
+//            }
             }
         }
         jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
