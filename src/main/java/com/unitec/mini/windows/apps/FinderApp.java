@@ -176,7 +176,6 @@ EditorApp word;
             String fullPath = currentLocationPath + File.separator + selectedNodeName;
             File selectedFile = new File(fullPath);
             String fileExtension = getFileExtension(selectedFile);
-            if(!userAuthen.getUsername().equals("admin")){
             
             System.out.println("FULL PATH: "+fullPath);
             if ("txt".equalsIgnoreCase(fileExtension)) {
@@ -187,16 +186,7 @@ EditorApp word;
              sendMusic("src/main/users/" + LoginForm.getUserLoging() + "/Music/" + selectedNodeName,selectedNodeName);
             } else {
             }
-            }else{
-//            if ("txt".equalsIgnoreCase(fileExtension)) {
-//               sendtxt(getSelectedNodePath(selectedNode));
-//            } else if ("png".equalsIgnoreCase(fileExtension)) {
-//             sendImage(getSelectedNodePath(selectedNode));
-//            } else if ("mp3".equalsIgnoreCase(fileExtension)) {
-//             sendMusic(getSelectedNodePath(selectedNode),selectedNodeName);
-//            } else {
-//            }
-            }
+            
         }
         jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
         jTree_Folder_Structure.setFocusable(false);
