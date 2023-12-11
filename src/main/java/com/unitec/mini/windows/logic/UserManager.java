@@ -88,15 +88,39 @@ public class UserManager {
     }
 
     public static boolean editUser(User user, User newUser) {
-        if (!users.containsKey(user.getUsername())) {
-            return false;
-        }
-
-        users.remove(user.getUsername());
-        users.put(newUser.getUsername(), newUser);
-   
-        return true;
+    if (!users.containsKey(user.getUsername())) {
+        return false;  // El usuario original no existe, no se puede editar.
     }
+
+    // Eliminar el usuario original
+    users.remove(user.getUsername());
+
+    // Agregar el nuevo usuario
+    users.put(newUser.getUsername(), newUser);
+
+    // Guardar todos los usuarios actualizados en el archivo
+    saveAllUsers();
+
+    return true;
+}
+
+// Agregar este método para guardar todos los usuarios en el archivo
+private static void saveAllUsers() {
+    String location = Paths.get(projectDir, DEFAULT_USER, DEFAULT_USER_FILE).toString();
+    try (RandomAccessFile file = new RandomAccessFile(location, "rw")) {
+        // Limpiar el archivo antes de escribir todos los usuarios
+        file.setLength(0);
+
+        for (User user : users.values()) {
+            file.writeUTF(user.getUsername());
+            file.writeUTF(user.getPassword());
+            file.writeUTF(user.getName());
+            file.writeUTF(user.getAccountType());
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
     public static boolean deleteUser(String username) {
       

@@ -43,8 +43,6 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         this.finder=finder;
             initComponents();
             if(finder){
-            //musicPath=Path;
-            //startMusic();
             playSong(namesong,false);
             songPlayer.play();
             songTitleLbl.setText(namesong);
@@ -322,6 +320,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
     }
 }
     public void ImageofMusic() {
+        if(finder){
     try {
             int selectedIndex = panelList.getSelectedIndex();
             String selectedSongName = panelList.getSelectedValue();
@@ -331,6 +330,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
             Imagecancion.setIcon(setImageWithSize(fileIcon,54,54));
         } catch (Exception e) {
             //JOptionPane.showMessageDialog(null, "Select a song from the playlist", null, JOptionPane.INFORMATION_MESSAGE);
+        }
         }
 }
     private String getCurrentSongName() {

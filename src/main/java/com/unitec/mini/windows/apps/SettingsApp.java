@@ -4,6 +4,7 @@
  */
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.LoginForm;
 import com.unitec.mini.windows.logic.FolderStructureCreator;
 import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.logic.UserManager;
@@ -30,7 +31,6 @@ import javax.swing.table.DefaultTableModel;
 public class SettingsApp extends JInternalFrame  implements AppInterface{
     DefaultTableModel userTableModel;
     User userAth;
-
 
     public SettingsApp(User user) {
         this.userAth = user;
@@ -298,11 +298,16 @@ public class SettingsApp extends JInternalFrame  implements AppInterface{
 
         if (option == JOptionPane.OK_OPTION) {
             String password = new String(pf.getPassword());
-            if (!password.equals(UserManager.getDefaultPassword())) {
-                JOptionPane.showMessageDialog(null, "Invalid Password");
-                return;
+            String userLogin=LoginForm.getUserLoging();
+            if(!userLogin.equalsIgnoreCase("admin")){
+                     JOptionPane.showMessageDialog(null, "No es el Usuario administrador");
+                     return;
+                }else{
+                    if (!password.equals(UserManager.getDefaultPassword())){
+                        JOptionPane.showMessageDialog(null, "Invalid Password");
+                        return;
+                    }
             }
-
             jPanel_Top_Panel.removeAll();
             jPanel_Top_Panel.add(jPanel_Unlocked_Top);
             jPanel_Top_Panel.repaint();
@@ -329,7 +334,6 @@ public class SettingsApp extends JInternalFrame  implements AppInterface{
             if (selectedButton != null) {
                 accountType = selectedButton.getText();
             }
-            
             UserManager.initialize();
             User newUser = new User(name, username, password, accountType);
             boolean registrationSuccess = UserManager.registerUser(newUser);

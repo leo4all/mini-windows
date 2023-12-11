@@ -42,7 +42,7 @@ public class EditorApp extends JInternalFrame implements AppInterface {
                 guardar=true;
             }
         });
-        if(true){
+        if(finder){
         openFinder(PathTXT);
         }
     }
@@ -566,7 +566,6 @@ public class EditorApp extends JInternalFrame implements AppInterface {
     public void openFinder(String Path){
          File file = new File(Path);
                 Scanner fileIn = null;
-
                 try {
                     fileIn = new Scanner(file);
                     if (file.isFile()) {

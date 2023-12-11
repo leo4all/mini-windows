@@ -117,25 +117,6 @@ EditorApp word;
                 return UIManager.getIcon("FileView.fileIcon");
         }
     }
-//    private class SelectorListener  implements TreeSelectionListener {
-//        public void valueChanged(TreeSelectionEvent evt) {
-//            JTree tree = (JTree) evt.getSource();
-//            DefaultMutableTreeNode selectedNode; 
-//            selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-//            if (selectedNode !=null && selectedNode.isLeaf()) {
-//               String selectedNodeName = selectedNode.toString();
-//                System.out.println(selectedNodeName);
-//                
-//                
-//                
-//                //Object obj = evt.getNewLeadSelectionPath().getLastPathComponent();
-//                //System.out.println("" + obj.toString().length()   
-//            }
-//            jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
-//            jTree_Folder_Structure.setFocusable(false);
-//            jTree_Folder_Structure.setOpaque(false);
-//        }
-//    }
     private class SelectorListener implements TreeSelectionListener {
     public void valueChanged(TreeSelectionEvent evt) {
         JTree tree = (JTree) evt.getSource();
@@ -157,7 +138,6 @@ EditorApp word;
             } else {
             }
         }
-
         jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
         jTree_Folder_Structure.setFocusable(false);
         jTree_Folder_Structure.setOpaque(false);
