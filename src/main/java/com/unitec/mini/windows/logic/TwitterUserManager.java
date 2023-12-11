@@ -32,7 +32,9 @@ public class TwitterUserManager {
         return instance;
     }
 
-    
+    public TwitterUserManager(){
+        loadAccounts();
+    }
 
     public void saveAccounts() {
         String path = Paths.get(projectDir, UserManager.getDefaultUser(), DEFAULT_ACCOUNT_FILE).toString();
@@ -83,5 +85,16 @@ public class TwitterUserManager {
 
     public TwitterAccount getAccountByUsername(String username) {
         return accounts.get(username);
+    }
+    
+    public void updateAccount(TwitterAccount updatedAccount) {
+        String username = updatedAccount.getUsername();
+
+        if (accounts.containsKey(username)) {
+            accounts.put(username, updatedAccount);
+            saveAccounts();
+        } else {
+            System.out.println("Account not found for username: " + username);
+        }
     }
 }

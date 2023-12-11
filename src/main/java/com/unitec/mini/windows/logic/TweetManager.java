@@ -30,6 +30,8 @@ public class TweetManager {
     private String currentUser;
     private String username;
     private static final String DEFAULT_FILE = "tweets.twc";
+    private static final String DEFAULT_FOLLOWER = "followers.twc";
+    private static final String DEFAULT_FOLLOWING = "following.twc";
 
     private static final Pattern USERNAME_PATTERN = Pattern.compile("data-username=\"([^\"]+)\"");
     private static final Pattern DATE_PATTERN = Pattern.compile("data-date=\"([^\"]+)\"");
@@ -92,6 +94,8 @@ public class TweetManager {
         try {
             FolderStructureCreator.createFolder(location);
             FolderStructureCreator.createFile(location, DEFAULT_FILE);
+            FolderStructureCreator.createFile(location, DEFAULT_FOLLOWER);
+            FolderStructureCreator.createFile(location, DEFAULT_FOLLOWING);
         } catch (Exception e) {
             System.out.println("Error creating twitter folder account.");
             e.printStackTrace();

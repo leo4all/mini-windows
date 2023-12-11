@@ -7,18 +7,21 @@ package com.unitec.mini.windows.apps;
 import com.unitec.mini.windows.logic.TweetManager;
 import com.unitec.mini.windows.logic.TweetPost;
 import com.unitec.mini.windows.logic.TwitterAccount;
+import com.unitec.mini.windows.logic.TwitterUserManager;
 import com.unitec.mini.windows.logic.User;
 import com.unitec.mini.windows.ui.TimeLineEditorKit;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Image;
 import java.io.File;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JInternalFrame;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.SwingWorker;
 import javax.swing.event.HyperlinkEvent;
@@ -39,16 +42,19 @@ import org.jsoup.select.Elements;
 public class TwitterApp extends JInternalFrame implements AppInterface {
     private TwitterAccount tweetAccount;
     private TweetManager tweetManager;
+    private TwitterUserManager twitterUserManager;
     private User userAuthen;
     private Image backgroundImage;
     List<TweetPost> loadedPosts;
-    
+    private int numberOfTweets; 
     /**
      * Creates new form Twitter
      */
     public TwitterApp(User userAuth, TwitterAccount account) {
         this.tweetAccount = account;
         this.userAuthen = userAuth;
+        tweetManager = new TweetManager(userAuthen, tweetAccount);
+        twitterUserManager = new TwitterUserManager();
 
         initComponents();
         setComponents();
@@ -69,7 +75,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         timeLinePane.setText("");
 
         addInternalFrameListener(new TwitterInternalFrameListener());
-        tweetManager = new TweetManager(userAuthen, tweetAccount);
+        
         
         SwingWorker<List<TweetPost>, Void> worker = new SwingWorker<>() {
                 @Override
@@ -88,7 +94,8 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                         List<TweetPost> tweets = get();
                         if (tweets != null) {
                              StringBuilder sb = new StringBuilder();
-                             for (int i = tweets.size() - 1; i >= 0; i--) {
+                             numberOfTweets = tweets.size();
+                             for (int i = numberOfTweets - 1; i >= 0; i--) {
                                 TweetPost tweet = tweets.get(i);
                                 sb.append(tweet.toString()).append("\n");
                             }
@@ -102,6 +109,8 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             };
 
            worker.execute();
+           
+           jLabel_Profile_Name.setText(tweetAccount.getName());
     }
     
     public void setAuthenticatedUser(User user) {
@@ -140,10 +149,10 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         jPanel_Tweet_Statistics = new javax.swing.JPanel();
         jLabel7 = new javax.swing.JLabel();
         jLabel5 = new javax.swing.JLabel();
-        jLabel6 = new javax.swing.JLabel();
+        jLabel_NumberOfFollowers = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jLabel8 = new javax.swing.JLabel();
-        jLabel4 = new javax.swing.JLabel();
+        jLabel_NumberOfFollowing = new javax.swing.JLabel();
+        jLabel_NumberOfTweets = new javax.swing.JLabel();
         jPanel_Main = new javax.swing.JPanel();
         jPanel_Sidebar = new javax.swing.JPanel();
         jButton_Home = new javax.swing.JButton();
@@ -168,29 +177,42 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         twitterComboBox_Profile_Gender = new com.unitec.mini.windows.ui.TwitterComboBox();
         jTextField_Profile_Name = new com.unitec.mini.windows.ui.TwitterTextField();
         jLabel1 = new javax.swing.JLabel();
-        twitterPasswordField1 = new com.unitec.mini.windows.ui.TwitterPasswordField();
+        jTextField_Profile_Password = new com.unitec.mini.windows.ui.TwitterPasswordField();
         jLabel9 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
-        twitterTextField1 = new com.unitec.mini.windows.ui.TwitterTextField();
+        jTextField_Profile_Age = new com.unitec.mini.windows.ui.TwitterTextField();
         jLabel12 = new javax.swing.JLabel();
-        twitterComboBox_Profile_Gender1 = new com.unitec.mini.windows.ui.TwitterComboBox();
+        twitterComboBox_Profile_Status = new com.unitec.mini.windows.ui.TwitterComboBox();
         jPanel_Edit_Action_Buttons = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
+        jButton_Edit_Cancel = new javax.swing.JButton();
+        jButton_Edit_Save = new javax.swing.JButton();
         jButton4 = new javax.swing.JButton();
         jPanel_Image_Profile = new javax.swing.JPanel();
-        jLabel13 = new javax.swing.JLabel();
+        jLabel_Edit_Username = new javax.swing.JLabel();
         jLabel14 = new javax.swing.JLabel();
         jPanel_Edit_Stats = new javax.swing.JPanel();
         jLabel19 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel20 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
-        jLabel15 = new javax.swing.JLabel();
+        jLabel_Edit_NumberOfTweets = new javax.swing.JLabel();
         jSeparator3 = new javax.swing.JSeparator();
         jLabel18 = new javax.swing.JLabel();
         jSeparator2 = new javax.swing.JSeparator();
-        jLabel10 = new javax.swing.JLabel();
+        jPanel_View_Profile = new javax.swing.JPanel();
+        jPanel_Top_Panel_Account = new javax.swing.JPanel();
+        jLabel_View_Profile_Username = new javax.swing.JLabel();
+        jLabel_View_Profile_Image = new javax.swing.JLabel();
+        jPanel_View_Profile_Date = new javax.swing.JPanel();
+        jLabel_Joined_Date = new javax.swing.JLabel();
+        jLabel_Joined = new javax.swing.JLabel();
+        jLabel_Date_Icon = new javax.swing.JLabel();
+        jToggleButton_Follow = new javax.swing.JToggleButton();
+        jLabel_View_Profile_Verified = new javax.swing.JLabel();
+        jPanel_Main_Panel_Account = new javax.swing.JPanel();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        jTextPane_Account_Timeline = new javax.swing.JTextPane();
+        jLabel_Bottom_Banner = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(245, 248, 250));
         setIconifiable(true);
@@ -219,21 +241,21 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         jLabel5.setForeground(new java.awt.Color(255, 255, 255));
         jLabel5.setText("Followers");
 
-        jLabel6.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        jLabel6.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel6.setText("2");
+        jLabel_NumberOfFollowers.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        jLabel_NumberOfFollowers.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_NumberOfFollowers.setText("0");
 
         jLabel3.setFont(new java.awt.Font("Helvetica Neue", 0, 12)); // NOI18N
         jLabel3.setForeground(new java.awt.Color(255, 255, 255));
         jLabel3.setText("Tweets");
 
-        jLabel8.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        jLabel8.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel8.setText("2");
+        jLabel_NumberOfFollowing.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        jLabel_NumberOfFollowing.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_NumberOfFollowing.setText("0");
 
-        jLabel4.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
-        jLabel4.setForeground(new java.awt.Color(255, 255, 255));
-        jLabel4.setText("30");
+        jLabel_NumberOfTweets.setFont(new java.awt.Font("Helvetica Neue", 1, 13)); // NOI18N
+        jLabel_NumberOfTweets.setForeground(new java.awt.Color(255, 255, 255));
+        jLabel_NumberOfTweets.setText("0");
 
         javax.swing.GroupLayout jPanel_Tweet_StatisticsLayout = new javax.swing.GroupLayout(jPanel_Tweet_Statistics);
         jPanel_Tweet_Statistics.setLayout(jPanel_Tweet_StatisticsLayout);
@@ -243,15 +265,15 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addContainerGap()
                 .addGroup(jPanel_Tweet_StatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addComponent(jLabel4))
+                    .addComponent(jLabel_NumberOfTweets))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel_Tweet_StatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel5)
-                    .addComponent(jLabel6))
+                    .addComponent(jLabel_NumberOfFollowers))
                 .addGroup(jPanel_Tweet_StatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_Tweet_StatisticsLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(jLabel8))
+                        .addComponent(jLabel_NumberOfFollowing))
                     .addGroup(jPanel_Tweet_StatisticsLayout.createSequentialGroup()
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                         .addComponent(jLabel7)))
@@ -267,9 +289,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                     .addComponent(jLabel7))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel_Tweet_StatisticsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel6)
-                    .addComponent(jLabel8))
+                    .addComponent(jLabel_NumberOfTweets)
+                    .addComponent(jLabel_NumberOfFollowers)
+                    .addComponent(jLabel_NumberOfFollowing))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -292,21 +314,21 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jLabel_Twitter_Logo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
-                .addGap(26, 26, 26)
-                .addComponent(jLabel_Profile_Name)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Top_PanelLayout.createSequentialGroup()
                 .addGroup(jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel_Profile_Image, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Top_PanelLayout.createSequentialGroup()
-                        .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jPanel_Tweet_Statistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel_Top_PanelLayout.createSequentialGroup()
+                        .addGap(26, 26, 26)
+                        .addComponent(jLabel_Profile_Name))
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Top_PanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jLabel_Profile_Image, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Top_PanelLayout.createSequentialGroup()
+                            .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                            .addComponent(jPanel_Tweet_Statistics, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap())
         );
 
         jPanel_Main.setBackground(new java.awt.Color(245, 248, 250));
 
-        jPanel_Sidebar.setBackground(new java.awt.Color(51, 51, 51));
+        jPanel_Sidebar.setBackground(new java.awt.Color(245, 248, 250));
 
         jButton_Home.setBackground(new Color(0, 0, 0, 0));
         jButton_Home.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/icon-home-3.png"))); // NOI18N
@@ -356,16 +378,13 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                         .addGroup(jPanel_SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jSeparator1)
                             .addGroup(jPanel_SidebarLayout.createSequentialGroup()
-                                .addComponent(jButton_Exit, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 6, Short.MAX_VALUE))))
+                                .addComponent(jButton_Exit, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                     .addGroup(jPanel_SidebarLayout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel_SidebarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel_SidebarLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton_Profile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(jPanel_SidebarLayout.createSequentialGroup()
-                                .addContainerGap()
-                                .addComponent(jButton_Home, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addComponent(jButton_Profile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jButton_Home, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
             .addGroup(jPanel_SidebarLayout.createSequentialGroup()
@@ -502,7 +521,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel_HomeLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_HomeLayout.createSequentialGroup()
-                        .addGap(6, 6, 6)
+                        .addGap(0, 0, 0)
                         .addComponent(jScrollPane_timeLine, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jPanel_AddTweet, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
@@ -538,7 +557,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
 
         jLabel12.setText("Age");
 
-        twitterComboBox_Profile_Gender1.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Active", "Inactive" }));
+        twitterComboBox_Profile_Status.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Active", "Inactive" }));
 
         javax.swing.GroupLayout jPanel_Edit_Profile_Basic_InfoLayout = new javax.swing.GroupLayout(jPanel_Edit_Profile_Basic_Info);
         jPanel_Edit_Profile_Basic_Info.setLayout(jPanel_Edit_Profile_Basic_InfoLayout);
@@ -550,13 +569,13 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                     .addComponent(jLabel1)
                     .addComponent(jTextField_Profile_Name, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel2)
-                    .addComponent(twitterPasswordField1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jTextField_Profile_Password, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel9)
                     .addComponent(twitterComboBox_Profile_Gender, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                     .addComponent(jLabel12)
-                    .addComponent(twitterTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jTextField_Profile_Age, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel11)
-                    .addComponent(twitterComboBox_Profile_Gender1, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(twitterComboBox_Profile_Status, javax.swing.GroupLayout.PREFERRED_SIZE, 283, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
         jPanel_Edit_Profile_Basic_InfoLayout.setVerticalGroup(
@@ -569,7 +588,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(twitterPasswordField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_Profile_Password, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel9)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -577,23 +596,33 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel12)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(twitterTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jTextField_Profile_Age, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel11)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(twitterComboBox_Profile_Gender1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(twitterComboBox_Profile_Status, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(162, Short.MAX_VALUE))
         );
 
         jPanel_Edit_Action_Buttons.setBackground(new java.awt.Color(245, 248, 250));
 
-        jButton1.setBackground(new java.awt.Color(170, 184, 194));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Cancel");
+        jButton_Edit_Cancel.setBackground(new java.awt.Color(170, 184, 194));
+        jButton_Edit_Cancel.setForeground(new java.awt.Color(255, 255, 255));
+        jButton_Edit_Cancel.setText("Cancel");
+        jButton_Edit_Cancel.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Edit_CancelActionPerformed(evt);
+            }
+        });
 
-        jButton3.setBackground(new java.awt.Color(29, 161, 242));
-        jButton3.setForeground(new java.awt.Color(255, 255, 255));
-        jButton3.setText("Save");
+        jButton_Edit_Save.setBackground(new java.awt.Color(29, 161, 242));
+        jButton_Edit_Save.setForeground(new java.awt.Color(255, 255, 255));
+        jButton_Edit_Save.setText("Save");
+        jButton_Edit_Save.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton_Edit_SaveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel_Edit_Action_ButtonsLayout = new javax.swing.GroupLayout(jPanel_Edit_Action_Buttons);
         jPanel_Edit_Action_Buttons.setLayout(jPanel_Edit_Action_ButtonsLayout);
@@ -601,9 +630,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             jPanel_Edit_Action_ButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Edit_Action_ButtonsLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jButton1)
+                .addComponent(jButton_Edit_Cancel)
                 .addGap(18, 18, 18)
-                .addComponent(jButton3)
+                .addComponent(jButton_Edit_Save)
                 .addContainerGap())
         );
         jPanel_Edit_Action_ButtonsLayout.setVerticalGroup(
@@ -611,8 +640,8 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             .addGroup(jPanel_Edit_Action_ButtonsLayout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel_Edit_Action_ButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
-                    .addComponent(jButton3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addComponent(jButton_Edit_Cancel, javax.swing.GroupLayout.DEFAULT_SIZE, 38, Short.MAX_VALUE)
+                    .addComponent(jButton_Edit_Save, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
         );
 
@@ -622,7 +651,8 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
 
         jPanel_Image_Profile.setBackground(new java.awt.Color(245, 248, 250));
 
-        jLabel13.setText("Profile");
+        jLabel_Edit_Username.setFont(new java.awt.Font("Helvetica Neue", 1, 14)); // NOI18N
+        jLabel_Edit_Username.setText("@username");
 
         jLabel14.setBackground(new java.awt.Color(245, 248, 250));
         jLabel14.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
@@ -636,26 +666,26 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             .addGroup(jPanel_Image_ProfileLayout.createSequentialGroup()
                 .addGroup(jPanel_Image_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_Image_ProfileLayout.createSequentialGroup()
-                        .addGap(84, 84, 84)
-                        .addComponent(jLabel13))
-                    .addGroup(jPanel_Image_ProfileLayout.createSequentialGroup()
                         .addGap(24, 24, 24)
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 157, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel_Image_ProfileLayout.createSequentialGroup()
+                        .addGap(63, 63, 63)
+                        .addComponent(jLabel_Edit_Username)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel_Image_ProfileLayout.setVerticalGroup(
             jPanel_Image_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_Image_ProfileLayout.createSequentialGroup()
                 .addGap(12, 12, 12)
-                .addComponent(jLabel13)
+                .addComponent(jLabel_Edit_Username)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 88, Short.MAX_VALUE)
+                .addComponent(jLabel14, javax.swing.GroupLayout.DEFAULT_SIZE, 150, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
         jPanel_Edit_Stats.setBackground(new java.awt.Color(245, 248, 250));
 
-        jLabel19.setText("6");
+        jLabel19.setText("0");
 
         jLabel16.setFont(new java.awt.Font("Helvetica Neue", 0, 12)); // NOI18N
         jLabel16.setText("tweets");
@@ -663,9 +693,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         jLabel20.setFont(new java.awt.Font("Helvetica Neue", 0, 12)); // NOI18N
         jLabel20.setText("followers");
 
-        jLabel17.setText("6");
+        jLabel17.setText("0");
 
-        jLabel15.setText("6");
+        jLabel_Edit_NumberOfTweets.setText("0");
 
         jSeparator3.setOrientation(javax.swing.SwingConstants.VERTICAL);
 
@@ -682,7 +712,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addGroup(jPanel_Edit_StatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel_Edit_StatsLayout.createSequentialGroup()
                         .addGap(21, 21, 21)
-                        .addComponent(jLabel15)
+                        .addComponent(jLabel_Edit_NumberOfTweets)
                         .addGap(31, 31, 31))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Edit_StatsLayout.createSequentialGroup()
                         .addContainerGap()
@@ -716,7 +746,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                             .addGroup(jPanel_Edit_StatsLayout.createSequentialGroup()
                                 .addGap(14, 14, 14)
                                 .addGroup(jPanel_Edit_StatsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel15, javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel_Edit_NumberOfTweets, javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(jLabel19, javax.swing.GroupLayout.Alignment.TRAILING)))
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Edit_StatsLayout.createSequentialGroup()
                                 .addContainerGap()
@@ -746,19 +776,17 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                     .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
                         .addGroup(jPanel_Edit_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
-                                .addGroup(jPanel_Edit_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
-                                        .addContainerGap()
-                                        .addComponent(jPanel_Image_Profile, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                                    .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
-                                        .addGap(70, 70, 70)
-                                        .addComponent(jButton4)
-                                        .addGap(0, 0, Short.MAX_VALUE)))
-                                .addGap(18, 18, 18))
+                                .addGap(70, 70, 70)
+                                .addComponent(jButton4)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                             .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
                                 .addContainerGap()
-                                .addComponent(jPanel_Edit_Stats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 9, Short.MAX_VALUE)))
+                                .addGroup(jPanel_Edit_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
+                                        .addGap(0, 9, Short.MAX_VALUE)
+                                        .addComponent(jPanel_Edit_Stats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jPanel_Image_Profile, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)))
                         .addComponent(jPanel_Edit_Profile_Basic_Info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
@@ -767,19 +795,152 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
                 .addGap(68, 68, 68)
                 .addGroup(jPanel_Edit_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jPanel_Edit_Profile_Basic_Info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel_Edit_ProfileLayout.createSequentialGroup()
                         .addComponent(jPanel_Image_Profile, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45)
+                        .addGap(43, 43, 43)
                         .addComponent(jPanel_Edit_Stats, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(128, 128, 128)
-                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(68, 68, 68)
+                        .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 33, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jPanel_Edit_Profile_Basic_Info, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel_Edit_Action_Buttons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(19, Short.MAX_VALUE))
         );
 
-        jPanel_Cards.add(jPanel_Edit_Profile, "cardProfile");
+        jPanel_Cards.add(jPanel_Edit_Profile, "cardEditProfile");
+
+        jPanel_View_Profile.setBackground(new java.awt.Color(245, 248, 250));
+
+        jPanel_Top_Panel_Account.setBackground(new java.awt.Color(245, 248, 250));
+
+        jLabel_View_Profile_Username.setText("@username");
+
+        jLabel_View_Profile_Image.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_View_Profile_Image.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/icon-user-default.png"))); // NOI18N
+        jLabel_View_Profile_Image.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        jPanel_View_Profile_Date.setBackground(new java.awt.Color(245, 248, 250));
+
+        jLabel_Joined_Date.setBackground(new java.awt.Color(245, 248, 250));
+        jLabel_Joined_Date.setText("date");
+
+        jLabel_Joined.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/icon-calendar.png"))); // NOI18N
+
+        jLabel_Date_Icon.setText("Joined");
+
+        javax.swing.GroupLayout jPanel_View_Profile_DateLayout = new javax.swing.GroupLayout(jPanel_View_Profile_Date);
+        jPanel_View_Profile_Date.setLayout(jPanel_View_Profile_DateLayout);
+        jPanel_View_Profile_DateLayout.setHorizontalGroup(
+            jPanel_View_Profile_DateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_View_Profile_DateLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jLabel_Joined, javax.swing.GroupLayout.PREFERRED_SIZE, 14, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel_Date_Icon)
+                .addGap(12, 12, 12)
+                .addComponent(jLabel_Joined_Date, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+        jPanel_View_Profile_DateLayout.setVerticalGroup(
+            jPanel_View_Profile_DateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_View_Profile_DateLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_View_Profile_DateLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jLabel_Joined, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel_Date_Icon, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel_Joined_Date, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
+        );
+
+        jToggleButton_Follow.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/icon-follow.png"))); // NOI18N
+        jToggleButton_Follow.setToolTipText("Follow me");
+        jToggleButton_Follow.setFocusable(false);
+        jToggleButton_Follow.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
+
+        jLabel_View_Profile_Verified.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/icon-active.png"))); // NOI18N
+
+        javax.swing.GroupLayout jPanel_Top_Panel_AccountLayout = new javax.swing.GroupLayout(jPanel_Top_Panel_Account);
+        jPanel_Top_Panel_Account.setLayout(jPanel_Top_Panel_AccountLayout);
+        jPanel_Top_Panel_AccountLayout.setHorizontalGroup(
+            jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_Top_Panel_AccountLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel_View_Profile_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel_Top_Panel_AccountLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addGroup(jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel_Top_Panel_AccountLayout.createSequentialGroup()
+                                .addComponent(jLabel_View_Profile_Username)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jLabel_View_Profile_Verified))
+                            .addGroup(jPanel_Top_Panel_AccountLayout.createSequentialGroup()
+                                .addComponent(jLabel_View_Profile_Image, javax.swing.GroupLayout.PREFERRED_SIZE, 73, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jToggleButton_Follow, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(19, 19, 19))
+        );
+        jPanel_Top_Panel_AccountLayout.setVerticalGroup(
+            jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_Top_Panel_AccountLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jLabel_View_Profile_Image, javax.swing.GroupLayout.PREFERRED_SIZE, 85, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jToggleButton_Follow))
+                .addGap(18, 18, 18)
+                .addGroup(jPanel_Top_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel_View_Profile_Username)
+                    .addComponent(jLabel_View_Profile_Verified))
+                .addGap(18, 18, 18)
+                .addComponent(jPanel_View_Profile_Date, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jScrollPane1.setViewportView(jTextPane_Account_Timeline);
+
+        javax.swing.GroupLayout jPanel_Main_Panel_AccountLayout = new javax.swing.GroupLayout(jPanel_Main_Panel_Account);
+        jPanel_Main_Panel_Account.setLayout(jPanel_Main_Panel_AccountLayout);
+        jPanel_Main_Panel_AccountLayout.setHorizontalGroup(
+            jPanel_Main_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_Main_Panel_AccountLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 514, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel_Main_Panel_AccountLayout.setVerticalGroup(
+            jPanel_Main_Panel_AccountLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel_Main_Panel_AccountLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 459, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+        );
+
+        javax.swing.GroupLayout jPanel_View_ProfileLayout = new javax.swing.GroupLayout(jPanel_View_Profile);
+        jPanel_View_Profile.setLayout(jPanel_View_ProfileLayout);
+        jPanel_View_ProfileLayout.setHorizontalGroup(
+            jPanel_View_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_View_ProfileLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel_View_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel_View_ProfileLayout.createSequentialGroup()
+                        .addGap(6, 6, 6)
+                        .addComponent(jPanel_Main_Panel_Account, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addContainerGap(10, Short.MAX_VALUE))
+                    .addGroup(jPanel_View_ProfileLayout.createSequentialGroup()
+                        .addComponent(jPanel_Top_Panel_Account, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addContainerGap())))
+        );
+        jPanel_View_ProfileLayout.setVerticalGroup(
+            jPanel_View_ProfileLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel_View_ProfileLayout.createSequentialGroup()
+                .addGap(11, 11, 11)
+                .addComponent(jPanel_Top_Panel_Account, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jPanel_Main_Panel_Account, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(30, 30, 30))
+        );
+
+        jPanel_Cards.add(jPanel_View_Profile, "cardViewProfile");
 
         javax.swing.GroupLayout jPanel_MainLayout = new javax.swing.GroupLayout(jPanel_Main);
         jPanel_Main.setLayout(jPanel_MainLayout);
@@ -787,26 +948,24 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
             jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel_MainLayout.createSequentialGroup()
                 .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jPanel_Cards, javax.swing.GroupLayout.PREFERRED_SIZE, 542, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jPanel_Cards, javax.swing.GroupLayout.PREFERRED_SIZE, 548, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(14, 14, 14))
         );
         jPanel_MainLayout.setVerticalGroup(
             jPanel_MainLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel_MainLayout.createSequentialGroup()
-                .addGap(0, 0, 0)
-                .addComponent(jPanel_Cards, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE))
+            .addComponent(jPanel_Cards, javax.swing.GroupLayout.PREFERRED_SIZE, 694, javax.swing.GroupLayout.PREFERRED_SIZE)
             .addComponent(jPanel_Sidebar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
-        jLabel10.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        jLabel10.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/twitter-bottom-logo.png"))); // NOI18N
+        jLabel_Bottom_Banner.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        jLabel_Bottom_Banner.setIcon(new javax.swing.ImageIcon(getClass().getResource("/images/twitter/twitter-bottom-logo.png"))); // NOI18N
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+            .addComponent(jLabel_Bottom_Banner, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
             .addComponent(jPanel_Top_Panel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel_Main, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
@@ -817,7 +976,7 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
                 .addGap(0, 0, 0)
                 .addComponent(jPanel_Main, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(0, 0, 0)
-                .addComponent(jLabel10, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jLabel_Bottom_Banner, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
 
         pack();
@@ -884,9 +1043,58 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     }//GEN-LAST:event_jButton_ExitActionPerformed
 
     private void jButton_ProfileActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_ProfileActionPerformed
-         CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
-         cl.show(jPanel_Cards, "cardProfile");
+        loadAccount();
+        CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
+        cl.show(jPanel_Cards, "cardEditProfile");
     }//GEN-LAST:event_jButton_ProfileActionPerformed
+
+    private void loadAccount(){
+        TwitterAccount existingAccount = twitterUserManager.getAccountByUsername( tweetAccount.getUsername());
+        
+        jTextField_Profile_Name.setText(existingAccount.getName());
+	jLabel_Edit_NumberOfTweets.setText(String.valueOf(numberOfTweets));
+        jLabel_Edit_Username.setText("@" + existingAccount.getUsername());
+        jTextField_Profile_Age.setText(String.valueOf(existingAccount.getAge()));   
+        twitterComboBox_Profile_Status.setSelectedItem(existingAccount.getStatus() == 1 ? "Active" : "Inactive");
+        twitterComboBox_Profile_Gender.setSelectedItem(existingAccount.getGender() == 'M' ? "Male" : "Female");
+    }
+
+    private void jButton_Edit_SaveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Edit_SaveActionPerformed
+        
+        TwitterAccount existingAccount = twitterUserManager.getAccountByUsername( tweetAccount.getUsername());
+        
+        if (existingAccount == null) {
+            JOptionPane.showMessageDialog(null, "Twitter account not found.");
+            return;
+        } 
+
+        try {
+            existingAccount.setName(jTextField_Profile_Name.getText());
+            existingAccount.setAge( Integer. valueOf(jTextField_Profile_Age.getText()));
+            existingAccount.setGender(twitterComboBox_Profile_Gender.getSelectedItem().toString().charAt(0));
+            jLabel_Profile_Name.setText(jTextField_Profile_Name.getText());
+            String selectedStatus = twitterComboBox_Profile_Status.getSelectedItem().toString();
+            existingAccount.setStatus(1);
+            if (selectedStatus.equals("Inactive")) {
+                existingAccount.setStatus(0);
+            } 
+        
+            if (jTextField_Profile_Password.getPassword().length > 0) {
+                existingAccount.setPassword(new String(jTextField_Profile_Password.getPassword())); 
+            }
+
+            twitterUserManager.updateAccount(existingAccount);
+            JOptionPane.showMessageDialog(null, "Twitter account updated successfully.");
+        } catch (Exception e) {
+            System.out.println(e);
+            JOptionPane.showMessageDialog(null, "Verify your input.");
+        }        
+    }//GEN-LAST:event_jButton_Edit_SaveActionPerformed
+
+    private void jButton_Edit_CancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Edit_CancelActionPerformed
+        CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
+        cl.show(jPanel_Cards, "cardHome");
+    }//GEN-LAST:event_jButton_Edit_CancelActionPerformed
 
     public static String processTextPaneContent(String html) {
         Document doc = Jsoup.parse(html);
@@ -917,10 +1125,57 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
 
         if ("mention".equals(link)) {
             String mention = extractMention(link);
+            if (mention.equals(tweetAccount.getUsername())) {
+                
+            }else{
+                showAccountProfile(mention);
+            }
             
         }
     }
 
+    private void showAccountProfile(String username) {
+        System.out.println(username);
+        TwitterAccount account = twitterUserManager.getAccountByUsername(username);
+        jLabel_View_Profile_Username.setText("@"+account.getUsername());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MMMM yyyy");
+        String joinedDate = dateFormat.format(account.getDateReg());
+        jLabel_Joined_Date.setText(joinedDate);
+        SwingWorker<List<TweetPost>, Void> worker = new SwingWorker<>() {
+                @Override
+                protected List<TweetPost> doInBackground() {
+                    try {
+                        return tweetManager.loadTweetPostsByDateAndUser(new Date(), new Date(), account.getUsername());
+                    } catch (Exception ex) {
+                        ex.printStackTrace(); 
+                        return null;
+                    }
+                }
+
+                @Override
+                protected void done() {
+                    try {
+                        List<TweetPost> tweets = get();
+                        if (tweets != null) {
+                             StringBuilder sb = new StringBuilder();
+                             numberOfTweets = tweets.size();
+                             for (int i = numberOfTweets - 1; i >= 0; i--) {
+                                TweetPost tweet = tweets.get(i);
+                                sb.append(tweet.toString()).append("\n");
+                            }
+
+                            jTextPane_Account_Timeline.setText(sb.toString());
+                        }
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                }
+            };
+
+           worker.execute();
+        CardLayout cl = (CardLayout)(jPanel_Cards.getLayout());
+        cl.show(jPanel_Cards, "cardViewProfile");
+    }   
     private String extractHashtag(String link) {
         String regex = "<a\\s+href=\"hashtag\">(.*?)</a>";
         java.util.regex.Pattern pattern = java.util.regex.Pattern.compile(regex);
@@ -990,20 +1245,17 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
         @Override
         public void hyperlinkUpdate(HyperlinkEvent e) {
             if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+                System.out.println(e);
                 handleLinkClick(e.getDescription());
             }
-        }
-
-        private void handleLinkClick(String description) {
-            System.out.println("Link clicked: " + description);
         }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
+    private javax.swing.JButton jButton_Edit_Cancel;
+    private javax.swing.JButton jButton_Edit_Save;
     private javax.swing.JButton jButton_Exit;
     private javax.swing.JButton jButton_Home;
     private javax.swing.JButton jButton_OPenAddEmoji;
@@ -1011,12 +1263,9 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     private javax.swing.JButton jButton_Profile;
     private javax.swing.JButton jButton_Submit_Post;
     private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
-    private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
-    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
     private javax.swing.JLabel jLabel17;
     private javax.swing.JLabel jLabel18;
@@ -1024,15 +1273,24 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
-    private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
-    private javax.swing.JLabel jLabel8;
     private javax.swing.JLabel jLabel9;
+    private javax.swing.JLabel jLabel_Bottom_Banner;
+    private javax.swing.JLabel jLabel_Date_Icon;
+    private javax.swing.JLabel jLabel_Edit_NumberOfTweets;
+    private javax.swing.JLabel jLabel_Edit_Username;
+    private javax.swing.JLabel jLabel_Joined;
+    private javax.swing.JLabel jLabel_Joined_Date;
+    private javax.swing.JLabel jLabel_NumberOfFollowers;
+    private javax.swing.JLabel jLabel_NumberOfFollowing;
+    private javax.swing.JLabel jLabel_NumberOfTweets;
     private javax.swing.JLabel jLabel_Profile_Image;
     private javax.swing.JLabel jLabel_Profile_Name;
     private javax.swing.JLabel jLabel_Twitter_Logo;
+    private javax.swing.JLabel jLabel_View_Profile_Image;
+    private javax.swing.JLabel jLabel_View_Profile_Username;
+    private javax.swing.JLabel jLabel_View_Profile_Verified;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel_AddTweet;
     private javax.swing.JPanel jPanel_Cards;
@@ -1043,20 +1301,27 @@ public class TwitterApp extends JInternalFrame implements AppInterface {
     private javax.swing.JPanel jPanel_Home;
     private javax.swing.JPanel jPanel_Image_Profile;
     private javax.swing.JPanel jPanel_Main;
+    private javax.swing.JPanel jPanel_Main_Panel_Account;
     private javax.swing.JPanel jPanel_Sidebar;
     private javax.swing.JPanel jPanel_Top_Panel;
+    private javax.swing.JPanel jPanel_Top_Panel_Account;
     private javax.swing.JPanel jPanel_Tweet_Statistics;
+    private javax.swing.JPanel jPanel_View_Profile;
+    private javax.swing.JPanel jPanel_View_Profile_Date;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane_AddTweet;
     private javax.swing.JScrollPane jScrollPane_timeLine;
     private javax.swing.JSeparator jSeparator1;
     private javax.swing.JSeparator jSeparator2;
     private javax.swing.JSeparator jSeparator3;
+    private com.unitec.mini.windows.ui.TwitterTextField jTextField_Profile_Age;
     private com.unitec.mini.windows.ui.TwitterTextField jTextField_Profile_Name;
+    private com.unitec.mini.windows.ui.TwitterPasswordField jTextField_Profile_Password;
+    private javax.swing.JTextPane jTextPane_Account_Timeline;
+    private javax.swing.JToggleButton jToggleButton_Follow;
     private javax.swing.JTextPane textPane;
     private javax.swing.JTextPane timeLinePane;
     private com.unitec.mini.windows.ui.TwitterComboBox twitterComboBox_Profile_Gender;
-    private com.unitec.mini.windows.ui.TwitterComboBox twitterComboBox_Profile_Gender1;
-    private com.unitec.mini.windows.ui.TwitterPasswordField twitterPasswordField1;
-    private com.unitec.mini.windows.ui.TwitterTextField twitterTextField1;
+    private com.unitec.mini.windows.ui.TwitterComboBox twitterComboBox_Profile_Status;
     // End of variables declaration//GEN-END:variables
 }
