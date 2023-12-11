@@ -704,7 +704,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jButton_Open_Text_EditorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Open_Text_EditorActionPerformed
         if (editorApp == null || editorApp.isClosed()) {
-            editorApp = new EditorApp(userAuthen);
+            editorApp = new EditorApp(false,"");
             setInternalFrameCenterLocation(editorApp);
             jDesktopPane_Window.add(editorApp).setVisible(true);
         } else {
@@ -827,8 +827,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     
     private void jButton_Open_PaintActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_Open_PaintActionPerformed
         if (paintApp == null || paintApp.isClosed()) {
-            paintApp = new PaintApp(userAuthen);
-            
+            paintApp = new PaintApp(false,null);
             setInternalFrameCenterLocation(paintApp);
             jDesktopPane_Window.add(paintApp).setVisible(true);
         } else {
@@ -843,7 +842,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
 
     private void jButton_OPen_PlayerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_OPen_PlayerActionPerformed
         if (playerApp == null || playerApp.isClosed()) {
-            playerApp = new PlayerApp(userAuthen,false," ");
+            playerApp = new PlayerApp(false," "," ");
             setInternalFrameCenterLocation(playerApp);
             jDesktopPane_Window.add(playerApp).setVisible(true);
         } else {
@@ -1004,7 +1003,7 @@ public class Dashboard extends javax.swing.JFrame implements ChangeListener{
     private javax.swing.JButton jButton_Open_Paint;
     private javax.swing.JButton jButton_Open_Text_Editor;
     private javax.swing.JButton jButton_Shutdown;
-    private javax.swing.JDesktopPane jDesktopPane_Window;
+    public static javax.swing.JDesktopPane jDesktopPane_Window;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel_Timer_Top;
     private javax.swing.JMenuItem jMenuItem1;

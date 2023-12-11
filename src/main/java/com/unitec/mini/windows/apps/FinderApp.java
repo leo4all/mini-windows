@@ -4,6 +4,8 @@
  */
 package com.unitec.mini.windows.apps;
 
+import com.unitec.mini.windows.Dashboard;
+import com.unitec.mini.windows.LoginForm;
 import com.unitec.mini.windows.logic.FileSystemStructure;
 import com.unitec.mini.windows.logic.User;
 import java.awt.Component;
@@ -26,6 +28,7 @@ import com.unitec.mini.windows.logic.FolderStructureCreator;
 import com.unitec.mini.windows.ui.FileButton;
 import com.unitec.mini.windows.ui.FolderButton;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -37,13 +40,14 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-
 /**
  *
  * @author leonel
  */
 public class FinderApp extends JInternalFrame implements AppInterface {
-
+PaintApp paint;
+PlayerApp music;
+EditorApp word;
     private int mouseX, mouseY;
     private User userAuthen;
     private FileSystemStructure.FileNode root = null;
@@ -52,69 +56,55 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private String currentLocationPath = INITIAL_PATH;
     private final List<JButton> buttons;
     DefaultMutableTreeNode folderNode;
-
+    
     public FinderApp(User user) {
         this.userAuthen = user;
         buttons = new ArrayList<>();
-
         initComponents();
         setComponents();
     }
-
     public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_finder_20.png"));
         this.setFrameIcon(appIcon);
-
         try {
-
             folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
             jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
             jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
             jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
-            
             expandRootTree(jTree_Folder_Structure);
             jTextField_Path.setText(Paths.get("Users", userAuthen.getUsername(), INITIAL_PATH).toString());
             jPanel_Finder_Dashboard.setLayout(new FlowLayout(FlowLayout.LEADING));
             refreshUI();
-
             jLabel_Current_Folder_Name.setText(currentLocationPath);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
     private DefaultTreeCellRenderer getDirectoryCellRenderer() {
         return new DefaultTreeCellRenderer() {
             @Override
             public Component getTreeCellRendererComponent(JTree tree, Object value, boolean sel, boolean expanded, boolean leaf, int row, boolean hasFocus) {
                 Component c = super.getTreeCellRendererComponent(tree, value, sel, expanded, leaf, row, hasFocus);
                 c.setBackground(new Color(0, 0, 0, 0));
-
                 DefaultMutableTreeNode node = (DefaultMutableTreeNode) value;
-
                 boolean isFolder = node.getAllowsChildren();
                 Icon icon = isFolder ? getFileTypeIcon(node.toString(), isFolder) : getFileTypeIcon(node.toString(), isFolder);
                 if (icon != null) {
                     setIcon(icon);
                 }
-
                 if (hasFocus) {
                     setBackground(new Color(0, 0, 0, 0));
                     setBorder(BorderFactory.createEmptyBorder());
                 }
-
                 return this;
             }
         };
     }
-
     private static Icon getFileTypeIcon(String fileName, boolean isFolder) {
         if (isFolder) {
             return UIManager.getIcon("FileView.directoryIcon");
         }
-
         String extension = fileName.substring(fileName.lastIndexOf('.') + 1).toLowerCase();
-
         switch (extension) {
             case "txt":
                 return UIManager.getIcon("FileView.fileIcon");
@@ -127,28 +117,61 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                 return UIManager.getIcon("FileView.fileIcon");
         }
     }
+//    private class SelectorListener  implements TreeSelectionListener {
+//        public void valueChanged(TreeSelectionEvent evt) {
+//            JTree tree = (JTree) evt.getSource();
+//            DefaultMutableTreeNode selectedNode; 
+//            selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
+//            if (selectedNode !=null && selectedNode.isLeaf()) {
+//               String selectedNodeName = selectedNode.toString();
+//                System.out.println(selectedNodeName);
+//                
+//                
+//                
+//                //Object obj = evt.getNewLeadSelectionPath().getLastPathComponent();
+//                //System.out.println("" + obj.toString().length()   
+//            }
+//            jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
+//            jTree_Folder_Structure.setFocusable(false);
+//            jTree_Folder_Structure.setOpaque(false);
+//        }
+//    }
+    private class SelectorListener implements TreeSelectionListener {
+    public void valueChanged(TreeSelectionEvent evt) {
+        JTree tree = (JTree) evt.getSource();
+        DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
 
-    private class SelectorListener  implements TreeSelectionListener {
-        public void valueChanged(TreeSelectionEvent evt) {
-            JTree tree = (JTree) evt.getSource();
-            DefaultMutableTreeNode selectedNode; 
-            selectedNode = (DefaultMutableTreeNode) tree.getLastSelectedPathComponent();
-             
-            if (selectedNode !=null && selectedNode.isLeaf()) {
-               String selectedNodeName = selectedNode.toString();
-                System.out.println(selectedNodeName);
-                //Object obj = evt.getNewLeadSelectionPath().getLastPathComponent();
-                //System.out.println("" + obj.toString().length());
-                
-                
+        if (selectedNode != null && selectedNode.isLeaf()) {
+            String selectedNodeName = selectedNode.toString();
+            String fullPath = currentLocationPath + File.separator + selectedNodeName;
+            File selectedFile = new File(fullPath);
+
+            String fileExtension = getFileExtension(selectedFile);
+
+            if ("txt".equalsIgnoreCase(fileExtension)) {
+               sendtxt("src/main/users/" + LoginForm.getUserLoging() + "/Documents/" + selectedNodeName);
+            } else if ("png".equalsIgnoreCase(fileExtension)) {
+             sendImage("src/main/users/" + LoginForm.getUserLoging() + "/Images/" + selectedNodeName);
+            } else if ("mp3".equalsIgnoreCase(fileExtension)) {
+             sendMusic("src/main/users/" + LoginForm.getUserLoging() + "/Music/" + selectedNodeName,selectedNodeName);
+            } else {
             }
-
-            jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
-            jTree_Folder_Structure.setFocusable(false);
-            jTree_Folder_Structure.setOpaque(false);
         }
+
+        jTree_Folder_Structure.setBackground(new Color(0, 0, 0, 0));
+        jTree_Folder_Structure.setFocusable(false);
+        jTree_Folder_Structure.setOpaque(false);
     }
-    
+
+    private String getFileExtension(File file) {
+        String fileName = file.getName();
+        int dotIndex = fileName.lastIndexOf('.');
+        return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1).toLowerCase();
+    }
+}
+
+
+
     private static void expandRootTree(JTree tree) {
         TreeNode root = (TreeNode) tree.getModel().getRoot();
         for (int i = 0; i < root.getChildCount(); i++) {
@@ -156,61 +179,49 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             tree.expandPath(new TreePath(new Object[]{root, child}));
         }
     }
-
+    
     public JPanel getElementsToPanel() {
         DefaultMutableTreeNode currentFilesInDestination = FileSystemStructure.getStructureForLocation(userAuthen.getUsername(),
                 currentLocationPath
         );
-        
         createPanelElements(currentFilesInDestination);
         JPanel panel = new JPanel();
         panel.setSize(100, 100);
-
         panel.removeAll();
         for (JButton button : buttons) {
             panel.add(button);
         }
-
         return panel;
     }
-
     private void createPanelElements(DefaultMutableTreeNode parentNode) {
         int count = parentNode.getChildCount();
         for (int i = 0; i < count; i++) {
             DefaultMutableTreeNode childNode = (DefaultMutableTreeNode) parentNode.getChildAt(i);
-            File file = (File) childNode.getUserObject();
-            
+            File file = (File) childNode.getUserObject();            
             JButton button;
             if (file.isDirectory()) {
                 button = new FolderButton(file);
             } else {
                 button = new FileButton(file);
             }
-
             button.addMouseListener(new DoubleClickListener(button));
             buttons.add(button);
         }
     }
-
     class DoubleClickListener extends MouseAdapter {
         private int doubleClick = 2;
         private final JButton button;
-
         public DoubleClickListener(JButton button) {
             this.button = button;
         }
-
         @Override
         public void mouseClicked(MouseEvent e) {
             if (e.getClickCount() == doubleClick) {
                 if (button instanceof FolderButton) {
                     DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) jTree_Folder_Structure.getLastSelectedPathComponent();
                     //if (selectedNode != null) {
-                        
-                         //updateFinderDashboard(selectedNode);
-                    //}
-                    //moveToFolder(button);
-                    
+                         //updateFinderDashboard(selectedNode)
+                    //moveToFolder(button);                   
                 } else if (button instanceof FileButton) {
                     FileButton fileButton = (FileButton) button;
                     System.out.println("Double-clicked on FileButton with extension: " + fileButton.getFileExtension());
@@ -219,7 +230,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             }
         }
     }
-    
     private void moveToFolder(JButton btn){
         if (btn != null) {
             FolderButton bt = (FolderButton)btn;
@@ -228,35 +238,23 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             refreshUI();
         }
     }
-    
      private void updateFinderDashboard(DefaultMutableTreeNode selectedNode) {
         jPanel_Finder_Dashboard.removeAll();
-        
-        
         JLabel label = new JLabel("Selected Node: " + selectedNode.getUserObject().toString());
         jPanel_Finder_Dashboard.add(label);
-
         jPanel_Finder_Dashboard.revalidate();
         jPanel_Finder_Dashboard.repaint();
     }
-
     private void refreshUI(){
         
         jPanel_Finder_Dashboard.add(getElementsToPanel());
         jPanel_Finder_Dashboard.revalidate();
         jPanel_Finder_Dashboard.repaint();
     }
-    
     private static void openAppBasedOnExtension(FileButton btn){
         System.out.println(btn.getName());
         System.out.println(btn.getFileLocation());
     }
-
-    /**
-     * This method is called from within the constructor to initialize the form.
-     * WARNING: Do NOT modify this code. The content of this method is always
-     * regenerated by the Form Editor.
-     */
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -576,12 +574,10 @@ public class FinderApp extends JInternalFrame implements AppInterface {
 
     private void jButton_New_FolderActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton_New_FolderActionPerformed
         try {
-
             JPanel panel = new JPanel();
             panel.add(new JLabel("Folder name"));
             JTextField input = new JTextField(20);
             panel.add(input);
-
             int result = JOptionPane.showOptionDialog(null,
                     panel,
                     "New Folder",
@@ -591,28 +587,22 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                     new String[]{"Create", "Cancel"},
                     null
             );
-
             if (result != JOptionPane.OK_OPTION) {
                 return;
             }
-                
-
             String folderName = input.getText().trim();
             if (folderName != null && !folderName.isEmpty()) {
                 int x, y; x = y = 0;
-
                 Object button = FolderStructureCreator.createButtonFolderAtPosition(userAuthen.getUsername(),
                         currentLocationPath,
                         folderName,
                         x,
                         y
                 );
-
                 if (button != null) {
                     updateJTreeFolderStructure();
                     return;   
                 } 
-
                 JOptionPane.showMessageDialog(
                         this,
                             "An error occur creating a folder.",
@@ -628,7 +618,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
     private void updateJTreeFolderStructure(){
         folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
         jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
-
         jTree_Folder_Structure.removeAll();
         jTree_Folder_Structure.revalidate();
         jTree_Folder_Structure.repaint();
@@ -659,7 +648,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             panel.add(new JLabel("Folder name"));
             JTextField input = new JTextField(20);
             panel.add(input);
-
             int result = JOptionPane.showOptionDialog(null,
                     panel,
                     "New Folder",
@@ -669,7 +657,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                     new String[]{"Create", "Cancel"},
                     null
             );
-
             if (result != JOptionPane.OK_OPTION) {
                 return;
             }
@@ -680,7 +667,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             panel.add(new JLabel("File name"));
             JTextField input = new JTextField(20);
             panel.add(input);
-
             int result = JOptionPane.showOptionDialog(null,
                     panel,
                     "New File",
@@ -690,12 +676,35 @@ public class FinderApp extends JInternalFrame implements AppInterface {
                     new String[]{"Create", "Cancel"},
                     null
             );
-
             if (result != JOptionPane.OK_OPTION) {
                 return;
             }
     }//GEN-LAST:event_jMenuItem_JTree_Create_FileActionPerformed
-
+    private void setInternalFrameCenterLocation(JInternalFrame frame){
+        Dimension desktopSize = jPanel_Finder_Dashboard.getSize();
+        Dimension jISize = frame.getSize();
+        frame.setLocation((desktopSize.width - jISize.width)/2,(desktopSize.height- jISize.height)/2);
+    }
+     public static ImageIcon loadImageIcon(String imagePath) {
+        return new ImageIcon(imagePath);
+    }
+    
+    public void sendImage(String Path){
+        ImageIcon imagen =loadImageIcon(Path);
+    paint= new PaintApp(true,imagen);
+    setInternalFrameCenterLocation(paint);
+    Dashboard.jDesktopPane_Window.add(paint).setVisible(true);
+    }
+    public void sendtxt(String Path){
+    word= new EditorApp(true,Path);
+    setInternalFrameCenterLocation(word);
+    Dashboard.jDesktopPane_Window.add(word).setVisible(true);
+    }
+    public void sendMusic(String Path,String name){
+    music = new PlayerApp(true,Path,name);
+    setInternalFrameCenterLocation(music);
+    Dashboard.jDesktopPane_Window.add(music).setVisible(true);
+    }
     @Override
     public void closeFrame() {
         try {
@@ -704,8 +713,6 @@ public class FinderApp extends JInternalFrame implements AppInterface {
             e.printStackTrace();
         }
     }
-
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton_Go_Back;
     private javax.swing.JButton jButton_Go_To_Home_Folder;

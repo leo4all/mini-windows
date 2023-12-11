@@ -38,12 +38,19 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
     String currentSongName = "";
     MP3Player songPlayer;
     private FileSystemView fileSystemView;
-    public PlayerApp(User user,boolean finder,String Path) {
+    boolean finder;
+    public PlayerApp(boolean finder,String Path,String namesong) {
+        this.finder=finder;
             initComponents();
             if(finder){
-            musicPath=Path;
-            }
+            //musicPath=Path;
+            //startMusic();
+            playSong(namesong,false);
+            songPlayer.play();
+            songTitleLbl.setText(namesong);
+            }else{
             startMusic();
+            
         try {
             initializeDataFile();
             loadSongs();
@@ -51,6 +58,7 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         } catch (Exception e) {
             e.printStackTrace();
         }
+            }
         Volumen.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 jSlider2StateChanged(evt);
@@ -214,8 +222,14 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         DefaultListModel<String> model = new DefaultListModel<>();
         panelList.setModel(model);
     }
-    private void playSong(String songName) {
-         String path = musicPath + File.separator + songName + ".mp3";
+    private void playSong(String songName,boolean estado) {
+        String path;
+        if(estado){
+          path = musicPath + File.separator + songName + ".mp3";
+        }else{
+             path = musicPath + File.separator + songName;
+        }
+            
         if (songPlayer != null) {
             songPlayer.stop();
         }
@@ -223,6 +237,7 @@ public class PlayerApp extends JInternalFrame  implements AppInterface {
         songPlayer.play();
         playing = true;
         BtnPlay.setText("PAUSE");
+         songTitleLbl.setText(currentSongName);
     }
     public void updateList() {
     ArrayList<String> updateList = getSongNamesFromPath(musicPath);
@@ -585,14 +600,16 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                 if (!songPlayer.isStopped()) {
                     songPlayer.play();
                 } else {
-                    playSong(currentSongName);
+                    playSong(currentSongName,true);
                 }
             } else {
                 playing = false;
                 BtnPlay.setText("Pause");
                 songPlayer.pause();
             }
+            if(finder){
             ImageofMusic();
+            }
         }
     }//GEN-LAST:event_BtnPlayActionPerformed
 
@@ -618,7 +635,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                     }
                     songTitleLbl.setText(currentSongName);
                     updateData(musicPath, songSeek, currentSongName);
-                    playSong(currentSongName);
+                    playSong(currentSongName,true);
                     break;
                 }
             }
@@ -639,7 +656,7 @@ private void setVolume(FloatControl volControl, Double valueToPlusMinus) {
                     }
                     songTitleLbl.setText(currentSongName);
                     updateData(musicPath, songSeek, currentSongName);
-                    playSong(currentSongName);
+                    playSong(currentSongName,true);
                     break;
                 }
             }

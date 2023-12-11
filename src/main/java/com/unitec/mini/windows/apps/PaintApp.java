@@ -35,16 +35,17 @@ import javax.swing.event.InternalFrameEvent;
  * @author leonel
  */
 public class PaintApp extends JInternalFrame  implements AppInterface {
-    User userAuthen;
     private List<ImageIcon> imageList;
     private int currentIndex;
     private String UserLoging=LoginForm.getUserLoging();
-    public PaintApp(User user) {
-        this.userAuthen = user;
-
+    public PaintApp(boolean finder,ImageIcon imagen) {
         initComponents();
         setComponents();
+        if(finder){
+        showphoto(imagen);
+        }else{
         loadAndShowImages();
+        }
         addInternalFrameListener(new InternalFrameAdapter() {
             @Override
             public void internalFrameClosing(InternalFrameEvent e) {
@@ -56,19 +57,28 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
     public void setComponents(){
         this.setTitle("Visor de imágenes");
         try {
-            
             String userPath = "/src/main/users" + File.separator + "UserLoging";
             String projectDir = System.getProperty("user.dir") + userPath;
             File userRootdir = new File(projectDir);
             loadImages(userRootdir);
         } catch (Exception e) {
-            
         }
-
         imageList = new ArrayList<>();
         currentIndex = 0;  
     }
-    
+    public void setMainImageByName(String imageName) {
+        String imagePath = "src/main/users/" + UserLoging + "/Images/" + imageName;
+         System.out.println("Halooo sout: "+imagePath);
+        File imageFile = new File(imagePath);
+
+        if (imageFile.exists() && isImageFile(imageFile)) {
+            ImageIcon imageIcon = new ImageIcon(imageFile.getAbsolutePath());
+            showImage(imageList.indexOf(imageIcon));
+        } else {
+            System.out.println("Image not found: " + imageName);
+        }
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -169,7 +179,6 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         jMenu1.add(jMenuItem_SaveImages);
 
         jMenuBar.add(jMenu1);
-        jMenu1.getAccessibleContext().setAccessibleDescription("");
 
         setJMenuBar(jMenuBar);
 
@@ -313,7 +322,20 @@ public class PaintApp extends JInternalFrame  implements AppInterface {
         String name = file.getName().toLowerCase();
         return name.endsWith(".jpg") || name.endsWith(".jpeg") || name.endsWith(".png") || name.endsWith(".gif");
     }
+    public void showphoto(ImageIcon image){
+    Image originalImage = convertToImage(image);
+        
+            int targetWidth = 955;
+            int targetHeight = 540;
 
+            Image scaledImage = originalImage.getScaledInstance(targetWidth, targetHeight, Image.SCALE_SMOOTH);
+            ImageIcon scaledIcon = new ImageIcon(scaledImage);
+            System.out.println("Si se debe de ver");
+            jLabel_MainImage.setIcon(scaledIcon);
+    }
+    public Image convertToImage(ImageIcon imageIcon) {
+        return imageIcon.getImage();
+    }
     private void showImage(int index) {
         if (index < 0) {
             index = imageList.size() - 1;

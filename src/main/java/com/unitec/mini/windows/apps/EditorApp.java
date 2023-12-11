@@ -22,7 +22,6 @@ import javax.swing.ImageIcon;
 import javax.swing.JInternalFrame;
 import javax.swing.JOptionPane;
 import javax.swing.text.MutableAttributeSet;
-import javax.swing.*;
 import javax.swing.event.InternalFrameAdapter;
 import javax.swing.event.InternalFrameEvent;
 
@@ -31,8 +30,7 @@ public class EditorApp extends JInternalFrame implements AppInterface {
     private final int DEFAULT_ALIGNMENT = StyleConstants.ALIGN_LEFT;
     private User userAuthen;
     private String userloging=LoginForm.getUserLoging();
-    public EditorApp(User user) {
-        this.userAuthen = user;
+    public EditorApp(boolean finder,String PathTXT) {
         
         initComponents();
         setComponents();
@@ -44,6 +42,9 @@ public class EditorApp extends JInternalFrame implements AppInterface {
                 guardar=true;
             }
         });
+        if(true){
+        openFinder(PathTXT);
+        }
     }
 
     public void setComponents() {
@@ -562,7 +563,42 @@ public class EditorApp extends JInternalFrame implements AppInterface {
         cleanText();
         guardar=true;
     }//GEN-LAST:event_jMenuItem_NewActionPerformed
+    public void openFinder(String Path){
+         File file = new File(Path);
+                Scanner fileIn = null;
 
+                try {
+                    fileIn = new Scanner(file);
+                    if (file.isFile()) {
+                        textPane.setText("");
+                        textPane.getStyledDocument().remove(0, textPane.getStyledDocument().getLength());
+
+                        int totalStyles = Integer.parseInt(fileIn.nextLine());
+
+                        for (int i = 0; i < totalStyles; i++) {
+                            String text = fileIn.nextLine();
+                            Color textColor = Color.decode(fileIn.nextLine());
+                            String fontFamily = fileIn.nextLine();
+                            int fontSize = Integer.parseInt(fileIn.nextLine());
+                            SimpleAttributeSet attrs = new SimpleAttributeSet();
+                            StyleConstants.setForeground(attrs, textColor);
+                            StyleConstants.setFontFamily(attrs, fontFamily);
+                            StyleConstants.setFontSize(attrs, fontSize);
+                            int offset = textPane.getStyledDocument().getLength();
+                            textPane.getStyledDocument().insertString(offset, text, attrs);
+                        }
+                    }
+                    guardar=false;
+                    PathSaveDocument=Path;
+                } catch (FileNotFoundException | BadLocationException ex) {
+                    ex.printStackTrace();
+                } finally {
+                    if (fileIn != null) {
+                        fileIn.close();
+                    }
+                }
+            
+    }
     private void switchAlignment(int alignment) {
         StyledDocument doc = textPane.getStyledDocument();
         int start = textPane.getSelectionStart();
