@@ -25,6 +25,8 @@ import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import com.unitec.mini.windows.logic.FolderStructureCreator;
+import com.unitec.mini.windows.logic.UserManager;
+import static com.unitec.mini.windows.logic.UserManager.users;
 import com.unitec.mini.windows.ui.FileButton;
 import com.unitec.mini.windows.ui.FolderButton;
 import java.awt.Color;
@@ -35,7 +37,9 @@ import java.awt.event.MouseEvent;
 import java.io.File;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.event.TreeSelectionEvent;
@@ -56,30 +60,55 @@ EditorApp word;
     private String currentLocationPath = INITIAL_PATH;
     private final List<JButton> buttons;
     DefaultMutableTreeNode folderNode;
-    
     public FinderApp(User user) {
         this.userAuthen = user;
         buttons = new ArrayList<>();
         initComponents();
         setComponents();
+        UserManager.getAllUsers();
     }
-    public void setComponents() {
+    
+//    String rutaDirectorioUsuario;
+//            if (log.UserLoging != null && log.UserLoging.equals("admin")) {
+//           
+//                rutaDirectorioUsuario = "Z/";
+//                
+//            } else {
+//                rutaDirectorioUsuario = "Z/"+log.UserLoging ;
+//               
+//            }
+//        
+//           DefaultMutableTreeNode root = createTreeNode(new File(rutaDirectorioUsuario));
+//           treeModel = new DefaultTreeModel(root);
+     public void setComponents() {
         ImageIcon appIcon = new ImageIcon(getClass().getResource("/images/icon_finder_20.png"));
         this.setFrameIcon(appIcon);
         try {
-            folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
-            jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
-            jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
-            jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
-            expandRootTree(jTree_Folder_Structure);
-            jTextField_Path.setText(Paths.get("Users", userAuthen.getUsername(), INITIAL_PATH).toString());
-            jPanel_Finder_Dashboard.setLayout(new FlowLayout(FlowLayout.LEADING));
-            refreshUI();
-            jLabel_Current_Folder_Name.setText(currentLocationPath);
+            if (!userAuthen.getUsername().equals("admin")) {
+                folderNode = FileSystemStructure.getFolderTree(userAuthen.getUsername());
+                jTree_Folder_Structure.setModel(new DefaultTreeModel(folderNode));
+                jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
+                jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
+                expandRootTree(jTree_Folder_Structure);
+            } else {
+                DefaultMutableTreeNode rootNode = new DefaultMutableTreeNode("Root");
+                for (User user : users.values()) {
+                    if (user != null) {
+                        folderNode = FileSystemStructure.getFolderTree(user.getUsername());
+                        rootNode.add(folderNode);
+                    }
+                }
+                jTree_Folder_Structure.setModel(new DefaultTreeModel(rootNode));
+                jTree_Folder_Structure.setCellRenderer(getDirectoryCellRenderer());
+                jTree_Folder_Structure.addTreeSelectionListener(new SelectorListener());
+                expandRootTree(jTree_Folder_Structure);
+            }
+            // Resto del código omitido para simplificar
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
+
     private DefaultTreeCellRenderer getDirectoryCellRenderer() {
         return new DefaultTreeCellRenderer() {
             @Override
@@ -142,16 +171,12 @@ EditorApp word;
         jTree_Folder_Structure.setFocusable(false);
         jTree_Folder_Structure.setOpaque(false);
     }
-
     private String getFileExtension(File file) {
         String fileName = file.getName();
         int dotIndex = fileName.lastIndexOf('.');
         return (dotIndex == -1) ? "" : fileName.substring(dotIndex + 1).toLowerCase();
     }
 }
-
-
-
     private static void expandRootTree(JTree tree) {
         TreeNode root = (TreeNode) tree.getModel().getRoot();
         for (int i = 0; i < root.getChildCount(); i++) {

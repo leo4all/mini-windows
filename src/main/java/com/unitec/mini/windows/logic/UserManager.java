@@ -20,7 +20,7 @@ public class UserManager {
     private static String projectDir = System.getProperty("user.dir") + "/src/main/users";
     private static final String DEFAULT_USER_FILE = "user_account.twc";
 
-    private static final Map<String, User> users = new HashMap<>();
+    public static final Map<String, User> users = new HashMap<>();
     private static UserManager instance = null;
 
     public static UserManager getInstance() {
